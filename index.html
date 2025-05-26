@@ -137,35 +137,35 @@
         order: 1; 
     }
     .practice-mode-controls button {
-      padding: 12px 20px; /* 패딩 살짝 조정 */
+      padding: 12px 20px; 
       font-size: 0.9em; 
       border-radius: var(--border-radius-small); 
-      border: 1px solid transparent; /* 테두리 초기화 */
-      background-image: linear-gradient(to bottom, var(--accent-secondary), var(--accent-active)); /* 그라데이션 */
+      border: 1px solid transparent; 
+      background-image: linear-gradient(to bottom, var(--accent-secondary), var(--accent-active)); 
       color: var(--button-text); 
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
       font-weight: 500; 
       font-family: var(--font-ui);
-      text-shadow: 0 1px 1px rgba(0,0,0,0.2); /* 텍스트 그림자 */
+      text-shadow: 0 1px 1px rgba(0,0,0,0.2); 
       outline: none; 
       box-shadow: var(--shadow-button);
       flex-grow: 1; min-width: 110px;
     }
     .practice-mode-controls button:hover { 
         background-image: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
-        transform: translateY(-2px) scale(1.02); /* 호버 시 약간 커지는 효과 */
+        transform: translateY(-2px) scale(1.02); 
         box-shadow: var(--shadow-button-hover);
         border-color: rgba(var(--accent-rgb), 0.3);
     }
     .practice-mode-controls button.active { 
-        background-image: linear-gradient(to top, var(--accent-active), var(--accent-darker)); /* 활성 시 더 어둡게 */
+        background-image: linear-gradient(to top, var(--accent-active), var(--accent-darker)); 
         color: var(--text-primary); 
-        box-shadow: var(--shadow-inset), 0 1px 2px rgba(0,0,0,0.1); /* 안쪽 그림자 및 미세한 바깥 그림자 */
-        transform: translateY(1px); /* 눌린 효과 */
+        box-shadow: var(--shadow-inset), 0 1px 2px rgba(0,0,0,0.1); 
+        transform: translateY(1px); 
         border-color: rgba(0,0,0,0.2);
     }
-    .practice-mode-controls button i { /* 아이콘 예시 (필요시 추가) */
+    .practice-mode-controls button i { 
         margin-right: 6px;
         opacity: 0.8;
     }
@@ -256,17 +256,17 @@
     
     .typing-line.current-to-type {
         color: var(--text-primary);
-        background-color: rgba(var(--accent-rgb), 0.12); /* 배경색 살짝 더 진하게 */
-        border: 1px solid rgba(var(--accent-rgb), 0.4); /* 테두리 더 명확하게 */
+        background-color: rgba(var(--accent-rgb), 0.12); 
+        border: 1px solid rgba(var(--accent-rgb), 0.4); 
         font-weight: 700; 
         margin-bottom: 6px; 
-        box-shadow: 0 3px 8px rgba(var(--accent-rgb),0.2), var(--shadow-inset); /* 그림자 강화 */
-        transform: scale(1.015); /* 약간 더 크게 표시 */
+        box-shadow: 0 3px 8px rgba(var(--accent-rgb),0.2), var(--shadow-inset); 
+        transform: scale(1.015); 
     }
     
     #typing-input-field-container { width: 100%; max-width: 700px; margin: 8px auto 0 auto; } 
     #typing-input-field {
-        background-color: #3f3c39; /* 입력 필드 배경색 약간 더 밝게 */
+        background-color: #3f3c39; 
         color: var(--input-text);
         border: 1px solid var(--input-border); 
         font-weight: 500;
@@ -278,8 +278,8 @@
     }
     #typing-input-field:focus { 
         border-color: var(--input-focus-border); 
-        box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.35), var(--shadow-inset); /* 포커스 시 그림자 강화 */
-        background-color: #4a4643; /* 포커스 시 배경색 약간 더 밝게 */
+        box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.35), var(--shadow-inset); 
+        background-color: #4a4643; 
     }
 
     #upcoming-lines-area { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: 6px; }
@@ -448,10 +448,10 @@ const sentencePool = {
     "뜻이 있는 곳에 길이 있다.", "시작이 반이다.", "하늘은 스스로 돕는 자를 돕는다.",
     "인내는 쓰지만 그 열매는 달다.", "구슬이 서 말이라도 꿰어야 보배다.", "세 살 버릇 여든까지 간다.",
     "젊어서 고생은 사서도 한다.", "콩 심은 데 콩 나고 팥 심은 데 팥 난다.",
-    "키읔 티읕 피읖 히읗 거센소리 연습.", "쌍기역 쌍디귿 쌍비읍 쌍시옷 쌍지읒 된소리 연습.",
+    "키읔 티읕 피읖 히읗 거센소리 연습.", "쌍기역 쌍디귿 쌍비읍 쌍시옷 쌍지읒 된소리 연습.", // 문장부호 제거
     "맑고 높은 가을 하늘 아래 코스모스 한들한들.", "반짝이는 별빛 아래 소중한 추억을 그려본다.",
     "찹쌀떡 맵쌀떡 온갖 떡들이 가득하다.", "깎아지른 절벽 아래 펼쳐진 푸른 바다.",
-    "닭볶음탕과 칡넝쿨은 최고의 궁합이다.", "읊조리는 시 한 수가 마음을 촉촉하게 적신다.",
+    "닭볶음탕과 칡넝쿨은 최고의 궁합이다.", "읊조리는 시 한 수가 마음을 촉촉하게 적신다.", // 쉼표 제거
     "빠른 갈색 여우가 게으른 개 위로 뛰어넘는다.", 
     "외계생명체 존재 여부는 아직 밝혀지지 않았다.",
     "안녕하세요 만나서 반갑습니다 좋은 하루 되세요.",
@@ -463,25 +463,25 @@ const sentencePool = {
     "Sometimes it's nice to just gaze at the clear blue sky.", "A good book can be a wonderful and loyal companion.",
     "You did a great job today have a restful evening.", "Learning something new is always an exciting endeavor.",
     "Enjoy a delicious dinner together with your family.", "How about sending a warm greeting to an old friend?",
-    "All that glitters is not gold.", "To be or not to be that is the question.", // 하이픈 제거
+    "All that glitters is not gold.", "To be or not to be that is the question.",
     "The woods are lovely dark and deep.", "Hope is the thing with feathers that perches in the soul.",
     "It was the best of times it was the worst of times.", "The only thing we have to fear is fear itself.",
     "Stay hungry. Stay foolish.", "I have a dream that one day this nation will rise up.",
-    "Two roads diverged in a wood and I I took the one less traveled by.", // 하이픈 제거
+    "Two roads diverged in a wood and I I took the one less traveled by.",
     "The journey of a thousand miles begins with a single step.", "Be the change that you wish to see in the world.",
     "Not all those who wander are lost.", "That which does not kill us makes us stronger.",
-    "Ask not what your country can do for you ask what you can do for your country.", // 하이픈 제거
+    "Ask not what your country can do for you ask what you can do for your country.",
     "The unexamined life is not worth living.", "Where there is love there is life.",
     "The quick brown fox jumps over the lazy dog.", "Pack my box with five dozen liquor jugs.",
-    "Sphinx of black quartz judge my vow.", "Amazingly few discotheques provide jukeboxes.", // 마침표 제거, 문장부호 통일
-    "How vexingly quick daft zebras jump.", "Bright vixens jump dozy fowl quack.", // 세미콜론 제거
+    "Sphinx of black quartz judge my vow.", "Amazingly few discotheques provide jukeboxes.",
+    "How vexingly quick daft zebras jump.", "Bright vixens jump dozy fowl quack.",
     "Quick wafting zephyrs vex bold Jim.", "Crazy Fredrick bought many very exquisite opal jewels.",
     "Hello how are you today?", "Thank you very much for your help.", "Pleased to meet you.",
-    "Practice makes perfect.", "Have a wonderful day ahead.", "Good morning sunshine!", // 느낌표 제거
-    "Keep up the good work.", "See you later alligator.", "What a beautiful surprise.", // 느낌표 제거
+    "Practice makes perfect.", "Have a wonderful day ahead.", "Good morning sunshine.",
+    "Keep up the good work.", "See you later alligator.", "What a beautiful surprise.",
     "Actions speak louder than words."
   ],
-  korLong: [ // 장문 예문은 기존 유지 (특수문자 정제는 필요시 별도 진행)
+  korLong: [ // 장문 예문은 일단 기존 내용 유지, 필요시 추후 정제
     "낡은 다락방 창문으로 스며드는 오후의 햇살은 먼지 쌓인 시간 위로 부드럽게 내려앉았다. 공기 중에는 오래된 책 냄새와 희미한 나무 향기가 뒤섞여, 마치 잊혀진 이야기들이 낮은 목소리로 속삭이는 듯했다. 빛줄기를 따라 부유하는 작은 먼지들은 금빛 가루처럼 반짝였고, 그 너머로 보이는 바깥세상은 한 폭의 수채화처럼 아련했다. 나는 삐걱이는 나무 계단을 밟고 올라와, 창가 낡은 흔들의자에 가만히 몸을 기댔다. 창밖으로 보이는 느티나무는 수백 년의 세월을 말없이 지켜온 듯, 바람이 불 때마다 잎사귀를 흔들며 낮은 노래를 불렀다. 그 풍경 속에서 나는 어린 시절의 기억들을 하나씩 꺼내보았다. 할머니가 들려주시던 옛날이야기, 친구들과 뛰놀던 골목길의 저녁노을, 처음으로 느껴본 설렘과 아픔. 모든 것이 희미한 필름처럼 머릿속을 스쳐 지나갔지만, 그 감정만큼은 여전히 선명하게 남아 가슴 한구석을 아릿하게 만들었다. 시간은 모든 것을 변화시키지만, 기억 속에 새겨진 온기는 영원히 변치 않는다는 것을, 나는 그 순간 깨달았다. 어쩌면 우리는 모두 마음속에 자신만의 작은 다락방을 가지고 살아가는지도 모른다. 힘들고 지칠 때마다 찾아가 위로받을 수 있는, 소중한 추억들이 잠들어 있는 비밀스러운 공간을.",
     "깊은 밤, 창밖으로 무수한 별들이 보석처럼 쏟아질 듯 반짝였다. 나는 따뜻한 차 한 잔을 들고 창가에 서서, 끝없이 펼쳐진 밤하늘의 신비를 가만히 응시했다. 어둠이 짙을수록 별빛은 더욱 선명해졌고, 그 고요한 빛줄기는 내 마음속 깊은 곳까지 스며드는 듯했다. 저 멀리 이름 모를 별 하나가 유난히 밝게 빛나고 있었다. 마치 길 잃은 나그네에게 방향을 알려주는 등대처럼, 혹은 간절한 소망을 담아 하늘로 띄워 보낸 작은 등불처럼. 나는 그 별을 보며 어린 시절 순수했던 꿈들을 떠올렸다. 세상을 탐험하는 용감한 모험가, 사람들에게 감동을 주는 예술가, 밤하늘의 비밀을 푸는 천문학자. 현실의 벽에 부딪혀 하나둘씩 접어두었던 그 꿈들이, 별빛 아래에서 다시금 희미하게 살아나는 것을 느꼈다. 어쩌면 꿈이란, 완전히 사라지는 것이 아니라 잠시 우리 마음속 밤하늘에 숨어 반짝일 기회를 기다리는 별과 같은 것일지도 모른다. 중요한 것은 그 별빛을 잊지 않고, 언젠가 다시 그 빛을 따라 나아갈 용기를 내는 것이리라. 나는 마지막 한 모금의 차를 마시며, 내 마음속 별들을 향해 조용히 다짐했다. 아직 끝나지 않은 나의 이야기를 계속 써 내려가겠다고.",
     "이른 새벽, 안개가 자욱한 호숫가를 홀로 걸었다. 물안개는 마치 살아있는 생명체처럼 부드럽게 수면 위를 감돌았고, 멀리 보이는 산자락은 희미한 먹빛 그림자처럼 느껴졌다. 세상의 모든 소음이 잠든 듯, 오직 내 발걸음 소리와 이따금 들려오는 물새 소리만이 적막을 깨뜨렸다. 차가운 새벽 공기가 코끝을 스치자 정신이 맑아지는 기분이었다. 나는 호숫가 작은 벤치에 앉아, 서서히 밝아오는 동쪽 하늘을 바라보았다. 안개 너머로 붉은 기운이 조금씩 번지기 시작하더니, 이윽고 장엄한 해가 그 모습을 드러냈다. 떠오르는 태양은 밤새 호수를 뒤덮었던 안개를 부드럽게 걷어내었고, 그 아래 숨겨져 있던 맑고 투명한 호수의 민낯이 햇살 아래 눈부시게 반짝였다. 그 순간, 나는 마치 새로운 세상이 열리는 듯한 경이로움을 느꼈다. 어둠과 혼돈 속에서도 희망은 언제나 그렇게 떠오르는 것이라고, 자연은 말없이 가르쳐주는 듯했다. 삶이 때로 짙은 안개 속에 갇힌 것처럼 느껴질 때도 있겠지만, 그 안개 너머에는 분명 찬란한 아침이 기다리고 있음을, 그리고 그 아침을 맞이하기 위해서는 묵묵히 자신의 길을 걸어가야 함을, 나는 새벽 호숫가에서 깨달았다. 해가 완전히 떠오르자, 호수는 금빛으로 물들었고, 나는 새로운 하루를 시작할 용기를 얻어 다시 발걸음을 옮겼다.",
@@ -494,7 +494,7 @@ const sentencePool = {
     "늦가을, 낙엽이 수북이 쌓인 오솔길을 혼자 걸었다. 발걸음을 옮길 때마다 바스락거리는 낙엽 소리가 정겹게 들려왔고, 코끝에는 쌉싸름하면서도 향긋한 가을 냄새가 스며들었다. 하늘은 더없이 높고 푸르렀으며, 나뭇가지 사이로 부서지는 햇살은 따스했다. 나는 천천히 걸으며, 화려했던 여름을 보내고 이제 겨울을 맞이할 준비를 하는 자연의 모습을 가만히 관찰했다. 울긋불긋 아름다운 색으로 물들었던 단풍잎들은 이제 마지막 빛을 발하며 땅으로 떨어져 내렸고, 앙상한 가지만 남은 나무들은 다가올 추위를 묵묵히 견뎌낼 준비를 하는 듯했다. 그 모습에서 나는 삶의 순환과 자연의 섭리를 느꼈다. 모든 것에는 시작과 끝이 있고, 성장의 시간이 있으면 쇠퇴의 시간도 있으며, 화려한 순간이 있으면 고요한 침묵의 순간도 있다는 것을. 그리고 그 모든 과정은 그 자체로 의미 있고 아름답다는 것을. 낙엽은 끝이 아니라 새로운 시작을 위한 준비였다. 땅으로 돌아가 거름이 되어, 다음 해 봄에 새로운 생명이 움틀 수 있도록 자신을 내어주는 것이다. 나는 깊어가는 가을의 정취 속에서, 삶의 유한함과 그 속에서 우리가 가져야 할 겸손함, 그리고 모든 것을 받아들이고 순응하는 지혜에 대해 생각했다. 낙엽 밟는 소리가 배경음악처럼 깔리는 그 길 위에서, 나는 자연이 주는 깊은 위안과 가르침을 얻었다.",
     "바람이 세차게 불던 어느 겨울날, 나는 바닷가 작은 등대를 찾아갔다. 하얀 포말을 일으키며 거칠게 밀려오는 파도와 매서운 바닷바람 속에서도 등대는 조금의 흔들림 없이 굳건히 서 있었다. 그 모습은 마치 세상의 온갖 풍파를 견뎌내며 자신의 자리를 지키는 고독한 수호자 같았다. 어둠이 내리면 등대는 어김없이 밝은 빛을 발하여, 밤바다를 항해하는 배들에게 길을 안내할 것이다. 그 빛은 단순한 불빛이 아니라, 험난한 바다 위에서 길을 잃은 이들에게 희망과 안도를 주는 생명의 빛이리라. 나는 문득 우리 삶에도 저런 등대와 같은 존재가 필요하다는 생각을 했다. 때로는 거친 파도처럼 힘겨운 시련이 몰아치고, 짙은 안개처럼 방향을 잃고 방황할 때, 우리를 올바른 길로 인도해주고 마음의 등불이 되어줄 그런 존재 말이다. 그것은 때로는 현명한 조언을 해주는 스승일 수도 있고, 변함없는 사랑을 주는 가족일 수도 있으며, 혹은 마음속 깊이 간직한 신념이나 가치관일 수도 있다. 중요한 것은 자신만의 등대를 가지고, 그 빛을 따라 꿋꿋이 나아가는 것이다. 세찬 바람 속에서도 묵묵히 빛을 밝히는 등대를 바라보며, 나는 내 삶의 등대는 무엇인지 다시 한번 생각해보았다.",
     "어린 시절, 동네 어귀에는 커다란 플라타너스 나무가 한 그루 서 있었다. 여름이면 무성한 잎으로 시원한 그늘을 만들어주었고, 가을이면 황금빛 낙엽을 아름답게 흩날렸으며, 겨울이면 앙상한 가지에 눈꽃을 피워 장관을 이루었다. 그 나무 아래는 언제나 아이들의 웃음소리가 끊이지 않는 놀이터였고, 동네 어른들의 정겨운 이야기가 오가는 쉼터였다. 나는 그 나무 아래에서 친구들과 술래잡기를 하고, 딱지치기를 하고, 때로는 가만히 앉아 하늘을 바라보며 엉뚱한 상상에 빠지기도 했다. 플라타너스 나무는 나의 유년 시절 모든 기억을 말없이 지켜봐 준 든든한 친구이자 보호자였다. 세월이 흘러 나는 어른이 되었고, 그 동네를 떠나온 지도 오래되었다. 하지만 문득 그 플라타너스 나무가 그리워질 때가 있다. 모든 것이 빠르게 변해가는 이 세상 속에서, 변함없이 그 자리를 지키고 있을 것 같은 그 나무의 존재가 주는 안정감 때문일까. 어쩌면 그 나무는 나에게 단순한 나무 이상의 의미였는지도 모른다. 그것은 돌아갈 수 없는 아름다운 시절에 대한 그리움이자, 순수했던 마음을 다시 찾고 싶은 작은 소망의 상징이었을 것이다. 언젠가 다시 그 나무 아래 서면, 나는 잠시나마 모든 것을 잊고 어린 시절의 나로 돌아갈 수 있을 것만 같다.",
-    "나는 가끔 오래된 엘피판을 꺼내 턴테이블 위에 올려놓는다. 지지직거리는 작은 소음과 함께 바늘이 레코드의 검은 골을 따라 천천히 움직이기 시작하면, 곧이어 따뜻하고 풍부한 아날로그 사운드가 공간을 가득 채운다. 디지털 음원에서는 느낄 수 없는 그 특유의 깊이와 온기는 마치 시간 여행을 하는 듯한 묘한 감흥을 불러일으킨다. 엘피판 한 장에는 단순히 음악만 담겨 있는 것이 아니다. 그 음악이 유행했던 시대의 공기, 그 음악을 함께 들었던 사람들과의 추억, 그리고 그 음악을 들으며 느꼈던 나의 젊은 날의 감정들이 고스란히 담겨 있다. 그래서 엘피를 듣는 것은 단순한 음악 감상을 넘어, 지나간 시간과의 조우이자 잊혀진 기억과의 재회이기도 하다. 때로는 빛바랜 앨범 재킷을 어루만지며 그 시절을 추억하고, 때로는 가사를 음미하며 그 의미를 되새기기도 한다. 세상은 점점 더 빠르고 편리한 것을 추구하지만, 나는 가끔 이렇게 느리고 불편한 아날로그의 세계에 머무르는 것을 좋아한다. 그 속에는 디지털이 결코 흉내 낼 수 없는 인간적인 따뜻함과 시간의 깊이가 존재하기 때문이다. 엘피판이 돌아가는 것을 가만히 바라보며, 나는 오늘도 잊혀진 시간 속으로 짧은 여행을 떠난다.", // LP판 -> 엘피판, LP -> 엘피로 수정
+    "나는 가끔 오래된 엘피판을 꺼내 턴테이블 위에 올려놓는다. 지지직거리는 작은 소음과 함께 바늘이 레코드의 검은 골을 따라 천천히 움직이기 시작하면, 곧이어 따뜻하고 풍부한 아날로그 사운드가 공간을 가득 채운다. 디지털 음원에서는 느낄 수 없는 그 특유의 깊이와 온기는 마치 시간 여행을 하는 듯한 묘한 감흥을 불러일으킨다. 엘피판 한 장에는 단순히 음악만 담겨 있는 것이 아니다. 그 음악이 유행했던 시대의 공기, 그 음악을 함께 들었던 사람들과의 추억, 그리고 그 음악을 들으며 느꼈던 나의 젊은 날의 감정들이 고스란히 담겨 있다. 그래서 엘피를 듣는 것은 단순한 음악 감상을 넘어, 지나간 시간과의 조우이자 잊혀진 기억과의 재회이기도 하다. 때로는 빛바랜 앨범 재킷을 어루만지며 그 시절을 추억하고, 때로는 가사를 음미하며 그 의미를 되새기기도 한다. 세상은 점점 더 빠르고 편리한 것을 추구하지만, 나는 가끔 이렇게 느리고 불편한 아날로그의 세계에 머무르는 것을 좋아한다. 그 속에는 디지털이 결코 흉내 낼 수 없는 인간적인 따뜻함과 시간의 깊이가 존재하기 때문이다. 엘피판이 돌아가는 것을 가만히 바라보며, 나는 오늘도 잊혀진 시간 속으로 짧은 여행을 떠난다.",
     "작은 시골 간이역, 해 질 녘 플랫폼에는 기차를 기다리는 사람들보다 먼저 와 자리를 잡은 저녁노을이 더 짙었다. 나는 낡은 나무 의자에 앉아, 서쪽 하늘을 붉게 물들이며 서서히 스러져가는 노을의 마지막 장관을 바라보았다. 세상의 모든 색을 다 끌어모은 듯한 그 찬란한 빛의 향연 앞에서, 인간의 언어는 한없이 초라하게 느껴졌다. 노을은 낮과 밤의 경계에서 피어나는 짧지만 강렬한 예술과 같았다. 뜨거웠던 하루의 열정을 모두 불태우고, 이제 고요한 휴식의 시간으로 접어들기 위한 마지막 인사처럼. 나는 그 아름다움에 매료되어 한동안 아무 말도 할 수 없었다. 잠시 후, 노을이 완전히 자취를 감추고 어둠이 내려앉자, 하늘에는 하나둘씩 별들이 모습을 드러내기 시작했다. 그것은 마치 화려한 무대가 끝나고 다음 막이 오르기 전의 고요한 설렘과도 같았다. 삶에도 저런 노을과 같은 순간들이 있을 것이다. 모든 것을 쏟아부은 뒤 맞이하는 찬란한 마무리, 그리고 새로운 시작을 예비하는 고요한 성찰의 시간. 우리는 그 순간들을 통해 지나온 길을 돌아보고, 앞으로 나아갈 힘을 얻는다. 나는 깊어가는 밤의 적막 속에서, 오늘 하루 나에게 주어진 시간과 경험들에 감사하며, 내일 또다시 떠오를 새로운 태양을 기다렸다.",
     "나는 오래된 만년필로 일기를 쓰는 것을 좋아한다. 사각거리는 펜촉이 종이 위를 스치는 소리, 손끝으로 전해져 오는 잉크의 미세한 흐름, 그리고 한 자 한 자 정성스럽게 써 내려가는 글자들이 만들어내는 그 모든 과정이 나에게는 작은 의식과도 같다. 디지털 시대에 손으로 글을 쓴다는 것은 어쩌면 비효율적이고 번거로운 일일지도 모른다. 하지만 나는 그 느림과 불편함 속에서 오히려 더 깊은 사색과 진정한 자기표현의 즐거움을 발견한다. 컴퓨터 자판으로는 미처 담아낼 수 없는 생각의 결들과 감정의 미묘한 떨림들이, 만년필을 통해 종이 위에 고스란히 새겨지는 것을 느낀다. 일기장에는 그날 있었던 소소한 사건들뿐만 아니라, 마음속 깊은 곳에 숨겨두었던 생각들, 누구에게도 말하지 못했던 비밀들, 그리고 미래에 대한 막연한 기대와 불안까지 모든 것이 담긴다. 그것은 오롯이 나 자신과 마주하는 시간이며, 내 삶의 발자취를 기록하는 소중한 작업이다. 훗날 이 일기장을 다시 펼쳐보았을 때, 나는 지금 이 순간의 나를 만나고, 그 시절의 고민과 기쁨을 공유하며, 내가 얼마나 성장했는지를 돌아볼 수 있을 것이다. 만년필의 잉크가 마르듯 시간은 흘러가겠지만, 종이 위에 남겨진 나의 이야기는 영원히 그 자리에 남아 빛날 것이다.",
     "어느 늦봄, 나는 이름 모를 작은 산사의 툇마루에 앉아 있었다. 산사는 깊은 산속에 고즈넉이 자리 잡아, 세상의 모든 번뇌와 소음으로부터 벗어난 듯 평화로웠다. 처마 끝에 매달린 풍경은 바람이 불 때마다 맑고 청아한 소리를 냈고, 그 소리는 내 마음속까지 잔잔하게 울려 퍼졌다. 마당에는 수령을 알 수 없는 오래된 매화나무 한 그루가 마지막 꽃잎을 떨구고 있었고, 그 아래에는 작은 새 한 마리가 날아와 지저귀고 있었다. 나는 눈을 감고 가만히 그 모든 소리와 풍경을 마음에 담았다. 자연의 소리는 그 어떤 음악보다 아름다웠고, 산사의 고요함은 그 어떤 명상보다 깊은 평화를 가져다주었다. 복잡했던 머릿속은 어느새 텅 비고, 무거웠던 마음은 한결 가벼워졌다. 우리는 종종 너무 많은 것을 보고 듣고 생각하며 살아간다. 그래서 정작 중요한 내면의 소리에는 귀 기울이지 못하고, 진정한 휴식의 의미를 잊어버리곤 한다. 하지만 이렇게 잠시 모든 것을 내려놓고 자연 속에 머무르다 보면, 비로소 우리가 얼마나 작은 존재인지, 그리고 우리가 진정으로 추구해야 할 가치는 무엇인지 깨닫게 된다. 풍경 소리가 다시 한번 맑게 울리자, 나는 깊은 숨을 내쉬며 자리에서 일어섰다. 짧은 시간이었지만, 산사가 준 깊은 평화와 깨달음은 오랫동안 내 마음속에 남아 있을 것 같았다.",
@@ -502,7 +502,7 @@ const sentencePool = {
     "한겨울 밤, 창밖에는 하얀 눈이 소리 없이 내리고 있었다. 나는 따뜻한 코코아 한 잔을 들고 창가에 서서, 밤새 세상을 하얗게 뒤덮을 것 같은 눈송이들을 하염없이 바라보았다. 가로등 불빛 아래 춤추듯 흩날리는 눈송이들은 마치 동화 속 한 장면처럼 비현실적으로 아름다웠다. 눈은 세상의 모든 더러움과 소음을 하얗게 덮어버리고, 고요하고 순수한 평화를 가져다주는 것 같았다. 나는 어린아이처럼 창문에 입김을 불어 작은 그림을 그리기도 하고, 손을 내밀어 차가운 눈송이를 직접 만져보기도 했다. 눈이 내리는 풍경은 언제나 나를 설레게 하고, 잊고 지냈던 동심을 일깨워준다. 어쩌면 눈은, 하늘이 우리에게 보내는 하얀 편지일지도 모른다. 잠시 모든 것을 잊고 순수한 기쁨을 느껴보라고, 그리고 새로운 시작을 준비하라고 속삭이는 아름다운 편지. 나는 코코아의 마지막 한 모금을 마시며, 내일 아침 눈부시게 펼쳐질 하얀 세상을 상상했다. 발자국 하나 없는 깨끗한 눈밭 위를 처음으로 걷는 기분은 얼마나 상쾌할까. 눈이 그치고 아침이 오면, 나는 가장 먼저 하얀 세상 속으로 달려 나가, 겨울이 주는 특별한 선물을 만끽할 것이다.",
     "나는 가끔 오래된 시장을 찾는 것을 좋아한다. 대형마트의 깔끔함과 편리함도 좋지만, 시장에는 그곳에서만 느낄 수 있는 특별한 활기와 정겨움이 있다. 좌판 가득 싱싱한 채소와 과일을 진열해놓고 구성진 목소리로 손님을 부르는 상인들, 흥정을 하며 덤을 얻어가는 손님들의 웃음소리, 맛있는 냄새를 풍기며 발길을 유혹하는 길거리 음식들까지. 시장은 살아있는 사람들의 이야기로 가득한 공간이다. 나는 천천히 시장 골목을 걸으며, 다양한 물건들을 구경하고 사람들의 살아가는 모습을 관찰한다. 그 속에서 나는 잊고 지냈던 인간적인 따뜻함과 소박한 삶의 아름다움을 발견한다. 시장 상인들의 거친 손마디에는 정직한 땀의 가치가 담겨 있고, 그들의 구릿빛 얼굴에는 세월의 흔적과 삶의 지혜가 새겨져 있다. 그들은 단순히 물건을 파는 것이 아니라, 자신의 삶을 나누고 사람들과 정을 주고받는다. 그래서 시장에서의 거래는 단순한 매매를 넘어, 따뜻한 인간관계의 한 형태가 된다. 나는 시장 한구석 작은 분식집에 앉아 뜨끈한 어묵 국물을 마시며, 시장의 활기찬 풍경을 다시 한번 눈에 담았다. 이곳에는 여전히 변치 않는 사람 사는 냄새가 있었고, 그것이 나를 위로하고 새로운 힘을 주는 것 같았다."
   ],
-  engLong: [ // 장문 예문은 기존 유지 (특수문자 정제는 필요시 별도 진행)
+  engLong: [ // 장문 예문은 일단 기존 내용 유지, 필요시 추후 정제
     "The old attic window, streaked with the dust of ages, allowed the afternoon sun to filter in, casting a soft, golden glow over forgotten treasures. The air hung heavy with the scent of aged paper and faint wood, a nostalgic perfume that seemed to whisper tales of bygone eras. Tiny dust motes danced in the invading sunbeams, sparkling like miniature galaxies, and the world outside, viewed through the grimy pane, appeared as a distant, dreamlike watercolor. I had creaked my way up the wooden stairs, settling into the worn comfort of a rocking chair by the window. Below, an ancient oak stood sentinel, its leaves rustling a quiet, timeless song with every breeze, a silent observer of centuries unfolding. In that tranquil tableau, I found myself sifting through childhood memories: a grandmother's gentle voice narrating fairy tales, the vibrant hues of a sunset over a familiar alleyway, the first stirrings of a young heart's joy and sorrow. Time, in its relentless march, may alter all things, yet the warmth embedded in memory, I realized, remains an immutable sanctuary. Perhaps we all carry a small, secret attic within our souls, a place of solace filled with cherished recollections, a haven to retreat to when the world outside grows too loud.",
     "Under the velvet cloak of a moonless night, countless stars were scattered across the celestial canvas like diamonds on black silk. With a warm cup of herbal tea cradled in my hands, I stood by the window, lost in the profound mystery of the infinite expanse. The deeper the darkness, the more intensely the starlight seemed to pierce through, its serene luminescence seeping into the very core of my being. One distant, unnamed star shone with a particular brilliance, a beacon for a lost traveler, perhaps, or a tiny lantern carrying a whispered wish to the heavens. Gazing at it, I was transported back to the untainted dreams of youth: a daring explorer charting unknown territories, an artist evoking profound emotions, an astronomer unraveling cosmic secrets. Those aspirations, once so vivid but gradually set aside against the unyielding walls of reality, flickered faintly back to life under the starlight. Maybe dreams never truly vanish; perhaps they merely slumber in the night sky of our hearts, awaiting the courage to be pursued once more. As I sipped the last of my tea, I made a quiet promise to those stars, and to myself: to keep writing the unfinished chapters of my own story, guided by their distant, unwavering light.",
     "The scent of pine needles and damp earth filled the air as she walked deeper into the ancient woods. Sunlight struggled to penetrate the thick canopy, casting an ethereal, green-tinged light on the forest floor. Moss grew like velvet on the trunks and branches of old trees, and delicate ferns uncurled their fronds in the damp places where shadows lingered. She paused by a gnarled oak, its bark a tapestry of a thousand storms weathered and a thousand suns embraced. It seemed to whisper secrets of the ages, of creatures seen and unseen, of seasons turning in an endless, graceful dance. Here, away from the clamor of human invention, she felt a profound connection to something primal, something enduring. The forest was not merely a collection of trees, but a living, breathing entity, a sanctuary for the soul seeking quietude and a reminder of the intricate beauty of the natural world. Each fallen leaf crunched underfoot was a note in an ancient song, a testament to the cycle of life, death, and renewal, a humbling perspective in the grand theatre of existence.",
@@ -731,32 +731,31 @@ function handleKeyDownEvent(e) {
     if (e.key === 'Backspace') {
         playTypingSound(); 
     } else if (e.shiftKey) {
-        // Shift + 문자 (예: Shift + a = A, Shift + ㄱ = ㄲ) 입력 시에는 타건음 재생 안 함.
-        // 단독 Shift 키 입력은 e.key가 "Shift"이므로 아래 조건에서 걸러짐.
+        // Shift 키가 눌린 상태에서는 타건음 재생 안 함
     } else {
         const isModifierKey = e.ctrlKey || e.altKey || e.metaKey;
         const isNavigationKey = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(e.key);
         const isFunctionKey = e.key.startsWith('F') && e.key.length > 1 && !isNaN(parseInt(e.key.substring(1)));
-        const isControlKey = ['CapsLock', 'Tab', 'Escape', 'Insert', 'Delete'].includes(e.key); // 단독 Shift는 여기 포함 안 함
+        const isControlKey = ['CapsLock', 'Tab', 'Escape', 'Insert', 'Delete'].includes(e.key); 
         
-        // Enter도 제외 (Enter는 processCurrentLineCompletion에서 처리)
         if (e.key !== 'Enter' && !isModifierKey && !isNavigationKey && !isFunctionKey && !isControlKey ) {
             playTypingSound();
         }
     }
 
-    // 통계 업데이트 로직은 Shift 키와 관계없이 '입력되는 문자'에 대해 작동하도록 수정
-    // 단, e.key.length === 1 (단일 문자) 이고, Ctrl, Alt, Meta가 눌리지 않았을 때만
     if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) { 
-        if (!startTime) {
-             startTime = Date.now();
-             lastArticleSpeed = 0; 
-             updateStatsDisplay(false); 
-        }
-        if (originalLine !== null && !currentLineStartTime) {
-            currentLineStartTime = Date.now();
-            if (currentArticleCorrectChars === 0 && typedValue.length === 0) { 
+        // Shift가 눌렸을 때는 통계 시작/업데이트 로직에 영향을 주지 않도록 수정
+        if (!e.shiftKey) { // Shift가 눌리지 않은 일반 문자 입력 시에만
+            if (!startTime) {
+                 startTime = Date.now();
+                 lastArticleSpeed = 0; 
                  updateStatsDisplay(false); 
+            }
+            if (originalLine !== null && !currentLineStartTime) {
+                currentLineStartTime = Date.now();
+                if (currentArticleCorrectChars === 0 && typedValue.length === 0) { 
+                     updateStatsDisplay(false); 
+                }
             }
         }
     }
