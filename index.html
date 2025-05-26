@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Key Therapy - 온라인 타자연습</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-main: #22201e; 
+      --bg-container: #2f2c2a; 
+      --bg-typing-area: #282624; 
+      
+      --text-primary: #e0d9d1; 
+      --text-secondary: #b0a89f; 
+      
+      --accent-primary: #d4af7a; 
+      --accent-secondary: #c8a273; 
+      --accent-active: #b89263; 
+      --accent-darker: #aa8a5a; /* 버튼 그라데이션용 */
+      
+      --highlight-error: #f48fb1; 
+      --highlight-error-bg: rgba(244, 143, 177, 0.1);
+      
+      --input-bg: #383532;
+      --input-text: #f5f0eb;
+      --input-border: #4d4a47;
+      --input-focus-border: var(--accent-primary);
+      
+      --button-bg: var(--accent-primary);
+      --button-text: #2a2826; 
+      --button-hover-bg: var(--accent-secondary);
+      
+      --font-body: 'Noto Sans KR', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+      --font-typing: 'Nanum Myeongjo', 'Courier New', monospace;
+      --font-ui: 'Poppins', sans-serif;
+      
+      --line-height-typing: 1.8; 
+      --font-size-typing: 1.15rem;
+      --font-size-typing-mobile: 1.05rem;
+      
+      --accent-rgb: 212, 175, 122; 
+      
+      --hero-image-url: url('https://images.unsplash.com/photo-1505322265381-3138d62ub20a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGtleWJvYXJkJTIwYWVzdGhldGljfGVufDB8fDB8fHww&auto=format&fit=crop&w=1000&q=80');
+
+      --typing-letter-spacing: 0.8px; 
+      --typing-word-spacing: 2px;   
+      --typing-letter-spacing-mobile: 0.5px;
+      --typing-word-spacing-mobile: 1.5px; 
+
+      --border-radius-main: 10px; 
+      --border-radius-small: 6px;
+      --shadow-soft: 0 8px 24px rgba(0,0,0,0.35); 
+      --shadow-inset: inset 0 2px 4px rgba(0,0,0,0.2);
+      --shadow-button: 0 4px 10px rgba(0,0,0,0.25); /* 버튼 그림자 */
+      --shadow-button-hover: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-main); font-family: var(--font-body); font-weight: 300;
+      margin: 0; padding: 0; color: var(--text-primary); display: flex;
+      flex-direction: column; min-height: 100vh; opacity: 0;
+      animation: fadeInPage 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      -webkit-tap-highlight-color: transparent;
+      line-height: 1.6;
+    }
+    @keyframes fadeInPage { to { opacity: 1; } }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-typing-area); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-secondary); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+
+    .banner {
+      display: block; text-decoration: none; color: inherit;
+      background: rgba(0,0,0,0.1); 
+      padding: 25px 20px; text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4); 
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .banner:hover { background: rgba(0,0,0,0.15); }
+    .banner-content { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .banner .channel-name {
+        font-family: var(--font-heading); font-size: 2em; color: var(--accent-primary);
+        font-weight: 700; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .banner .channel-description { font-size: 0.95em; color: var(--text-secondary); margin-bottom: 5px; max-width: 90%; font-weight: 400;}
+
+    .main-content-wrapper { display: flex; justify-content: center; align-items: flex-start; flex-grow: 1; padding: 30px 15px; }
+    .main-content {
+      max-width: 850px; width: 100%; background-color: var(--bg-container);
+      border-radius: var(--border-radius-main); box-shadow: var(--shadow-soft);
+      display: flex; flex-direction: column; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.03); 
+    }
+    .hero-section {
+      width: 100%; height: 180px; 
+      background-image: linear-gradient(to bottom, rgba(30, 28, 26, 0.1) 0%, rgba(30, 28, 26, 0.9) 100%), var(--hero-image-url);
+      background-size: cover; background-position: center 30%; 
+      display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+      text-align: center; position: relative; border-radius: var(--border-radius-main) var(--border-radius-main) 0 0;
+      padding: 25px; box-sizing: border-box;
+    }
+    .hero-subtitle {
+      font-family: var(--font-heading); font-size: 1.8em; font-weight: 600;
+      color: var(--accent-primary); margin: 0 0 10px 0;
+      text-shadow: 0px 2px 5px rgba(0,0,0,0.7); z-index: 1;
+    }
+
+    .controls-and-stats-wrapper { padding: 20px 25px 15px; }
+    .settings-container { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 15px; 
+        margin-bottom: 20px;
+    }
+    
+    .main-controls {
+        display: flex;
+        flex-wrap: wrap; 
+        justify-content: space-between; 
+        align-items: center; 
+        gap: 15px; 
+    }
+
+    .practice-mode-controls { 
+        display: flex; 
+        justify-content: center; 
+        flex-wrap: wrap; 
+        gap: 10px; 
+        flex-basis: 100%; 
+        order: 1; 
+    }
+    .practice-mode-controls button {
+      padding: 12px 20px; /* 패딩 살짝 조정 */
+      font-size: 0.9em; 
+      border-radius: var(--border-radius-small); 
+      border: 1px solid transparent; /* 테두리 초기화 */
+      background-image: linear-gradient(to bottom, var(--accent-secondary), var(--accent-active)); /* 그라데이션 */
+      color: var(--button-text); 
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+      font-weight: 500; 
+      font-family: var(--font-ui);
+      text-shadow: 0 1px 1px rgba(0,0,0,0.2); /* 텍스트 그림자 */
+      outline: none; 
+      box-shadow: var(--shadow-button);
+      flex-grow: 1; min-width: 110px;
+    }
+    .practice-mode-controls button:hover { 
+        background-image: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
+        transform: translateY(-2px) scale(1.02); /* 호버 시 약간 커지는 효과 */
+        box-shadow: var(--shadow-button-hover);
+        border-color: rgba(var(--accent-rgb), 0.3);
+    }
+    .practice-mode-controls button.active { 
+        background-image: linear-gradient(to top, var(--accent-active), var(--accent-darker)); /* 활성 시 더 어둡게 */
+        color: var(--text-primary); 
+        box-shadow: var(--shadow-inset), 0 1px 2px rgba(0,0,0,0.1); /* 안쪽 그림자 및 미세한 바깥 그림자 */
+        transform: translateY(1px); /* 눌린 효과 */
+        border-color: rgba(0,0,0,0.2);
+    }
+    .practice-mode-controls button i { /* 아이콘 예시 (필요시 추가) */
+        margin-right: 6px;
+        opacity: 0.8;
+    }
+    
+    .feature-toggles { 
+        display: flex; 
+        gap: 12px; 
+        justify-content: flex-start; 
+        order: 2; 
+        flex-grow: 1; 
+    }
+    .feature-toggles button {
+        background: transparent; border: 1px solid var(--accent-secondary); color: var(--accent-secondary);
+        padding: 10px 15px; border-radius: 20px; 
+        cursor: pointer; transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        font-size: 0.85em; font-family: var(--font-ui); font-weight: 500; min-width: 130px;
+    }
+    .feature-toggles button:hover, .feature-toggles button.active { 
+        background: var(--accent-secondary); color: var(--text-primary); 
+        transform: translateY(-1px); box-shadow: 0 2px 5px rgba(var(--accent-rgb),0.2);
+    }
+    .feature-toggles button i { margin-right: 8px; }
+
+    .sound-settings { 
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        justify-content: flex-end; 
+        order: 3; 
+        flex-shrink: 0; 
+    }
+    .sound-select-label { font-size: 0.9em; color: var(--text-secondary); font-weight: 400; }
+    #soundPackSelect {
+        background-color: var(--input-bg); color: var(--input-text);
+        border: 1px solid var(--input-border); border-radius: var(--border-radius-small);
+        padding: 10px 12px; font-family: var(--font-ui); font-size: 0.9em;
+        outline: none; min-width: 160px;
+        transition: border-color 0.2s ease;
+    }
+    #soundPackSelect:focus { border-color: var(--input-focus-border); box-shadow: 0 0 0 2.5px rgba(var(--accent-rgb), 0.2); }
+    
+    #stats {
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+      gap: 10px; 
+      margin-bottom: 15px; padding: 12px 15px; background-color: rgba(0,0,0,0.15);
+      border-radius: var(--border-radius-small); font-size: 0.95em; color: var(--text-secondary);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    #stats span { text-align: center; padding: 5px 0; } 
+    #stats .label { color: var(--text-secondary); font-weight: 400; display: block; margin-bottom: 2px;}
+    #stats .value { color: var(--accent-primary); font-weight: 500; font-size: 1.1em; }
+    
+    .typing-area-container {
+        padding: 15px 20px 25px 20px; background-color: var(--bg-typing-area);
+        border-top: 1px solid rgba(255,255,255,0.05); 
+        flex-grow: 1; display: flex;
+        flex-direction: column; font-family: var(--font-typing);
+        font-size: var(--font-size-typing); line-height: var(--line-height-typing);
+        border-radius: 0 0 var(--border-radius-main) var(--border-radius-main); min-height: 350px;
+    }
+    #line-display-area {
+        display: flex; flex-direction: column; align-items: center;
+        margin-bottom: 5px; width: 100%;
+        min-height: calc((var(--font-size-typing) * var(--line-height-typing) + 10px) * 2); 
+    }
+    .typing-line, #typing-input-field {
+        width: 100%; max-width: 700px; 
+        padding: 8px 12px;
+        margin: 1.5px auto; 
+        font-family: var(--font-typing);
+        font-size: var(--font-size-typing);
+        line-height: var(--line-height-typing);
+        letter-spacing: var(--typing-letter-spacing); 
+        word-spacing: var(--typing-word-spacing);   
+        box-sizing: border-box;
+        text-align: left;
+        border-radius: var(--border-radius-small);
+    }
+    .typing-line {
+        transition: opacity 0.4s ease, transform 0.3s ease, font-size 0.3s ease, color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        min-height: calc(var(--font-size-typing) * var(--line-height-typing) + 16px); 
+        display: flex; align-items: center; font-weight: 400;
+    }
+    .typing-line strong { font-weight: 700; color: var(--text-primary); } 
+    .typing-line .untyped-char { opacity: 0.5; } 
+    .typing-line.passed { color: var(--text-secondary); opacity: 0.5; font-size: calc(var(--font-size-typing) * 0.9); } 
+    
+    .typing-line.current-to-type {
+        color: var(--text-primary);
+        background-color: rgba(var(--accent-rgb), 0.12); /* 배경색 살짝 더 진하게 */
+        border: 1px solid rgba(var(--accent-rgb), 0.4); /* 테두리 더 명확하게 */
+        font-weight: 700; 
+        margin-bottom: 6px; 
+        box-shadow: 0 3px 8px rgba(var(--accent-rgb),0.2), var(--shadow-inset); /* 그림자 강화 */
+        transform: scale(1.015); /* 약간 더 크게 표시 */
+    }
+    
+    #typing-input-field-container { width: 100%; max-width: 700px; margin: 8px auto 0 auto; } 
+    #typing-input-field {
+        background-color: #3f3c39; /* 입력 필드 배경색 약간 더 밝게 */
+        color: var(--input-text);
+        border: 1px solid var(--input-border); 
+        font-weight: 500;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        -webkit-appearance: none; appearance: none;
+        min-height: calc(var(--font-size-typing) * var(--line-height-typing) + 16px + 2px);
+        box-shadow: var(--shadow-inset);
+        border-top: 2px solid rgba(var(--accent-rgb), 0.3); 
+    }
+    #typing-input-field:focus { 
+        border-color: var(--input-focus-border); 
+        box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.35), var(--shadow-inset); /* 포커스 시 그림자 강화 */
+        background-color: #4a4643; /* 포커스 시 배경색 약간 더 밝게 */
+    }
+
+    #upcoming-lines-area { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: 6px; }
+    #upcoming-lines-area .typing-line {
+        transition: opacity 0.4s ease, font-size 0.3s ease, color 0.3s ease; 
+        color: var(--text-secondary); 
+    }
+    #upcoming-lines-area .typing-line.upcoming-1 { opacity: 0.8; font-size: calc(var(--font-size-typing) * 0.98); }
+    #upcoming-lines-area .typing-line.upcoming-2 { opacity: 0.65; font-size: calc(var(--font-size-typing) * 0.96); }
+    #upcoming-lines-area .typing-line.upcoming-3 { opacity: 0.5; font-size: calc(var(--font-size-typing) * 0.94); }
+    #upcoming-lines-area .typing-line.upcoming-4 { opacity: 0.35; font-size: calc(var(--font-size-typing) * 0.92); }
+    #upcoming-lines-area .typing-line.upcoming-5 { opacity: 0.25; font-size: calc(var(--font-size-typing) * 0.90); }
+    #upcoming-lines-area .typing-line.upcoming-6 { opacity: 0.15; font-size: calc(var(--font-size-typing) * 0.88); }
+
+
+    .highlight { 
+        font-weight: inherit !important; 
+        color: var(--highlight-error) !important; 
+        background-color: var(--highlight-error-bg); 
+        border-radius: 3px; padding: 1px 0; margin: -1px 0;
+        box-shadow: 0 0 5px rgba(var(--highlight-error), 0.3); 
+    }
+    #result { padding: 12px 20px; text-align: center; color: var(--accent-primary); font-size: 1.05em; min-height: 1.4em; font-weight: 500;}
+    .footer { text-align: center; padding: 20px 15px; color: var(--text-secondary); font-size: 0.88em; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.03); }
+    .footer a { color: var(--accent-secondary); text-decoration: none; font-weight: 400; }
+    .footer a:hover { color: var(--accent-primary); text-decoration: underline; }
+
+    @media (max-width: 768px) {
+        .hero-section { height: 160px; padding: 20px 15px; }
+        .hero-subtitle { font-size: 1.4em; }
+        .controls-and-stats-wrapper { padding: 15px; }
+        .settings-container { gap: 15px; margin-bottom: 15px; }
+        
+        .main-controls { flex-direction: column; }
+        .practice-mode-controls { width: 100%; order: 1; }
+        .practice-mode-controls button { min-width: 0; flex-basis: calc(50% - 5px); } 
+        
+        .feature-toggles { width: 100%; justify-content: space-around; order: 2; } 
+        .sound-settings { width: 100%; justify-content: center; order: 3; } 
+
+
+        #stats { grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.9em; } 
+        .typing-area-container { 
+            font-size: var(--font-size-typing-mobile); 
+            min-height: 280px; padding: 10px 15px 20px; 
+        }
+        #line-display-area { min-height: calc((var(--font-size-typing-mobile) * var(--line-height-typing) + 8px) * 2); }
+        .typing-line, #typing-input-field {
+            font-size: var(--font-size-typing-mobile);
+            letter-spacing: var(--typing-letter-spacing-mobile); 
+            word-spacing: var(--typing-word-spacing-mobile);    
+            padding: 6px 10px;
+        }
+        .typing-line.current-to-type {
+            transform: scale(1.0); 
+        }
+        .typing-line { min-height: calc(var(--font-size-typing-mobile) * var(--line-height-typing) + 12px); }
+        #typing-input-field { min-height: calc(var(--font-size-typing-mobile) * var(--line-height-typing) + 12px + 2px); }
+        #result { font-size: 1em; }
+    }
+     @media (max-width: 480px) { 
+        .practice-mode-controls button { flex-basis: 100%; } 
+        .feature-toggles button { min-width: 0; flex-basis: calc(50% - 6px); font-size: 0.8em; padding: 8px 12px; }
+        #soundPackSelect { padding: 8px 10px; min-width: 140px; font-size: 0.85em;}
+        .sound-select-label { font-size: 0.85em; }
+     }
+  </style>
+</head>
+<body>
+  <a href="https://www.youtube.com/@KeyTherapy" target="_blank" class="banner"> <div class="banner-content"> <div class="channel-name">Key Therapy</div> <div class="channel-description">🎧 깊은 수면과 집중을 위한 키보드 타건 ASMR</div> </div> </a>
+  <div class="main-content-wrapper"> <div class="main-content"> <div class="hero-section"> <p class="hero-subtitle">마음을 다스리는 타자 연습</p> </div> 
+  <div class="controls-and-stats-wrapper"> 
+    <div class="settings-container">
+        <div class="main-controls"> 
+            <div class="practice-mode-controls"> 
+                <button onclick="startPractice('kor', true)"><!-- <i class="fas fa-language"></i> -->한글 단문</button> 
+                <button onclick="startPractice('korLong', true)"><!-- <i class="fas fa-align-left"></i> -->한글 장문</button> 
+                <button onclick="startPractice('eng', true)"><!-- <i class="fas fa-font"></i> -->영어 단문</button> 
+                <button onclick="startPractice('engLong', true)"><!-- <i class="fas fa-stream"></i> -->영어 장문</button> 
+            </div> 
+            <div class="feature-toggles"> 
+                <button id="toggleSoundBtn" class="active"><i class="fas fa-volume-up"></i> 타건음 ON</button> 
+                <button id="toggleHighlightBtn" class="active"><i class="fas fa-highlighter"></i> 오타체크 ON</button> 
+            </div>
+            <div class="sound-settings">
+                <label for="soundPackSelect" class="sound-select-label">타건음 선택:</label>
+                <select id="soundPackSelect">
+                    <option value="pebbles">조약돌</option>
+                    <option value="crunchy">서걱서걱</option>
+                    <option value="thocky">도각도각</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div id="stats"> 
+        <span><span class="label">속도:</span> <span id="speedStat" class="value">0 타/분</span></span> 
+        <span><span class="label">정확도:</span> <span id="accuracyStat" class="value">0%</span></span> 
+        <span><span class="label">평균:</span> <span id="avgSpeedStat" class="value">0 타/분</span></span> 
+        <span><span class="label">최고:</span> <span id="maxSpeedStat" class="value">0 타/분</span></span> 
+    </div> 
+</div> 
+<div class="typing-area-container"> <div id="line-display-area"> </div> <div id="typing-input-field-container"> <input type="text" id="typing-input-field" autocorrect="off" autocapitalize="off" spellcheck="false" autocomplete="off" inputmode="text" aria-label="타자 입력창"> </div> <div id="upcoming-lines-area"> </div> </div> <div id="result"></div> </div> </div>
+  <div class="footer"> <p>© 2024 Key Therapy. All rights reserved. <br> Designed for focused typing practice and relaxation.</p> </div>
+
+<script>
+// === 전역 변수 및 설정 ===
+let currentMode = '';
+let linesToPractice = [];
+let currentDisplayLineIndex = 0;
+
+let startTime = null;
+let currentLineStartTime = null;
+let currentArticleCorrectChars = 0;
+let lastArticleSpeed = 0;
+
+let sessionTotalValidChars = 0;
+let sessionTotalCorrectChars = 0;
+let sessionTotalMistypedChars = 0;
+let overallAvgSpeedLog = [];
+let overallMaxSpeed = 0;
+let sessionResetInProgress = false; 
+
+const KOR_SPEED_FACTOR = 2.1;
+let soundEnabled = true; 
+let highlightEnabled = true;
+
+let soundPackSelectEl;
+let currentSoundPack = 'pebbles';
+const soundFiles = {
+    pebbles: Array.from({length: 7}, (_, i) => `soundFiles/pebbles/pebble${i + 1}.wav`),
+    crunchy: Array.from({length: 11}, (_, i) => `soundFiles/crunchy/crunchy${i + 1}.wav`),
+    thocky: Array.from({length: 10}, (_, i) => `soundFiles/thocky/thocky${i + 1}.wav`)
+};
+let audioPool = {};
+const MAX_AUDIO_OBJECTS = 8; 
+let audioPointer = {}; 
+
+let toggleSoundBtn, toggleHighlightBtn, lineDisplayArea, typingInputField, resultEl, upcomingLinesArea;
+
+function getRandom(arr) {
+  if (!arr || arr.length === 0) return null;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// --- 예문 풀 (단문 퀄리티 향상 및 다양화, 특수문자 정제) ---
+const sentencePool = {
+  kor: [
+    "따뜻한 햇살이 창가에 가득 내린다.", "작은 행복이 모여 큰 기쁨이 된다.", "오늘 하루도 수고했어요 당신 최고.",
+    "좋아하는 노래를 들으며 힐링해요.", "푸른 하늘을 보며 마음껏 숨 쉬세요.", "예쁜 꽃 한 송이가 미소를 선물해요.",
+    "가끔은 모든 걸 잊고 푹 쉬어요.", "좋은 친구는 삶의 큰 보물 같아요.", "새로운 시작은 언제나 설레는 법이죠.",
+    "오늘 저녁은 맛있는 음식을 드세요.", "고요한 밤 별들이 속삭이는 소리.", "작은 친절이 세상을 따뜻하게 해요.",
+    "주말엔 늦잠을 자며 여유를 즐겨요.", "새로운 길을 걷는 건 멋진 도전이야.", "마음속 작은 빛을 따라 나아가세요.",
+    "오늘 하루 감사한 일을 떠올려봐요.", "사랑하는 사람에게 마음을 전하세요.", "힘든 날엔 잠시 하늘을 올려다봐요.",
+    "달콤한 디저트는 기분 전환에 최고죠.", "아침 공기가 상쾌하게 느껴지네요.",
+    "밤하늘의 별들은 저마다의 이야기를 간직하고 있다.", "바람결에 실려 온 꽃 향기가 마음을 간지럽힌다.",
+    "익숙한 골목길에서 문득 새로운 풍경을 발견한다.", "가을비 내리는 날엔 따뜻한 차 한 잔이 위로가 된다.",
+    "오래된 책갈피에서 잊고 지냈던 추억을 만났다.", "마음의 창을 열면 세상은 더 아름답게 보인다.",
+    "작은 연못에 비친 달 그림자가 고요히 흔들린다.", "새벽녘 풀잎에 맺힌 이슬처럼 영롱한 순간들.",
+    "구름 한 점 없는 하늘은 끝없는 가능성을 닮았다.", "모든 끝은 새로운 시작을 의미하기도 한다.",
+    "삶이라는 여행길에서 가장 소중한 것은 경험이다.", "마음이 가는 대로 발길이 이끄는 대로.",
+    "한 줄기 빛이 어둠을 가르듯 희망은 절망 속에서 피어난다.", "소리 없이 내리는 눈처럼 조용한 위로가 필요한 날.",
+    "따뜻한 눈빛 하나가 얼어붙은 마음을 녹인다.", "시간의 강물은 쉼 없이 흐르지만 추억은 그 자리에 남는다.",
+    "나뭇잎 사이로 부서지는 햇살이 보석처럼 반짝인다.", "낯선 곳에서의 우연한 만남은 예기치 못한 선물이다.",
+    "가끔은 길을 잃어야 새로운 길을 찾을 수 있다.", "진정한 아름다움은 꾸밈없는 자연스러움에 있다.",
+    "오늘 걷지 않으면 내일은 뛰어야 한다.", "실패는 성공의 어머니이다.", "백지장도 맞들면 낫다.",
+    "뜻이 있는 곳에 길이 있다.", "시작이 반이다.", "하늘은 스스로 돕는 자를 돕는다.",
+    "인내는 쓰지만 그 열매는 달다.", "구슬이 서 말이라도 꿰어야 보배다.", "세 살 버릇 여든까지 간다.",
+    "젊어서 고생은 사서도 한다.", "콩 심은 데 콩 나고 팥 심은 데 팥 난다.",
+    "키읔 티읕 피읖 히읗 거센소리 연습.", "쌍기역 쌍디귿 쌍비읍 쌍시옷 쌍지읒 된소리 연습.",
+    "맑고 높은 가을 하늘 아래 코스모스 한들한들.", "반짝이는 별빛 아래 소중한 추억을 그려본다.",
+    "찹쌀떡 맵쌀떡 온갖 떡들이 가득하다.", "깎아지른 절벽 아래 펼쳐진 푸른 바다.",
+    "닭볶음탕과 칡넝쿨은 최고의 궁합이다.", "읊조리는 시 한 수가 마음을 촉촉하게 적신다.",
+    "빠른 갈색 여우가 게으른 개 위로 뛰어넘는다.", 
+    "외계생명체 존재 여부는 아직 밝혀지지 않았다.",
+    "안녕하세요 만나서 반갑습니다 좋은 하루 되세요.",
+    "대한민국 서울특별시 아름다운 우리 강산 푸르게 푸르게."
+  ],
+  eng: [
+    "The weather is lovely today perfect for a nice walk.", "Start your morning fresh with a warm cup of coffee.",
+    "Listening to your favorite music always lifts the spirits.", "A small smile can brighten up someone's entire day.",
+    "Sometimes it's nice to just gaze at the clear blue sky.", "A good book can be a wonderful and loyal companion.",
+    "You did a great job today have a restful evening.", "Learning something new is always an exciting endeavor.",
+    "Enjoy a delicious dinner together with your family.", "How about sending a warm greeting to an old friend?",
+    "All that glitters is not gold.", "To be or not to be that is the question.", // 하이픈 제거
+    "The woods are lovely dark and deep.", "Hope is the thing with feathers that perches in the soul.",
+    "It was the best of times it was the worst of times.", "The only thing we have to fear is fear itself.",
+    "Stay hungry. Stay foolish.", "I have a dream that one day this nation will rise up.",
+    "Two roads diverged in a wood and I I took the one less traveled by.", // 하이픈 제거
+    "The journey of a thousand miles begins with a single step.", "Be the change that you wish to see in the world.",
+    "Not all those who wander are lost.", "That which does not kill us makes us stronger.",
+    "Ask not what your country can do for you ask what you can do for your country.", // 하이픈 제거
+    "The unexamined life is not worth living.", "Where there is love there is life.",
+    "The quick brown fox jumps over the lazy dog.", "Pack my box with five dozen liquor jugs.",
+    "Sphinx of black quartz judge my vow.", "Amazingly few discotheques provide jukeboxes.", // 마침표 제거, 문장부호 통일
+    "How vexingly quick daft zebras jump.", "Bright vixens jump dozy fowl quack.", // 세미콜론 제거
+    "Quick wafting zephyrs vex bold Jim.", "Crazy Fredrick bought many very exquisite opal jewels.",
+    "Hello how are you today?", "Thank you very much for your help.", "Pleased to meet you.",
+    "Practice makes perfect.", "Have a wonderful day ahead.", "Good morning sunshine!", // 느낌표 제거
+    "Keep up the good work.", "See you later alligator.", "What a beautiful surprise.", // 느낌표 제거
+    "Actions speak louder than words."
+  ],
+  korLong: [ // 장문 예문은 기존 유지 (특수문자 정제는 필요시 별도 진행)
+    "낡은 다락방 창문으로 스며드는 오후의 햇살은 먼지 쌓인 시간 위로 부드럽게 내려앉았다. 공기 중에는 오래된 책 냄새와 희미한 나무 향기가 뒤섞여, 마치 잊혀진 이야기들이 낮은 목소리로 속삭이는 듯했다. 빛줄기를 따라 부유하는 작은 먼지들은 금빛 가루처럼 반짝였고, 그 너머로 보이는 바깥세상은 한 폭의 수채화처럼 아련했다. 나는 삐걱이는 나무 계단을 밟고 올라와, 창가 낡은 흔들의자에 가만히 몸을 기댔다. 창밖으로 보이는 느티나무는 수백 년의 세월을 말없이 지켜온 듯, 바람이 불 때마다 잎사귀를 흔들며 낮은 노래를 불렀다. 그 풍경 속에서 나는 어린 시절의 기억들을 하나씩 꺼내보았다. 할머니가 들려주시던 옛날이야기, 친구들과 뛰놀던 골목길의 저녁노을, 처음으로 느껴본 설렘과 아픔. 모든 것이 희미한 필름처럼 머릿속을 스쳐 지나갔지만, 그 감정만큼은 여전히 선명하게 남아 가슴 한구석을 아릿하게 만들었다. 시간은 모든 것을 변화시키지만, 기억 속에 새겨진 온기는 영원히 변치 않는다는 것을, 나는 그 순간 깨달았다. 어쩌면 우리는 모두 마음속에 자신만의 작은 다락방을 가지고 살아가는지도 모른다. 힘들고 지칠 때마다 찾아가 위로받을 수 있는, 소중한 추억들이 잠들어 있는 비밀스러운 공간을.",
+    "깊은 밤, 창밖으로 무수한 별들이 보석처럼 쏟아질 듯 반짝였다. 나는 따뜻한 차 한 잔을 들고 창가에 서서, 끝없이 펼쳐진 밤하늘의 신비를 가만히 응시했다. 어둠이 짙을수록 별빛은 더욱 선명해졌고, 그 고요한 빛줄기는 내 마음속 깊은 곳까지 스며드는 듯했다. 저 멀리 이름 모를 별 하나가 유난히 밝게 빛나고 있었다. 마치 길 잃은 나그네에게 방향을 알려주는 등대처럼, 혹은 간절한 소망을 담아 하늘로 띄워 보낸 작은 등불처럼. 나는 그 별을 보며 어린 시절 순수했던 꿈들을 떠올렸다. 세상을 탐험하는 용감한 모험가, 사람들에게 감동을 주는 예술가, 밤하늘의 비밀을 푸는 천문학자. 현실의 벽에 부딪혀 하나둘씩 접어두었던 그 꿈들이, 별빛 아래에서 다시금 희미하게 살아나는 것을 느꼈다. 어쩌면 꿈이란, 완전히 사라지는 것이 아니라 잠시 우리 마음속 밤하늘에 숨어 반짝일 기회를 기다리는 별과 같은 것일지도 모른다. 중요한 것은 그 별빛을 잊지 않고, 언젠가 다시 그 빛을 따라 나아갈 용기를 내는 것이리라. 나는 마지막 한 모금의 차를 마시며, 내 마음속 별들을 향해 조용히 다짐했다. 아직 끝나지 않은 나의 이야기를 계속 써 내려가겠다고.",
+    "이른 새벽, 안개가 자욱한 호숫가를 홀로 걸었다. 물안개는 마치 살아있는 생명체처럼 부드럽게 수면 위를 감돌았고, 멀리 보이는 산자락은 희미한 먹빛 그림자처럼 느껴졌다. 세상의 모든 소음이 잠든 듯, 오직 내 발걸음 소리와 이따금 들려오는 물새 소리만이 적막을 깨뜨렸다. 차가운 새벽 공기가 코끝을 스치자 정신이 맑아지는 기분이었다. 나는 호숫가 작은 벤치에 앉아, 서서히 밝아오는 동쪽 하늘을 바라보았다. 안개 너머로 붉은 기운이 조금씩 번지기 시작하더니, 이윽고 장엄한 해가 그 모습을 드러냈다. 떠오르는 태양은 밤새 호수를 뒤덮었던 안개를 부드럽게 걷어내었고, 그 아래 숨겨져 있던 맑고 투명한 호수의 민낯이 햇살 아래 눈부시게 반짝였다. 그 순간, 나는 마치 새로운 세상이 열리는 듯한 경이로움을 느꼈다. 어둠과 혼돈 속에서도 희망은 언제나 그렇게 떠오르는 것이라고, 자연은 말없이 가르쳐주는 듯했다. 삶이 때로 짙은 안개 속에 갇힌 것처럼 느껴질 때도 있겠지만, 그 안개 너머에는 분명 찬란한 아침이 기다리고 있음을, 그리고 그 아침을 맞이하기 위해서는 묵묵히 자신의 길을 걸어가야 함을, 나는 새벽 호숫가에서 깨달았다. 해가 완전히 떠오르자, 호수는 금빛으로 물들었고, 나는 새로운 하루를 시작할 용기를 얻어 다시 발걸음을 옮겼다.",
+    "오래된 골목길 모퉁이를 돌자, 담벼락에 기대어 자라는 작은 담쟁이덩굴이 눈에 들어왔다. 거친 시멘트 벽을 가느다란 줄기로 힘겹게 부여잡고, 초록빛 잎사귀들을 햇살을 향해 힘껏 펼치고 있는 모습이었다. 그 작은 생명체의 강인함 앞에서 나는 잠시 발걸음을 멈추었다. 척박한 환경 속에서도 포기하지 않고, 자신의 자리를 묵묵히 지키며 생명의 푸르름을 피워내는 그 모습이 경이롭게 느껴졌다. 어쩌면 우리의 삶도 저 담쟁이덩굴과 크게 다르지 않을지도 모른다. 때로는 거칠고 힘겨운 현실이라는 벽에 부딪히고, 예상치 못한 시련의 바람에 흔들리기도 하지만, 그럼에도 불구하고 우리는 어떻게든 살아남아 자신의 이야기를 써 내려간다. 마음속 깊은 곳에 간직한 작은 희망의 씨앗을 붙들고, 한 뼘이라도 더 햇살을 향해 나아가려 애쓰면서 말이다. 담쟁이덩굴은 화려한 꽃을 피우거나 달콤한 열매를 맺지는 않지만, 그 자체로 충분히 아름답고 의미 있는 존재였다. 그것은 우리에게 말없이 가르쳐주고 있었다. 삶의 가치는 결과에만 있는 것이 아니라, 그 과정을 묵묵히 견뎌내고 자신의 자리에서 최선을 다하는 그 모든 순간에 깃들어 있다는 것을. 나는 작은 담쟁이덩굴에게서 큰 위로와 용기를 얻고, 다시금 내 삶의 담벼락을 향해 한 걸음 내디뎠다.",
+    "늦은 오후, 텅 빈 기차역 플랫폼에 홀로 앉아 곧 떠나갈 기차를 기다렸다. 하늘에는 회색빛 구름이 낮게 드리워져 있었고, 바람은 스산하게 옷깃을 파고들었다. 어디론가 떠나고 싶은 마음과 어딘가에 머무르고 싶은 마음이 교차하는, 그런 묘한 감상에 젖어들었다. 잠시 후, 저 멀리서 기차가 육중한 소리를 내며 플랫폼으로 서서히 들어왔다. 낡았지만 정감 가는 기차의 창문 너머로, 각자의 사연을 안고 떠나는 사람들의 모습이 어렴풋이 보였다. 설렘과 아쉬움, 기대와 불안이 뒤섞인 그들의 표정 속에서 나는 내 삶의 여러 여정들을 떠올렸다. 새로운 시작을 향해 떠났던 길, 아쉬운 이별을 뒤로하고 돌아섰던 길, 목적지도 모른 채 그저 발길 닿는 대로 걸었던 길까지. 그 모든 길 위에서 나는 수많은 사람들을 만났고, 다양한 감정들을 경험했으며, 조금씩 성장해왔다. 기차가 멈춰 서고 문이 열리자, 나는 가방을 고쳐 메고 자리에서 일어섰다. 이번 여정의 끝에는 무엇이 기다리고 있을지 알 수 없지만, 그것 또한 내 삶의 한 페이지를 채워줄 소중한 경험이 될 것이라 믿었다. 기차는 다시 한번 육중한 기적 소리를 내며 천천히 움직이기 시작했고, 나는 창밖으로 멀어져 가는 익숙한 풍경들을 바라보며, 새로운 이야기가 시작될 미지의 공간을 향해 나아갔다.",
+    "작은 도서관 구석, 햇살이 비껴드는 창가 자리에 앉아 오래된 소설책을 펼쳤다. 종이에서는 세월의 흔적이 느껴지는 희미한 냄새가 풍겨왔고, 손때 묻은 페이지들은 수많은 독자들의 이야기를 품고 있는 듯했다. 나는 한 자 한 자 천천히 글자를 따라 읽어 내려가며, 작가가 만들어낸 세계 속으로 깊이 빠져들었다. 그곳에는 내가 미처 경험하지 못한 삶과 감정들이 있었고, 현실에서는 만날 수 없는 매력적인 인물들이 살아가고 있었다. 때로는 주인공의 기쁨에 함께 웃고, 때로는 그의 슬픔에 함께 눈물 흘리며, 나는 책 속의 이야기와 온전히 하나가 되었다. 책을 읽는다는 것은 어쩌면, 시간과 공간을 초월하여 다른 누군가의 삶을 잠시 빌려 살아보는 것과 같은 경험일지도 모른다. 그 경험을 통해 우리는 세상을 바라보는 새로운 시각을 얻고, 인간과 삶에 대한 깊은 이해에 다가서게 된다. 한 권의 책은 때로 백 명의 스승보다 더 큰 가르침을 주기도 하고, 그 어떤 위로보다 더 따뜻한 안식을 선물하기도 한다. 나는 마지막 책장을 덮으며, 마음속에 잔잔하게 퍼지는 깊은 여운을 느꼈다. 책 속에서 만난 이야기와 인물들은 한동안 내 곁을 떠나지 않고, 내 삶의 중요한 일부가 되어 함께할 것 같았다. 그것이 바로 책이 가진 위대한 힘이리라.",
+    "어스름이 내리는 저녁, 나는 강변을 따라 천천히 걷고 있었다. 강물은 해 질 녘의 붉은 노을을 온통 담아내며 고요히 흘러갔고, 강 건너편 도시의 불빛들은 하나둘씩 반짝이기 시작했다. 바람은 잔잔했고, 공기는 상쾌했다. 나는 강둑에 잠시 멈춰 서서, 아름다운 저녁 풍경을 가만히 바라보았다. 매일 반복되는 일상 속에서 우리는 종종 이런 순간의 아름다움을 잊고 살아간다. 하지만 잠시 멈춰 서서 주변을 둘러보면, 세상은 우리가 생각하는 것보다 훨씬 더 다채롭고 경이로운 모습으로 가득 차 있다는 것을 깨닫게 된다. 저녁노을이 만들어내는 황홀한 빛의 향연, 밤하늘을 수놓는 무수한 별들의 반짝임, 이름 모를 풀꽃의 소박한 아름다움까지. 이런 작은 것들 속에 삶의 진정한 기쁨과 위안이 숨겨져 있는지도 모른다. 중요한 것은 그것을 발견할 수 있는 열린 마음과 세상을 바라보는 따뜻한 시선이다. 어둠이 완전히 내려앉고 도시의 불빛이 더욱 선명해지자, 나는 다시 발걸음을 옮겼다. 짧은 산책이었지만, 내 마음은 어느새 평온함과 감사함으로 가득 차 있었다. 일상의 소중함을 다시 한번 깨닫게 해준 아름다운 저녁이었다.",
+    "오랜만에 찾은 고향 집 마당에는 할머니가 심어두신 봉숭아 꽃이 곱게 피어 있었다. 어릴 적, 할머니 손을 잡고 봉숭아 꽃잎을 빻아 손톱에 물들이던 기억이 아련하게 떠올랐다. 빨갛게 물든 작은 손톱을 보며 세상을 다 가진 듯 기뻐했던 그 시절. 그때는 모든 것이 단순했고, 작은 것 하나에도 큰 행복을 느낄 수 있었다. 세월이 흘러 어른이 된 지금, 나는 많은 것을 가졌지만 그때만큼 순수하게 행복하다고 말할 수 있을까. 문득 그런 생각이 들었다. 어쩌면 우리는 성장하면서 세상을 너무 복잡하게 바라보고, 진정한 행복의 의미를 잊어버리는 것은 아닐까. 봉숭아 꽃은 예전과 다름없이 여전히 그 자리에서 소박한 아름다움을 뽐내고 있었다. 그것은 나에게 말없이 가르쳐주는 듯했다. 행복은 멀리 있는 것이 아니라, 바로 우리 마음속에, 그리고 우리가 지나쳐온 소중한 추억들 속에 있다는 것을. 나는 마당 한쪽에 쪼그리고 앉아, 바람에 흔들리는 봉숭아 꽃잎을 한참 동안 바라보았다. 그리고 어린 시절의 나에게, 그리고 지금의 나에게 조용히 속삭였다. 괜찮아, 지금 이 순간을 소중히 여기면 돼. 그것이 바로 행복이야.",
+    "비 내리는 오후, 나는 창가에 앉아 하염없이 창밖을 바라보았다. 굵은 빗방울들이 유리창을 세차게 두드렸고, 세상은 온통 잿빛 물감으로 덧칠한 듯 흐릿했다. 이런 날이면 괜스레 마음이 차분해지고, 평소에는 떠오르지 않던 생각들이 꼬리에 꼬리를 물고 이어지곤 한다. 빗소리는 마치 세상의 모든 소음을 잠재우고, 오직 내면의 목소리에만 귀 기울이도록 만드는 마법과 같았다. 나는 잊고 지냈던 사람들을 떠올리고, 지나간 시간들을 반추하며, 미래의 불확실함에 대해 조용히 고민했다. 어쩌면 비는, 우리에게 잠시 멈춰 서서 자신을 돌아볼 시간을 선물하는 것일지도 모른다. 빠르게 변화하는 세상 속에서 미처 돌보지 못했던 마음의 상처들을 어루만지고, 잊고 지냈던 소중한 가치들을 다시 한번 되새길 수 있도록 말이다. 빗줄기가 조금씩 가늘어지더니, 이윽고 먹구름 사이로 희미한 햇살 한 줄기가 비쳐들었다. 비 온 뒤의 세상은 이전보다 더욱 깨끗하고 싱그러워 보였다. 내 마음도 한바탕 비를 맞고 난 뒤처럼, 한결 가볍고 맑아진 것을 느꼈다. 비는 모든 것을 쓸어내리고, 또다시 새로운 시작을 준비하게 만드는 자연의 경이로운 순환이었다.",
+    "늦가을, 낙엽이 수북이 쌓인 오솔길을 혼자 걸었다. 발걸음을 옮길 때마다 바스락거리는 낙엽 소리가 정겹게 들려왔고, 코끝에는 쌉싸름하면서도 향긋한 가을 냄새가 스며들었다. 하늘은 더없이 높고 푸르렀으며, 나뭇가지 사이로 부서지는 햇살은 따스했다. 나는 천천히 걸으며, 화려했던 여름을 보내고 이제 겨울을 맞이할 준비를 하는 자연의 모습을 가만히 관찰했다. 울긋불긋 아름다운 색으로 물들었던 단풍잎들은 이제 마지막 빛을 발하며 땅으로 떨어져 내렸고, 앙상한 가지만 남은 나무들은 다가올 추위를 묵묵히 견뎌낼 준비를 하는 듯했다. 그 모습에서 나는 삶의 순환과 자연의 섭리를 느꼈다. 모든 것에는 시작과 끝이 있고, 성장의 시간이 있으면 쇠퇴의 시간도 있으며, 화려한 순간이 있으면 고요한 침묵의 순간도 있다는 것을. 그리고 그 모든 과정은 그 자체로 의미 있고 아름답다는 것을. 낙엽은 끝이 아니라 새로운 시작을 위한 준비였다. 땅으로 돌아가 거름이 되어, 다음 해 봄에 새로운 생명이 움틀 수 있도록 자신을 내어주는 것이다. 나는 깊어가는 가을의 정취 속에서, 삶의 유한함과 그 속에서 우리가 가져야 할 겸손함, 그리고 모든 것을 받아들이고 순응하는 지혜에 대해 생각했다. 낙엽 밟는 소리가 배경음악처럼 깔리는 그 길 위에서, 나는 자연이 주는 깊은 위안과 가르침을 얻었다.",
+    "바람이 세차게 불던 어느 겨울날, 나는 바닷가 작은 등대를 찾아갔다. 하얀 포말을 일으키며 거칠게 밀려오는 파도와 매서운 바닷바람 속에서도 등대는 조금의 흔들림 없이 굳건히 서 있었다. 그 모습은 마치 세상의 온갖 풍파를 견뎌내며 자신의 자리를 지키는 고독한 수호자 같았다. 어둠이 내리면 등대는 어김없이 밝은 빛을 발하여, 밤바다를 항해하는 배들에게 길을 안내할 것이다. 그 빛은 단순한 불빛이 아니라, 험난한 바다 위에서 길을 잃은 이들에게 희망과 안도를 주는 생명의 빛이리라. 나는 문득 우리 삶에도 저런 등대와 같은 존재가 필요하다는 생각을 했다. 때로는 거친 파도처럼 힘겨운 시련이 몰아치고, 짙은 안개처럼 방향을 잃고 방황할 때, 우리를 올바른 길로 인도해주고 마음의 등불이 되어줄 그런 존재 말이다. 그것은 때로는 현명한 조언을 해주는 스승일 수도 있고, 변함없는 사랑을 주는 가족일 수도 있으며, 혹은 마음속 깊이 간직한 신념이나 가치관일 수도 있다. 중요한 것은 자신만의 등대를 가지고, 그 빛을 따라 꿋꿋이 나아가는 것이다. 세찬 바람 속에서도 묵묵히 빛을 밝히는 등대를 바라보며, 나는 내 삶의 등대는 무엇인지 다시 한번 생각해보았다.",
+    "어린 시절, 동네 어귀에는 커다란 플라타너스 나무가 한 그루 서 있었다. 여름이면 무성한 잎으로 시원한 그늘을 만들어주었고, 가을이면 황금빛 낙엽을 아름답게 흩날렸으며, 겨울이면 앙상한 가지에 눈꽃을 피워 장관을 이루었다. 그 나무 아래는 언제나 아이들의 웃음소리가 끊이지 않는 놀이터였고, 동네 어른들의 정겨운 이야기가 오가는 쉼터였다. 나는 그 나무 아래에서 친구들과 술래잡기를 하고, 딱지치기를 하고, 때로는 가만히 앉아 하늘을 바라보며 엉뚱한 상상에 빠지기도 했다. 플라타너스 나무는 나의 유년 시절 모든 기억을 말없이 지켜봐 준 든든한 친구이자 보호자였다. 세월이 흘러 나는 어른이 되었고, 그 동네를 떠나온 지도 오래되었다. 하지만 문득 그 플라타너스 나무가 그리워질 때가 있다. 모든 것이 빠르게 변해가는 이 세상 속에서, 변함없이 그 자리를 지키고 있을 것 같은 그 나무의 존재가 주는 안정감 때문일까. 어쩌면 그 나무는 나에게 단순한 나무 이상의 의미였는지도 모른다. 그것은 돌아갈 수 없는 아름다운 시절에 대한 그리움이자, 순수했던 마음을 다시 찾고 싶은 작은 소망의 상징이었을 것이다. 언젠가 다시 그 나무 아래 서면, 나는 잠시나마 모든 것을 잊고 어린 시절의 나로 돌아갈 수 있을 것만 같다.",
+    "나는 가끔 오래된 엘피판을 꺼내 턴테이블 위에 올려놓는다. 지지직거리는 작은 소음과 함께 바늘이 레코드의 검은 골을 따라 천천히 움직이기 시작하면, 곧이어 따뜻하고 풍부한 아날로그 사운드가 공간을 가득 채운다. 디지털 음원에서는 느낄 수 없는 그 특유의 깊이와 온기는 마치 시간 여행을 하는 듯한 묘한 감흥을 불러일으킨다. 엘피판 한 장에는 단순히 음악만 담겨 있는 것이 아니다. 그 음악이 유행했던 시대의 공기, 그 음악을 함께 들었던 사람들과의 추억, 그리고 그 음악을 들으며 느꼈던 나의 젊은 날의 감정들이 고스란히 담겨 있다. 그래서 엘피를 듣는 것은 단순한 음악 감상을 넘어, 지나간 시간과의 조우이자 잊혀진 기억과의 재회이기도 하다. 때로는 빛바랜 앨범 재킷을 어루만지며 그 시절을 추억하고, 때로는 가사를 음미하며 그 의미를 되새기기도 한다. 세상은 점점 더 빠르고 편리한 것을 추구하지만, 나는 가끔 이렇게 느리고 불편한 아날로그의 세계에 머무르는 것을 좋아한다. 그 속에는 디지털이 결코 흉내 낼 수 없는 인간적인 따뜻함과 시간의 깊이가 존재하기 때문이다. 엘피판이 돌아가는 것을 가만히 바라보며, 나는 오늘도 잊혀진 시간 속으로 짧은 여행을 떠난다.", // LP판 -> 엘피판, LP -> 엘피로 수정
+    "작은 시골 간이역, 해 질 녘 플랫폼에는 기차를 기다리는 사람들보다 먼저 와 자리를 잡은 저녁노을이 더 짙었다. 나는 낡은 나무 의자에 앉아, 서쪽 하늘을 붉게 물들이며 서서히 스러져가는 노을의 마지막 장관을 바라보았다. 세상의 모든 색을 다 끌어모은 듯한 그 찬란한 빛의 향연 앞에서, 인간의 언어는 한없이 초라하게 느껴졌다. 노을은 낮과 밤의 경계에서 피어나는 짧지만 강렬한 예술과 같았다. 뜨거웠던 하루의 열정을 모두 불태우고, 이제 고요한 휴식의 시간으로 접어들기 위한 마지막 인사처럼. 나는 그 아름다움에 매료되어 한동안 아무 말도 할 수 없었다. 잠시 후, 노을이 완전히 자취를 감추고 어둠이 내려앉자, 하늘에는 하나둘씩 별들이 모습을 드러내기 시작했다. 그것은 마치 화려한 무대가 끝나고 다음 막이 오르기 전의 고요한 설렘과도 같았다. 삶에도 저런 노을과 같은 순간들이 있을 것이다. 모든 것을 쏟아부은 뒤 맞이하는 찬란한 마무리, 그리고 새로운 시작을 예비하는 고요한 성찰의 시간. 우리는 그 순간들을 통해 지나온 길을 돌아보고, 앞으로 나아갈 힘을 얻는다. 나는 깊어가는 밤의 적막 속에서, 오늘 하루 나에게 주어진 시간과 경험들에 감사하며, 내일 또다시 떠오를 새로운 태양을 기다렸다.",
+    "나는 오래된 만년필로 일기를 쓰는 것을 좋아한다. 사각거리는 펜촉이 종이 위를 스치는 소리, 손끝으로 전해져 오는 잉크의 미세한 흐름, 그리고 한 자 한 자 정성스럽게 써 내려가는 글자들이 만들어내는 그 모든 과정이 나에게는 작은 의식과도 같다. 디지털 시대에 손으로 글을 쓴다는 것은 어쩌면 비효율적이고 번거로운 일일지도 모른다. 하지만 나는 그 느림과 불편함 속에서 오히려 더 깊은 사색과 진정한 자기표현의 즐거움을 발견한다. 컴퓨터 자판으로는 미처 담아낼 수 없는 생각의 결들과 감정의 미묘한 떨림들이, 만년필을 통해 종이 위에 고스란히 새겨지는 것을 느낀다. 일기장에는 그날 있었던 소소한 사건들뿐만 아니라, 마음속 깊은 곳에 숨겨두었던 생각들, 누구에게도 말하지 못했던 비밀들, 그리고 미래에 대한 막연한 기대와 불안까지 모든 것이 담긴다. 그것은 오롯이 나 자신과 마주하는 시간이며, 내 삶의 발자취를 기록하는 소중한 작업이다. 훗날 이 일기장을 다시 펼쳐보았을 때, 나는 지금 이 순간의 나를 만나고, 그 시절의 고민과 기쁨을 공유하며, 내가 얼마나 성장했는지를 돌아볼 수 있을 것이다. 만년필의 잉크가 마르듯 시간은 흘러가겠지만, 종이 위에 남겨진 나의 이야기는 영원히 그 자리에 남아 빛날 것이다.",
+    "어느 늦봄, 나는 이름 모를 작은 산사의 툇마루에 앉아 있었다. 산사는 깊은 산속에 고즈넉이 자리 잡아, 세상의 모든 번뇌와 소음으로부터 벗어난 듯 평화로웠다. 처마 끝에 매달린 풍경은 바람이 불 때마다 맑고 청아한 소리를 냈고, 그 소리는 내 마음속까지 잔잔하게 울려 퍼졌다. 마당에는 수령을 알 수 없는 오래된 매화나무 한 그루가 마지막 꽃잎을 떨구고 있었고, 그 아래에는 작은 새 한 마리가 날아와 지저귀고 있었다. 나는 눈을 감고 가만히 그 모든 소리와 풍경을 마음에 담았다. 자연의 소리는 그 어떤 음악보다 아름다웠고, 산사의 고요함은 그 어떤 명상보다 깊은 평화를 가져다주었다. 복잡했던 머릿속은 어느새 텅 비고, 무거웠던 마음은 한결 가벼워졌다. 우리는 종종 너무 많은 것을 보고 듣고 생각하며 살아간다. 그래서 정작 중요한 내면의 소리에는 귀 기울이지 못하고, 진정한 휴식의 의미를 잊어버리곤 한다. 하지만 이렇게 잠시 모든 것을 내려놓고 자연 속에 머무르다 보면, 비로소 우리가 얼마나 작은 존재인지, 그리고 우리가 진정으로 추구해야 할 가치는 무엇인지 깨닫게 된다. 풍경 소리가 다시 한번 맑게 울리자, 나는 깊은 숨을 내쉬며 자리에서 일어섰다. 짧은 시간이었지만, 산사가 준 깊은 평화와 깨달음은 오랫동안 내 마음속에 남아 있을 것 같았다.",
+    "나는 가끔 오래된 흑백사진을 들여다본다. 빛바랜 사진 속에는 지금은 만날 수 없는 사람들의 미소와 다시 돌아갈 수 없는 풍경들이 담겨 있다. 컬러사진이 현실을 있는 그대로 생생하게 재현한다면, 흑백사진은 현실 너머의 어떤 아련한 감성과 시간의 깊이를 느끼게 해주는 묘한 매력이 있다. 색이 사라진 세상은 오히려 더 많은 것을 상상하게 만들고, 인물의 표정과 배경의 분위기에 더욱 집중하게 만든다. 사진 속 인물들은 어떤 이야기를 간직하고 있을까, 그들은 어떤 꿈을 꾸고 어떤 사랑을 했을까. 나는 그런 상상을 하며 사진 속 시간으로 잠시 여행을 떠나곤 한다. 흑백사진은 단순한 기록이 아니라, 한 시대의 초상이자 누군가의 삶의 증거이다. 그 속에는 기쁨과 슬픔, 만남과 이별, 희망과 절망 등 인간이 겪을 수 있는 모든 감정들이 응축되어 있다. 그래서 흑백사진을 보고 있으면, 때로는 알 수 없는 그리움에 가슴이 아련해지기도 하고, 때로는 삶의 숙연함에 고개가 숙여지기도 한다. 사진 한 장이 건네는 수많은 이야기들. 나는 그 이야기들을 통해 과거와 현재를 잇고, 사라진 시간 속에서 변치 않는 가치를 발견한다. 흑백사진은 나에게 침묵으로 더 많은 것을 말해주는 오래된 친구와 같다.",
+    "한겨울 밤, 창밖에는 하얀 눈이 소리 없이 내리고 있었다. 나는 따뜻한 코코아 한 잔을 들고 창가에 서서, 밤새 세상을 하얗게 뒤덮을 것 같은 눈송이들을 하염없이 바라보았다. 가로등 불빛 아래 춤추듯 흩날리는 눈송이들은 마치 동화 속 한 장면처럼 비현실적으로 아름다웠다. 눈은 세상의 모든 더러움과 소음을 하얗게 덮어버리고, 고요하고 순수한 평화를 가져다주는 것 같았다. 나는 어린아이처럼 창문에 입김을 불어 작은 그림을 그리기도 하고, 손을 내밀어 차가운 눈송이를 직접 만져보기도 했다. 눈이 내리는 풍경은 언제나 나를 설레게 하고, 잊고 지냈던 동심을 일깨워준다. 어쩌면 눈은, 하늘이 우리에게 보내는 하얀 편지일지도 모른다. 잠시 모든 것을 잊고 순수한 기쁨을 느껴보라고, 그리고 새로운 시작을 준비하라고 속삭이는 아름다운 편지. 나는 코코아의 마지막 한 모금을 마시며, 내일 아침 눈부시게 펼쳐질 하얀 세상을 상상했다. 발자국 하나 없는 깨끗한 눈밭 위를 처음으로 걷는 기분은 얼마나 상쾌할까. 눈이 그치고 아침이 오면, 나는 가장 먼저 하얀 세상 속으로 달려 나가, 겨울이 주는 특별한 선물을 만끽할 것이다.",
+    "나는 가끔 오래된 시장을 찾는 것을 좋아한다. 대형마트의 깔끔함과 편리함도 좋지만, 시장에는 그곳에서만 느낄 수 있는 특별한 활기와 정겨움이 있다. 좌판 가득 싱싱한 채소와 과일을 진열해놓고 구성진 목소리로 손님을 부르는 상인들, 흥정을 하며 덤을 얻어가는 손님들의 웃음소리, 맛있는 냄새를 풍기며 발길을 유혹하는 길거리 음식들까지. 시장은 살아있는 사람들의 이야기로 가득한 공간이다. 나는 천천히 시장 골목을 걸으며, 다양한 물건들을 구경하고 사람들의 살아가는 모습을 관찰한다. 그 속에서 나는 잊고 지냈던 인간적인 따뜻함과 소박한 삶의 아름다움을 발견한다. 시장 상인들의 거친 손마디에는 정직한 땀의 가치가 담겨 있고, 그들의 구릿빛 얼굴에는 세월의 흔적과 삶의 지혜가 새겨져 있다. 그들은 단순히 물건을 파는 것이 아니라, 자신의 삶을 나누고 사람들과 정을 주고받는다. 그래서 시장에서의 거래는 단순한 매매를 넘어, 따뜻한 인간관계의 한 형태가 된다. 나는 시장 한구석 작은 분식집에 앉아 뜨끈한 어묵 국물을 마시며, 시장의 활기찬 풍경을 다시 한번 눈에 담았다. 이곳에는 여전히 변치 않는 사람 사는 냄새가 있었고, 그것이 나를 위로하고 새로운 힘을 주는 것 같았다."
+  ],
+  engLong: [ // 장문 예문은 기존 유지 (특수문자 정제는 필요시 별도 진행)
+    "The old attic window, streaked with the dust of ages, allowed the afternoon sun to filter in, casting a soft, golden glow over forgotten treasures. The air hung heavy with the scent of aged paper and faint wood, a nostalgic perfume that seemed to whisper tales of bygone eras. Tiny dust motes danced in the invading sunbeams, sparkling like miniature galaxies, and the world outside, viewed through the grimy pane, appeared as a distant, dreamlike watercolor. I had creaked my way up the wooden stairs, settling into the worn comfort of a rocking chair by the window. Below, an ancient oak stood sentinel, its leaves rustling a quiet, timeless song with every breeze, a silent observer of centuries unfolding. In that tranquil tableau, I found myself sifting through childhood memories: a grandmother's gentle voice narrating fairy tales, the vibrant hues of a sunset over a familiar alleyway, the first stirrings of a young heart's joy and sorrow. Time, in its relentless march, may alter all things, yet the warmth embedded in memory, I realized, remains an immutable sanctuary. Perhaps we all carry a small, secret attic within our souls, a place of solace filled with cherished recollections, a haven to retreat to when the world outside grows too loud.",
+    "Under the velvet cloak of a moonless night, countless stars were scattered across the celestial canvas like diamonds on black silk. With a warm cup of herbal tea cradled in my hands, I stood by the window, lost in the profound mystery of the infinite expanse. The deeper the darkness, the more intensely the starlight seemed to pierce through, its serene luminescence seeping into the very core of my being. One distant, unnamed star shone with a particular brilliance, a beacon for a lost traveler, perhaps, or a tiny lantern carrying a whispered wish to the heavens. Gazing at it, I was transported back to the untainted dreams of youth: a daring explorer charting unknown territories, an artist evoking profound emotions, an astronomer unraveling cosmic secrets. Those aspirations, once so vivid but gradually set aside against the unyielding walls of reality, flickered faintly back to life under the starlight. Maybe dreams never truly vanish; perhaps they merely slumber in the night sky of our hearts, awaiting the courage to be pursued once more. As I sipped the last of my tea, I made a quiet promise to those stars, and to myself: to keep writing the unfinished chapters of my own story, guided by their distant, unwavering light.",
+    "The scent of pine needles and damp earth filled the air as she walked deeper into the ancient woods. Sunlight struggled to penetrate the thick canopy, casting an ethereal, green-tinged light on the forest floor. Moss grew like velvet on the trunks and branches of old trees, and delicate ferns uncurled their fronds in the damp places where shadows lingered. She paused by a gnarled oak, its bark a tapestry of a thousand storms weathered and a thousand suns embraced. It seemed to whisper secrets of the ages, of creatures seen and unseen, of seasons turning in an endless, graceful dance. Here, away from the clamor of human invention, she felt a profound connection to something primal, something enduring. The forest was not merely a collection of trees, but a living, breathing entity, a sanctuary for the soul seeking quietude and a reminder of the intricate beauty of the natural world. Each fallen leaf crunched underfoot was a note in an ancient song, a testament to the cycle of life, death, and renewal, a humbling perspective in the grand theatre of existence.",
+    "In the heart of the bustling city, there existed a small, almost forgotten courtyard, a tiny oasis of green amidst the towering steel and glass. Ivy climbed the old brick walls, and a single, resilient cherry tree bloomed defiantly each spring, its blossoms a soft pink rebellion against the urban grey. Few knew of this place, tucked away behind a narrow alley, and those who did cherished it as a secret haven. Here, the city's roar subsided to a distant hum, and one could hear the cooing of pigeons or the rustle of leaves in the gentle breeze. It was a place for quiet contemplation, for stolen moments of peace in a world that seldom seemed to pause. Sometimes, an artist would sit on the worn stone bench, sketching the play of light and shadow, or a writer would fill a notebook with fleeting thoughts and observations, inspired by the unexpected tranquility found in such an urban pocket of serenity. This courtyard was a reminder that even in the most concrete of jungles, nature, and a moment's peace, could always find a way to endure.",
+    "The old lighthouse stood sentinel on the jagged cliff, its stoic form a familiar silhouette against the turbulent, grey sky. For generations, its beam had cut through the darkest storms, a steadfast promise of guidance to sailors navigating the treacherous coastal waters. The keeper, a man with a weather-beaten face and eyes that held the wisdom of the sea, lived a solitary life, his only companions the cry of gulls and the ceaseless rhythm of the waves. He knew every mood of the ocean, from its gentle summer caress to its furious winter rage. His days were marked by routine: tending the great lamp, polishing the massive Fresnel lens, and scanning the horizon for any sign of a vessel in distress. It was a life of responsibility, of quiet dedication to a purpose larger than himself. The lighthouse was more than just a structure of stone and light; it was a symbol of hope, a beacon of resilience against the raw, untamed power of nature, and a testament to the enduring human spirit that sought to illuminate the darkness and bring wanderers safely home, a silent guardian watching over the restless sea.",
+    "A gentle rain began to fall as evening descended, a soft, persistent patter against the windowpanes. Inside, the warmth of the hearth cast a flickering, amber glow across the room, a stark contrast to the cool, damp air outside. She sat curled in an old armchair, a half-read book resting in her lap, a pensive expression on her face. The rain was a soothing melody, a lullaby that seemed to wash away the day's accumulated anxieties and quiet the relentless chatter of the mind. It was on nights like these, cocooned in the quiet solitude of her home, that her thoughts roamed free, unburdened by the demands of the world. She pondered the intricate tapestry of human connection, the fragile threads that bound one soul to another, the unexpected joys and inevitable sorrows that colored the human experience. The rhythmic drumming of the rain provided a comforting backdrop to her reflections, a reminder of nature's constant, gentle presence, and the quiet beauty to be found in a simple, rainy evening spent in peaceful contemplation.",
+    "The desert stretched out before him, an endless expanse of undulating dunes under a sky so vast it seemed to swallow the horizon. The sun beat down relentlessly, and the air shimmered with an almost palpable heat. Yet, amidst this harsh and unforgiving landscape, there was a stark, austere beauty that captivated the soul. The way the wind sculpted the sand into ever-changing, sinuous patterns, the resilience of the sparse, thorny vegetation clinging stubbornly to life, the profound, almost deafening silence broken only by the whisper of the breeze – it all spoke of a raw, primal power and an ancient, unyielding spirit. He had come here seeking solitude, a place where the distractions and superficialities of the modern world would fade into insignificance, allowing him to confront the unadorned truths of his own existence. In the vast emptiness, he found not desolation, but a strange kind of freedom, a clarity that only such an elemental landscape could provide. The desert, in its starkness, mirrored the landscape of his own inner world, challenging and ultimately, offering a path to understanding."
+  ]
+};
+// --- END ---
+
+document.addEventListener('DOMContentLoaded', () => {
+  toggleSoundBtn = document.getElementById('toggleSoundBtn');
+  toggleHighlightBtn = document.getElementById('toggleHighlightBtn');
+  lineDisplayArea = document.getElementById('line-display-area');
+  typingInputField = document.getElementById('typing-input-field');
+  resultEl = document.getElementById('result');
+  upcomingLinesArea = document.getElementById('upcoming-lines-area');
+  soundPackSelectEl = document.getElementById('soundPackSelect');
+
+  if (![lineDisplayArea, typingInputField, toggleSoundBtn, toggleHighlightBtn, resultEl, upcomingLinesArea, soundPackSelectEl].every(el => el)) {
+      console.error("하나 이상의 필수 HTML 요소를 찾을 수 없습니다.");
+      if (resultEl) resultEl.textContent = "페이지 로딩 오류.";
+      return;
+  }
+  initializeAudioPool();
+  startPractice('kor', true); 
+  
+  if (soundEnabled) {
+      toggleSoundBtn.classList.add('active');
+      toggleSoundBtn.innerHTML = '<i class="fas fa-volume-up"></i> 타건음 ON';
+  } else {
+      toggleSoundBtn.classList.remove('active');
+      toggleSoundBtn.innerHTML = '<i class="fas fa-volume-mute"></i> 타건음 OFF';
+  }
+
+
+  typingInputField.addEventListener('input', handleInputEvent);
+  typingInputField.addEventListener('keydown', handleKeyDownEvent);
+  toggleSoundBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    toggleSoundBtn.classList.toggle('active', soundEnabled);
+    toggleSoundBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> 타건음 ON' : '<i class="fas fa-volume-mute"></i> 타건음 OFF';
+  });
+  toggleHighlightBtn.addEventListener('click', () => {
+    highlightEnabled = !highlightEnabled;
+    toggleHighlightBtn.classList.toggle('active', highlightEnabled);
+    toggleHighlightBtn.innerHTML = highlightEnabled ? '<i class="fas fa-highlighter"></i> 오타체크 ON' : '<i class="far fa-eye-slash"></i> 오타체크 OFF';
+    const currentLineEl = document.getElementById('current-typing-line');
+    if (currentLineEl && linesToPractice[currentDisplayLineIndex] !== undefined) {
+        handleHighlightUpdate(currentLineEl, typingInputField.value, linesToPractice[currentDisplayLineIndex]);
+    }
+  });
+  soundPackSelectEl.addEventListener('change', (event) => {
+    currentSoundPack = event.target.value;
+    if (audioPool[currentSoundPack] && (audioPointer[currentSoundPack] === undefined || audioPointer[currentSoundPack] === null) ) { 
+        audioPointer[currentSoundPack] = 0;
+    }
+  });
+});
+
+function initializeAudioPool() {
+    for (const packKey in soundFiles) {
+        if (soundFiles.hasOwnProperty(packKey)) {
+            audioPool[packKey] = [];
+            audioPointer[packKey] = 0; 
+            for (let i = 0; i < MAX_AUDIO_OBJECTS; i++) {
+                const audio = new Audio(); 
+                audio.preload = 'auto'; 
+                audioPool[packKey].push(audio);
+            }
+        }
+    }
+}
+
+function startPractice(mode, resetSessionStats = false) {
+    currentMode = mode;
+    document.querySelectorAll('.practice-mode-controls button').forEach(btn => {
+        btn.classList.remove('active');
+        const btnOnClick = btn.getAttribute('onclick');
+        if (btnOnClick && btnOnClick.includes(`startPractice('${mode}'`)) { 
+             btn.classList.add('active');
+        }
+    });
+    sessionResetInProgress = resetSessionStats;
+    if (resetSessionStats) {
+        overallMaxSpeed = 0; overallAvgSpeedLog = [];
+        sessionTotalValidChars = 0; sessionTotalCorrectChars = 0; sessionTotalMistypedChars = 0;
+        lastArticleSpeed = 0;
+    }
+    startTime = null; currentLineStartTime = null;
+    currentArticleCorrectChars = 0; currentDisplayLineIndex = 0;
+
+    const poolToUse = sentencePool[currentMode];
+    let textToPractice = getRandom(poolToUse);
+    if (!textToPractice && poolToUse && poolToUse.length > 0) textToPractice = poolToUse[0]; 
+    if (!textToPractice) textToPractice = "예문 로딩에 실패했습니다. 선택하신 모드에 예문이 없을 수 있습니다.";
+    
+    linesToPractice = splitTextIntoLines(textToPractice, currentMode, window.innerWidth);
+    
+    if (linesToPractice.length === 0) { 
+        linesToPractice.push(textToPractice.includes("실패") ? textToPractice : "예문 처리 중 오류가 발생했습니다.");
+    }
+    
+    renderTypingLayout();
+    typingInputField.value = ''; 
+    typingInputField.disabled = (linesToPractice.length === 1 && (linesToPractice[0].includes("실패") || linesToPractice[0].includes("오류")));
+    
+    if(resultEl) resultEl.textContent = typingInputField.disabled ? linesToPractice[0] : '타자를 시작하세요!';
+    updateStatsDisplay(true); 
+    setTimeout(() => { if(!typingInputField.disabled) typingInputField.focus(); }, 50); 
+    sessionResetInProgress = false;
+}
+
+function splitTextIntoLines(text, mode, screenWidth) {
+    let maxLength;
+    if (mode.includes('Long')) {
+        if (mode.includes('eng')) {
+            maxLength = 65; 
+        } else {
+            maxLength = 40; 
+        }
+    } else maxLength = 1000; 
+
+    const lines = [];
+    if (!text || typeof text !== 'string') return [""]; 
+    if (maxLength === 1000) { lines.push(text.trim()); }
+    else {
+        let currentLine = ""; const words = text.split(/(\s+)/);
+        for (const word of words) {
+            if (currentLine.length > 0 && currentLine.length + word.trim().length > maxLength && !/^\s+$/.test(word)) {
+                lines.push(currentLine.trim()); currentLine = "";
+            }
+            currentLine += word;
+        }
+        if (currentLine.trim().length > 0) lines.push(currentLine.trim());
+    }
+    return lines.length > 0 ? lines : [text.trim()]; 
+}
+
+const MAX_VISIBLE_UPCOMING_LINES_EXPANDED = 6;
+function renderTypingLayout() {
+    if (!lineDisplayArea || !upcomingLinesArea) return;
+    lineDisplayArea.innerHTML = ''; upcomingLinesArea.innerHTML = '';
+    const fragmentPassedCurrent = document.createDocumentFragment();
+    const fragmentUpcoming = document.createDocumentFragment();
+    const passedLineText = (currentDisplayLineIndex > 0 && linesToPractice[currentDisplayLineIndex - 1] !== undefined) ? linesToPractice[currentDisplayLineIndex - 1] : " ";
+    const passedEl = document.createElement('div'); passedEl.classList.add('typing-line', 'passed');
+    passedEl.innerHTML = passedLineText.replace(/ /g, ' ');
+    if (passedLineText === " ") passedEl.style.opacity = '0';
+    fragmentPassedCurrent.appendChild(passedEl);
+    
+    const currentLineText = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : ""; 
+    const currentEl = document.createElement('div'); currentEl.id = 'current-typing-line'; currentEl.classList.add('typing-line');
+
+    if (currentLineText !== null && currentLineText !== undefined) {
+        currentEl.classList.add('current-to-type');
+        currentEl.dataset.originalLine = currentLineText;
+        handleHighlightUpdate(currentEl, "", currentLineText);
+    } else { 
+        currentEl.innerHTML = ' '; currentEl.style.border = '1px solid transparent';
+    }
+    fragmentPassedCurrent.appendChild(currentEl);
+    lineDisplayArea.appendChild(fragmentPassedCurrent);
+
+    for (let i = 1; i <= MAX_VISIBLE_UPCOMING_LINES_EXPANDED; i++) {
+        const upcomingIndex = currentDisplayLineIndex + i;
+        const upcomingLineText = (upcomingIndex < linesToPractice.length && linesToPractice[upcomingIndex] !== undefined) ? linesToPractice[upcomingIndex] : " ";
+        const upcomingEl = document.createElement('div'); upcomingEl.classList.add('typing-line');
+        if (upcomingLineText !== " ") {
+            upcomingEl.classList.add('upcoming', `upcoming-${i}`); 
+            upcomingEl.innerHTML = upcomingLineText.replace(/ /g, ' ');
+        } else { 
+            upcomingEl.style.opacity = '0'; 
+            upcomingEl.innerHTML = ' '; 
+        }
+        fragmentUpcoming.appendChild(upcomingEl);
+    }
+    upcomingLinesArea.appendChild(fragmentUpcoming);
+}
+
+function handleInputEvent() {
+    const typedValue = typingInputField.value;
+    const currentLineEl = document.getElementById('current-typing-line');
+    if (!currentLineEl) return;
+    const originalLine = linesToPractice[currentDisplayLineIndex] || "";
+    
+    if (typedValue.length > 0) { 
+        if (!startTime) { 
+            startTime = Date.now();
+            lastArticleSpeed = 0; 
+            updateStatsDisplay(false); 
+        }
+        if (originalLine !== null && !currentLineStartTime) { 
+            currentLineStartTime = Date.now();
+        }
+        if (startTime) updateStatsDisplay(false);
+
+    } else if (startTime && typedValue.length === 0) { 
+        updateStatsDisplay(false); 
+    }
+    
+    handleHighlightUpdate(currentLineEl, typedValue, originalLine);
+    typingInputField.previousValue = typedValue; 
+}
+
+function handleHighlightUpdate(targetElement, typedValue, originalLine) {
+    if (!targetElement) return;
+    if (typeof originalLine !== 'string') { targetElement.innerHTML = ' '; return; }
+    let formattedOriginalHTML = '';
+    for (let i = 0; i < originalLine.length; i++) {
+        const char = originalLine[i] === ' ' ? ' ' : originalLine[i];
+        if (i < typedValue.length) {
+            if (highlightEnabled && typedValue[i] !== originalLine[i]) {
+                formattedOriginalHTML += `<span class="highlight">${char}</span>`;
+            } else formattedOriginalHTML += `<strong>${char}</strong>`;
+        } else formattedOriginalHTML += `<span class="untyped-char">${char}</span>`;
+    }
+    targetElement.innerHTML = formattedOriginalHTML;
+}
+
+function handleKeyDownEvent(e) {
+    const typedValue = typingInputField.value;
+    const originalLine = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : null;
+
+    if (e.key === 'Backspace') {
+        playTypingSound(); 
+    } else if (e.shiftKey) {
+        // Shift + 문자 (예: Shift + a = A, Shift + ㄱ = ㄲ) 입력 시에는 타건음 재생 안 함.
+        // 단독 Shift 키 입력은 e.key가 "Shift"이므로 아래 조건에서 걸러짐.
+    } else {
+        const isModifierKey = e.ctrlKey || e.altKey || e.metaKey;
+        const isNavigationKey = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(e.key);
+        const isFunctionKey = e.key.startsWith('F') && e.key.length > 1 && !isNaN(parseInt(e.key.substring(1)));
+        const isControlKey = ['CapsLock', 'Tab', 'Escape', 'Insert', 'Delete'].includes(e.key); // 단독 Shift는 여기 포함 안 함
+        
+        // Enter도 제외 (Enter는 processCurrentLineCompletion에서 처리)
+        if (e.key !== 'Enter' && !isModifierKey && !isNavigationKey && !isFunctionKey && !isControlKey ) {
+            playTypingSound();
+        }
+    }
+
+    // 통계 업데이트 로직은 Shift 키와 관계없이 '입력되는 문자'에 대해 작동하도록 수정
+    // 단, e.key.length === 1 (단일 문자) 이고, Ctrl, Alt, Meta가 눌리지 않았을 때만
+    if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) { 
+        if (!startTime) {
+             startTime = Date.now();
+             lastArticleSpeed = 0; 
+             updateStatsDisplay(false); 
+        }
+        if (originalLine !== null && !currentLineStartTime) {
+            currentLineStartTime = Date.now();
+            if (currentArticleCorrectChars === 0 && typedValue.length === 0) { 
+                 updateStatsDisplay(false); 
+            }
+        }
+    }
+    
+    typingInputField.previousValue = typedValue; 
+
+
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        if (originalLine !== null && originalLine !== undefined) {
+            processCurrentLineCompletion();
+        } else if (currentDisplayLineIndex >= linesToPractice.length) {
+            startPractice(currentMode, false);
+        }
+    } else if (e.key === ' ' && originalLine !== null && typedValue.length >= originalLine.length) {
+        e.preventDefault();
+        processCurrentLineCompletion();
+    }
+}
+
+function processCurrentLineCompletion() {
+    const typedValue = typingInputField.value;
+    if (currentDisplayLineIndex >= linesToPractice.length) {
+        startPractice(currentMode, false); return;
+    }
+    const originalLine = linesToPractice[currentDisplayLineIndex];
+    if (originalLine === null || originalLine === undefined) {
+        currentDisplayLineIndex++;
+        if (currentDisplayLineIndex < linesToPractice.length) renderTypingLayout();
+        else startPractice(currentMode, false);
+        return;
+    }
+
+    let lineCorrectChars = 0; let lineMistypedCharsOnThisLine = 0;
+    for (let i = 0; i < originalLine.length; i++) {
+        if (i < typedValue.length) {
+            if (typedValue[i] === originalLine[i]) lineCorrectChars++;
+            else lineMistypedCharsOnThisLine++;
+        } else lineMistypedCharsOnThisLine++;
+    }
+    if (typedValue.length > originalLine.length) {
+        lineMistypedCharsOnThisLine += (typedValue.length - originalLine.length);
+    }
+
+    currentArticleCorrectChars += lineCorrectChars;
+    sessionTotalCorrectChars += lineCorrectChars;
+    sessionTotalMistypedChars += lineMistypedCharsOnThisLine;
+    sessionTotalValidChars += originalLine.length; 
+
+    if (currentLineStartTime && lineCorrectChars >= 0) { 
+        const elapsedSecondsForThisLine = (Date.now() - currentLineStartTime) / 1000;
+        if (elapsedSecondsForThisLine > 0.001) { 
+            let lineSpeed = (lineCorrectChars > 0) ? Math.round((lineCorrectChars / elapsedSecondsForThisLine) * 60 * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1)) : 0;
+            if (lineSpeed >= 0 && lineSpeed < 5000) { 
+                overallAvgSpeedLog.push(lineSpeed);
+                if (lineSpeed > overallMaxSpeed) overallMaxSpeed = lineSpeed;
+            }
+        }
+    }
+    
+    currentDisplayLineIndex++;
+    typingInputField.value = '';
+    currentLineStartTime = null; 
+
+    if (currentDisplayLineIndex < linesToPractice.length) {
+        renderTypingLayout();
+        if(resultEl) resultEl.textContent = '계속하세요!';
+        updateStatsDisplay(false); 
+        setTimeout(() => typingInputField.focus(), 50);
+    } else { 
+        if (startTime) {
+            const elapsedMinutesTotalForArticle = (Date.now() - startTime) / 60000;
+            if (elapsedMinutesTotalForArticle > 0.0001 && currentArticleCorrectChars > 0) {
+                lastArticleSpeed = Math.round((currentArticleCorrectChars / elapsedMinutesTotalForArticle) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1));
+            } else { lastArticleSpeed = 0; }
+        }
+        updateStatsDisplay(false); 
+        if(resultEl) resultEl.textContent = '새로운 문제를 불러옵니다...';
+        setTimeout(() => startPractice(currentMode, false), 300); 
+    }
+}
+
+function updateStatsDisplay(isNewArticleOrSessionReset = false) {
+  const statsElements = {
+    speed: document.getElementById('speedStat'), accuracy: document.getElementById('accuracyStat'),
+    avg: document.getElementById('avgSpeedStat'), max: document.getElementById('maxSpeedStat')
+  };
+  if (!Object.values(statsElements).every(el => el)) return;
+
+  let currentSpeedToShow = 0;
+  if (isNewArticleOrSessionReset) {
+      currentSpeedToShow = sessionResetInProgress ? 0 : lastArticleSpeed;
+  } else if (startTime && currentArticleCorrectChars > 0) {
+      const elapsedMinutes = (Date.now() - startTime) / 60000;
+      if (elapsedMinutes > 0.0001) { 
+          currentSpeedToShow = Math.round((currentArticleCorrectChars / elapsedMinutes) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1));
+      }
+  } else if (startTime) { 
+      currentSpeedToShow = 0;
+  }
+  statsElements.speed.textContent = `${currentSpeedToShow} 타/분`;
+
+  let accuracy = 0;
+  if (sessionResetInProgress) accuracy = 0;
+  else if (sessionTotalValidChars > 0) accuracy = Math.round((sessionTotalCorrectChars / sessionTotalValidChars) * 100);
+  else if (isNewArticleOrSessionReset) accuracy = 0; 
+  statsElements.accuracy.textContent = `${accuracy}%`;
+
+  let finalOverallAverageSpeed = 0;
+  if (sessionResetInProgress) finalOverallAverageSpeed = 0;
+  else if (overallAvgSpeedLog.length > 0) finalOverallAverageSpeed = Math.round(overallAvgSpeedLog.reduce((a,b) => a+b,0) / overallAvgSpeedLog.length);
+  statsElements.avg.textContent = `${finalOverallAverageSpeed} 타/분`;
+
+  let currentOverallMaxSpeed = 0;
+  if(sessionResetInProgress) currentOverallMaxSpeed = 0;
+  else currentOverallMaxSpeed = overallMaxSpeed;
+  statsElements.max.textContent = `${currentOverallMaxSpeed} 타/분`;
+}
+
+function playTypingSound() {
+  if (!soundEnabled || !currentSoundPack || !soundFiles[currentSoundPack] || !audioPool[currentSoundPack]) return;
+  
+  const soundPackSounds = soundFiles[currentSoundPack];
+  const currentAudioPoolForPack = audioPool[currentSoundPack]; 
+
+  if (soundPackSounds.length === 0 || currentAudioPoolForPack.length === 0) return;
+
+  const soundSrc = getRandom(soundPackSounds);
+  if (!soundSrc) return;
+
+  let audioToPlay = currentAudioPoolForPack[audioPointer[currentSoundPack]];
+  audioPointer[currentSoundPack] = (audioPointer[currentSoundPack] + 1) % currentAudioPoolForPack.length;
+  
+  if (!audioToPlay.paused) {
+    audioToPlay.pause();
+  }
+  audioToPlay.currentTime = 0; 
+  audioToPlay.src = soundSrc; 
+  
+  const playPromise = audioToPlay.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(error => {
+      // console.warn("Audio play error:", error.name, error.message, "Src:", soundSrc, "Pack:", currentSoundPack);
+    });
+  }
+}
+</script>
+</body>
+</html>
