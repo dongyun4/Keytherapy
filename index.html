@@ -499,7 +499,7 @@
         flex-grow: 1;
         text-align: center;
         min-height: 330px;
-        display: flex; /* For centering content */
+        /* display: flex; */ /* Initially none, changed by JS */
         flex-direction: column; /* For centering content */
         justify-content: center; /* For centering content */
         align-items: center; /* For centering content */
@@ -857,14 +857,7 @@ function startPractice(mode, resetSessionStats = false) {
         typingInputField.placeholder = '';
     }
 
-    if (currentMode.includes('Long') && linesToPractice.length > 1) {
-        if(progressBarContainerEl) progressBarContainerEl.style.display = 'block';
-    } else {
-        if(progressBarContainerEl) progressBarContainerEl.style.display = 'none';
-    }
-    if (statsVisible && statsEl) statsEl.classList.remove('hidden');
-
-
+    // Update active button states
     document.querySelectorAll('.practice-mode-controls button').forEach(btn => {
         btn.classList.remove('active');
         const btnOnClick = btn.getAttribute('onclick');
@@ -873,6 +866,8 @@ function startPractice(mode, resetSessionStats = false) {
         }
     });
     if (gameModeBtnEl) gameModeBtnEl.classList.remove('active');
+
+    if (statsVisible && statsEl) statsEl.classList.remove('hidden');
 
 
     sessionResetInProgress = resetSessionStats;
@@ -895,13 +890,19 @@ function startPractice(mode, resetSessionStats = false) {
         linesToPractice.push(textToPractice.includes("실패") ? textToPractice : "예문 처리 중 오류가 발생했습니다.");
     }
 
+    // Moved progress bar visibility logic AFTER linesToPractice is set
+    if (currentMode.includes('Long') && linesToPractice.length > 1) {
+        if(progressBarContainerEl) progressBarContainerEl.style.display = 'block';
+    } else {
+        if(progressBarContainerEl) progressBarContainerEl.style.display = 'none';
+    }
+
     renderTypingLayout();
     if(typingInputField) typingInputField.value = '';
 
     if(resultEl) resultEl.textContent = '타자를 시작하세요!';
     updateStatsDisplay(true);
-
-    updateProgressBar();
+    updateProgressBar(); // This ensures the bar is filled correctly if visible
 
     setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
     sessionResetInProgress = false;
