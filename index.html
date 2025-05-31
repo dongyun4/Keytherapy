@@ -53,11 +53,11 @@
       --current-line-shadow: 0 2px 12px rgba(var(--accent-rgb),0.12);
       --font-body: 'Noto Sans KR', sans-serif;
       --font-heading: 'Playfair Display', serif;
-      --font-typing: 'Nanum Myeongjo', 'Courier New', monospace;
+      --font-typing: 'Nanum Myeongjo', 'Courier New', monospace; /* 타자 연습 폰트 */
       --font-ui: 'Poppins', sans-serif;
-      --line-height-typing: 1.8;
-      --font-size-typing: 1.15rem;
-      --font-size-typing-mobile: 1.05rem;
+      --line-height-typing: 1.8; /* 타자 연습 줄 높이 */
+      --font-size-typing: 1.15rem; /* 타자 연습 폰트 크기 */
+      --font-size-typing-mobile: 1.05rem; /* 모바일 타자 연습 폰트 크기 */
       --accent-rgb: 212, 175, 122;
       --accent-primary-rgb: 212, 175, 122;
       --hero-image-url: url('https://images.unsplash.com/photo-1505322265381-3138d62ub20a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGtleWJvYXJkJTIwYWVzdGhldGljfGVufDB8fDB8fHww&auto=format&fit=crop&w=1000&q=80');
@@ -200,7 +200,7 @@
     body.game-mode-active .sound-settings,
     body.game-mode-active .theme-settings { display: flex !important; margin-left: 0; }
     body.game-mode-active .main-content-wrapper { align-items: center; padding: 15px; }
-    body.game-mode-active .main-content { max-width: 1200px; min-height: 85vh; }
+    body.game-mode-active .main-content { max-width: 1200px; min-height: 80vh; }
     body.game-mode-active #game-area-container {
         display: flex !important;
         flex-direction: column;
@@ -297,7 +297,7 @@
         background-color: var(--input-bg); color: var(--input-text);
         border: 1px solid var(--input-border); border-radius: var(--border-radius-small);
         padding: 9px 12px; font-family: var(--font-ui); font-size: 0.9em;
-        outline: none; min-width: 120px;
+        outline: none; min-width: 110px;
         transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease, border-radius 0.3s ease;
         box-shadow: var(--shadow-inset);
     }
@@ -352,54 +352,141 @@
         margin-bottom: 0px; width: 100%;
         min-height: calc((var(--font-size-typing) * var(--line-height-typing) + 8px) * 2);
     }
+/* ========================================================================== */
+/* START: 이 블록 전체를 기존 CSS의 해당 부분과 교체하세요.                     */
+/*        교체 시작: 기존 CSS의 ".typing-line, #typing-input-field {" 지점.   */
+/*        교체 끝: 기존 CSS의 ".pink-theme #typing-input-field:focus { ... }" 규칙 바로 앞. */
+/* ========================================================================== */
+
     .typing-line, #typing-input-field {
-        width: 100%; max-width: 700px; padding: 12px 16px; margin: 1px auto;
-        font-family: var(--font-typing); font-size: var(--font-size-typing);
-        line-height: var(--line-height-typing); letter-spacing: var(--typing-letter-spacing);
-        word-spacing: var(--typing-word-spacing); box-sizing: border-box;
-        text-align: left; border-radius: var(--border-radius-small);
+        width: 100%; max-width: 700px;
+        /* padding-top 과 padding-bottom 은 각 요소에서 개별 조정합니다. */
+        padding-left: 16px;
+        padding-right: 16px;
+        margin: 1px auto;
+        font-family: var(--font-typing);
+        font-size: var(--font-size-typing);
+        font-weight: 400; /* 일관된 굵기 */
+        line-height: var(--line-height-typing); /* 일관된 줄 높이 */
+        letter-spacing: var(--typing-letter-spacing);
+        word-spacing: var(--typing-word-spacing);
+        box-sizing: border-box;
+        text-align: left;
+        border-radius: var(--border-radius-small);
+        border: 1px solid transparent; /* 기본 테두리 */
+        font-synthesis: none; /* 브라우저 폰트 합성 방지 */
+        font-kerning: normal; /* 커닝 기본값 (또는 none 테스트) */
+        text-rendering: optimizeLegibility; /* 텍스트 렌더링 최적화 */
+        -webkit-appearance: none; /* 브라우저 기본 스타일 제거 */
+        -moz-appearance: none;
+        appearance: none;
     }
+
     .typing-line {
+        padding-top: 12px;    /* .typing-line 상하 패딩 */
+        padding-bottom: 12px; /* .typing-line 상하 패딩 */
         transition: opacity 0.3s ease, font-size 0.25s ease, color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease, border-radius 0.3s ease;
-        min-height: calc(var(--font-size-typing) * var(--line-height-typing) + 24px);
-        display: flex; align-items: center; font-weight: 400; background-color: transparent;
+        min-height: calc(var(--font-size-typing) * var(--line-height-typing) + 24px + 2px); /* 내부 패딩과 테두리 고려한 최소 높이 */
+        display: flex; /* 내부 텍스트 요소들의 수직 중앙 정렬을 위해 */
+        align-items: center; /* 내부 텍스트 요소들의 수직 중앙 정렬을 위해 */
+        background-color: transparent;
+        white-space: pre-wrap; /* 예문 줄바꿈 및 공백 유지 */
     }
-    .typing-line strong { font-weight: 700; color: var(--current-line-typed-text); }
-    .typing-line .untyped-char { opacity: 0.7; color: var(--text-secondary); }
+
+    .typing-line strong,
+    .typing-line .untyped-char,
+    .typing-line .highlight {
+       font-family: inherit; /* 부모 스타일 상속 */
+       font-size: inherit;   /* 부모 스타일 상속 */
+       line-height: inherit; /* 부모 스타일 상속 */
+       font-weight: 400;     /* 굵기 400으로 통일 */
+       vertical-align: baseline; /* 기준선 정렬 */
+       letter-spacing: inherit; /* 부모 스타일 상속 */
+       word-spacing: inherit;   /* 부모 스타일 상속 */
+    }
+
+    .typing-line strong {
+        color: var(--current-line-typed-text);
+    }
+
+    .typing-line .untyped-char {
+        opacity: 0.7;
+        color: var(--text-secondary);
+    }
+
     .typing-line.passed, #upcoming-lines-area .typing-line {
         color: var(--text-secondary); opacity: 0.55; font-size: calc(var(--font-size-typing) * 0.92);
         background-color: transparent !important; border: none !important; box-shadow: none !important;
     }
     .light-theme .typing-line.passed, .light-theme #upcoming-lines-area .typing-line,
     .pink-theme .typing-line.passed, .pink-theme #upcoming-lines-area .typing-line { color: var(--text-secondary); opacity: 0.7; }
+
     .typing-line.current-to-type {
         color: var(--current-line-text); background-color: var(--current-line-bg);
-        border: 1px solid var(--current-line-border); font-weight: 500; margin-bottom: 6px;
+        border: 1px solid var(--current-line-border); /* 현재 줄 테두리 */
+        margin-bottom: 6px;
         box-shadow: var(--current-line-shadow); transform: scale(1.0);
     }
     .light-theme .typing-line.current-to-type strong, .pink-theme .typing-line.current-to-type strong { color: var(--accent-darker); }
     .light-theme .typing-line.current-to-type .untyped-char, .pink-theme .typing-line.current-to-type .untyped-char { color: var(--text-secondary); opacity: 0.85; }
+
     #typing-input-field-container { width: 100%; max-width: 700px; margin: 2px auto 0 auto; }
-    #typing-input-field {
-        background-color: var(--input-bg); color: var(--input-text);
-        border: 1px solid var(--input-border); font-weight: 400;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-top-color 0.2s ease, border-top-style 0.2s ease, border-radius 0.3s ease;
-        -webkit-appearance: none; appearance: none;
-        min-height: calc(var(--font-size-typing) * var(--line-height-typing) + 24px + 2px);
-        box-shadow: var(--shadow-inset); border-top: 1px solid transparent;
+
+#typing-input-field {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--input-border);
+  font-family: var(--font-typing);
+  font-size: calc(var(--font-size-typing) * 0.972);
+  line-height: var(--line-height-typing);
+  letter-spacing: var(--typing-letter-spacing);
+  word-spacing: calc(var(--typing-word-spacing) * 0.82);
+  font-weight: 400;
+  padding: 12px 16px;
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;
+  border-radius: var(--border-radius-small);
+  height: calc(var(--font-size-typing) * var(--line-height-typing) + 24px + 2px);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-radius 0.3s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: var(--shadow-inset);
+
+  font-feature-settings: "tnum";
+  font-variant-ligatures: none;
+}
+
+
+
+    #typing-input-field::placeholder {
+        font-family: var(--font-typing);
+        font-size: var(--font-size-typing);
+        font-weight: 400;
+        letter-spacing: var(--typing-letter-spacing);
+        word-spacing: var(--typing-word-spacing);
+        color: var(--text-secondary);
+        opacity: 0.5;
+        line-height: var(--line-height-typing); /* placeholder에도 line-height 적용 */
     }
+
     #typing-input-field:focus {
-        border-color: var(--accent-active); border-top-color: var(--accent-active);
+        border-color: var(--accent-active);
         box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.25);
         background-color: var(--input-bg); outline: none;
     }
     .light-theme #typing-input-field:focus { box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.15); }
     .pink-theme #typing-input-field:focus { box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.2); }
+
     .highlight {
-        font-weight: inherit !important; color: var(--highlight-error) !important;
+        font-weight: 400 !important; /* 오타도 동일 굵기 보장 */
+        color: var(--highlight-error) !important;
         background-color: var(--highlight-error-bg);
         border-radius: 3px; padding: 0.5px 0; margin: -0.5px 0;
     }
+/* ========================================================================== */
+/* END: 교체 블록 끝. 이 다음 규칙은 ".light-theme .highlight { ... }" 이어야 합니다. */
+/* ========================================================================== */
     .light-theme .highlight { box-shadow: 0 0 4px rgba(211, 84, 109, 0.15); }
     .pink-theme .highlight { box-shadow: 0 0 4px rgba(255, 99, 71, 0.2); }
     #result {
@@ -443,8 +530,8 @@
         top: calc(50% + 20px);
         left: 50%;
         transform: translate(-50%, -50%);
-        background-color: rgba(var(--bg-container-rgb, 42, 40, 38), 0.85);
-        padding: 25px;
+        background-color: rgba(var(--bg-container-rgb, 42, 40, 38), 0.9);
+        padding: 20px;
         border-radius: var(--border-radius-small);
         text-align: center;
         z-index: 5;
@@ -453,18 +540,23 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        max-width: 90%;
     }
-    .light-theme #game-start-message { background-color: rgba(var(--bg-container-rgb, 255, 255, 255), 0.92); }
-    .pink-theme #game-start-message { background-color: rgba(var(--bg-container-rgb, 255, 245, 248), 0.95); }
+    .light-theme #game-start-message { background-color: rgba(var(--bg-container-rgb, 255, 255, 255), 0.95); }
+    .pink-theme #game-start-message { background-color: rgba(var(--bg-container-rgb, 255, 245, 248), 0.97); }
     #game-start-message h2 {
         font-family: var(--font-heading); color: var(--accent-primary);
         font-size: 1.8em; margin-bottom: 10px;
     }
     #game-start-message p {
         font-size: 1em; color: var(--text-secondary);
-        line-height: 1.5; max-width: 400px; margin-bottom: 20px;
+        line-height: 1.5; max-width: 400px; margin-bottom: 15px;
     }
     .light-theme #game-start-message h2, .pink-theme #game-start-message h2 { color: var(--accent-darker); }
+    #game-start-message .item-info { font-size: 0.85em; margin-top: 10px; line-height: 1.7; text-align: left; width: fit-content; }
+    #game-start-message .item-info div { margin-bottom: 3px; }
+    #game-start-message .item-info span { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 3px; vertical-align: middle; border: 1px solid rgba(0,0,0,0.2); }
+
     #game-canvas {
         border: 1px solid var(--input-border);
         background-color: var(--input-bg);
@@ -481,6 +573,8 @@
         border-radius: var(--border-radius-small); box-shadow: var(--shadow-inset);
         text-align: center; outline: none;
         margin-bottom: 15px;
+        /* font-weight not set here, relies on .typing-line, #typing-input-field if it were to apply, but game input has its own font-family */
+        /* Ensure no conflicting font-weight here if this should NOT share typing font style */
     }
     #game-input-field:focus {
         border-color: var(--accent-active);
@@ -490,10 +584,10 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 5px;
         padding: 10px 0;
         width: 100%;
-        max-width: 700px;
+        max-width: 600px;
     }
     .game-control-row {
         display: flex;
@@ -503,29 +597,94 @@
         gap: 10px;
         width: 100%;
     }
-    #gameInternalControlsBar .select-label { margin-right: 5px; }
+    /* 컨트롤 아이템 정렬 개선 */
+    .game-control-row .game-control-item,
+    .game-control-row .sound-settings, /* .sound-settings를 .game-control-item과 유사하게 취급 */
+    .game-control-row .theme-settings, /* .theme-settings를 .game-control-item과 유사하게 취급 */
+    #gameToggleSoundBtn,
     #returnToPracticeBtnGame {
-        margin-top: 5px;
-        padding: 10px 20px !important;
-        font-size: 0.95em !important;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex: 1 1 calc(33.333% - 10px); /* 3개의 아이템이 한 줄에 오도록 (gap 고려) */
+        justify-content: center;
+        min-width: 120px; /* 최소 너비 */
+        box-sizing: border-box;
     }
-    #gameToggleSoundBtn {
+    /* 레이블과 셀렉트/버튼 간 정렬 */
+    .game-control-item .select-label { margin-right: 5px; white-space: nowrap;}
+    .game-control-item select, #gameToggleSoundBtn { flex-grow: 1; } /* select와 버튼이 남은 공간 차지 */
+
+#returnToPracticeBtnGame {
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.95em;
+  color: var(--accent-primary);
+  border: 2px solid rgba(var(--accent-rgb), 0.4); /* 은은한 테두리 */
+  background-color: transparent;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1); /* 가벼운 glow 느낌 */
+}
+
+#returnToPracticeBtnGame:hover {
+  background-color: var(--accent-primary);
+  color: var(--button-text-on-accent);
+  border-color: var(--accent-active);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.25);
+}
+
+    /* 게임 종류 선택 버튼 스타일 */
+    .game-type-button {
         padding: 8px 12px;
-        font-size: 0.85em;
+        font-size: 0.9em;
         border-radius: var(--border-radius-small);
         cursor: pointer;
-        transition: all 0.2s ease-in-out;
         font-family: var(--font-ui);
-        font-weight: 500;
         border: 1.5px solid var(--accent-secondary);
         background: transparent;
         color: var(--accent-secondary);
+        flex: 1;
+        text-align: center;
     }
-    #gameToggleSoundBtn.active {
+    .game-type-button.active {
         background: var(--accent-primary);
         color: var(--button-text-on-accent);
         border-color: var(--accent-primary);
+        font-weight: 600;
     }
+    .game-type-button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+
+#gameToggleSoundBtn {
+  padding: 10px 16px;
+  border-radius: 999px; /* 완전 라운드 */
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.9em;
+  border: 1.5px solid var(--accent-secondary);
+  background-color: transparent;
+  color: var(--accent-secondary);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow-button);
+}
+
+#gameToggleSoundBtn.active {
+  background-color: var(--accent-primary);
+  color: var(--button-text-on-accent);
+  border-color: var(--accent-primary);
+  font-weight: 600;
+}
+
     #gameToggleSoundBtn i { margin-right: 5px;}
     .game-overlay {
         position: absolute;
@@ -607,12 +766,13 @@
       #game-input-field { font-size: 1rem; padding: 10px; }
       .game-button { font-size: 0.9em; padding: 10px 20px; }
       #gameInternalControlsBar { gap: 8px; }
-      .game-control-row { gap: 8px; flex-direction: row; align-items: center;}
-      .game-control-row > * { width: auto; max-width: none; flex-grow: 0; }
-      #gameToggleSoundBtn { flex-grow: 1; min-width: 120px; }
-      .sound-settings, .theme-settings { flex-grow: 1; }
-      .sound-settings select, .theme-settings select { width: 100%; }
-      #returnToPracticeBtnGame { margin-top: 10px; }
+      .game-control-row { flex-wrap: wrap; justify-content: space-evenly; }
+      .game-control-item, #gameToggleSoundBtn { flex-basis: auto; min-width: 150px; margin-bottom: 5px;}
+      #gameToggleSoundBtn { flex-basis: auto; min-width: 130px; }
+      .sound-settings, .theme-settings { flex-grow: 0; }
+      #returnToPracticeBtnGame { flex-basis: 100%; margin-top: 10px; }
+      #game-canvas { height: Math.max(window.innerHeight * 0.50, 300px); }
+
     }
      @media (max-width: 480px) {
       .hero-title { font-size: 1.9em; }
@@ -629,11 +789,14 @@
       #game-start-message { padding: 15px; }
       #game-start-message h2 { font-size: 1.3em; }
       #game-start-message p { font-size: 0.85em; }
+      #game-start-message .item-info { font-size: 0.8em; }
       .game-overlay h2 { font-size: 1.4em; }
       .game-overlay p { font-size: 0.9em; }
       .game-button { font-size: 0.85em; padding: 8px 15px; }
       .game-control-row { flex-direction: column; align-items: stretch; }
-      #gameToggleSoundBtn { width: 100%; }
+      .game-control-item, #gameToggleSoundBtn { width: 100%; justify-content: flex-start; }
+      #gameToggleSoundBtn { justify-content: center; }
+      #returnToPracticeBtnGame { width: 100%; max-width: none; }
      }
 </style>
 </head>
@@ -653,7 +816,7 @@
                 <button data-mode="korLong"><i class="fas fa-align-left"></i>한글 장문</button>
                 <button data-mode="eng"><i class="fas fa-font"></i>영어 단문</button>
                 <button data-mode="engLong"><i class="fas fa-stream"></i>영어 장문</button>
-                <button id="gameModeBtn"><i class="fas fa-gamepad"></i>게임 모드</button>
+                <button id="gameModeBtn"><i class="fas fa-gamepad"></i>게임하기</button>
             </div>
             <div class="feature-toggles control-button-group">
                 <button id="toggleSoundBtn"><i class="fas fa-volume-mute"></i> 타건음 OFF</button>
@@ -661,7 +824,7 @@
                 <button id="toggleStatsBtn" class="active"><i class="fas fa-chart-line"></i> 측정 ON</button>
             </div>
             <div class="sound-settings" id="soundSettingsElement">
-                <label for="soundPackSelect" class="select-label">타건음 선택:</label>
+                <label for="soundPackSelect" class="select-label" id="soundPackLabel">타건음:</label>
                 <select id="soundPackSelect">
                     <option value="crunchy">서걱서걱</option>
                     <option value="pebbles">조약돌</option>
@@ -669,7 +832,7 @@
                 </select>
             </div>
             <div class="theme-settings" id="themeSettingsElement">
-                <label for="themeSelect" class="select-label">테마 선택:</label>
+                <label for="themeSelect" class="select-label" id="themeSelectLabel">테마:</label>
                 <select id="themeSelect">
                     <option value="dark">다크</option>
                     <option value="light">아이보리</option>
@@ -701,12 +864,13 @@
 </div>
 </div>
   <div class="footer"> <p>© 2024 Key Therapy. All rights reserved. <br> Designed for focused typing practice and relaxation.</p> </div>
-
 <script>
 // === 전역 변수 및 설정 ===
 let currentMode = '';
 let linesToPractice = [];
 let currentDisplayLineIndex = 0;
+
+const MAX_VISIBLE_UPCOMING_LINES = 5;
 
 let startTime = null;
 let currentLineStartTime = null;
@@ -750,10 +914,12 @@ let toggleHighlightBtn, lineDisplayArea, typingInputField, resultEl, upcomingLin
 
 // === GAME MODE VARIABLES ===
 let isGameActive = false;
-let gameLevel = 1;
+let gameLevel = 1; // 주 레벨 (1~5)
+let currentSubLevelIndex = 0; // 한 주 레벨 내의 세부 단계 (0, 1, 2)
 let gameScore = 0;
 let gameLives = 0;
 let wordsOnScreen = [];
+let usedWordsInLevel = new Set();
 let gameLoopId = null;
 let wordGenerationIntervalId = null;
 const INITIAL_LIVES = 5;
@@ -761,68 +927,101 @@ const GAME_FONT = "18px 'Noto Sans KR', sans-serif";
 let preferredGameLanguage = 'kor';
 let gamePausedForOverlay = false;
 let levelStartTime = null;
-const LEVEL_DURATION_MS = 120 * 1000;
+const LEVEL_DURATION_MS = 120 * 1000; // 2분
+const SUB_LEVEL_DURATION_MS = LEVEL_DURATION_MS / 3; // 각 세부 단계는 40초
 let isTimeStopped = false;
-const ITEM_SPAWN_PROBABILITY = 0.03;
+const ITEM_SPAWN_PROBABILITY = 0.05;
 
 const ITEM_COLORS = {
-    TIME_STOP: 'DeepSkyBlue',
-    CLEAR_SCREEN: 'MediumVioletRed',
-    EXTRA_LIFE: 'LawnGreen'
+    TIME_STOP: '#00BFFF',
+    CLEAR_SCREEN: '#C71585',
+    EXTRA_LIFE: '#32CD32'
 };
 
 const ITEM_TYPES = {
-    TIME_STOP: { type: 'timeStop', color: ITEM_COLORS.TIME_STOP, duration: 3000, textPrefix: '[멈춤!] ' },
-    CLEAR_SCREEN: { type: 'clearScreen', color: ITEM_COLORS.CLEAR_SCREEN, textPrefix: '[싹쓸이!] ' },
-    EXTRA_LIFE: { type: 'extraLife', color: ITEM_COLORS.EXTRA_LIFE, textPrefix: '[생명+1] ' }
+    TIME_STOP: { type: 'timeStop', color: ITEM_COLORS.TIME_STOP, duration: 3000 },
+    CLEAR_SCREEN: { type: 'clearScreen', color: ITEM_COLORS.CLEAR_SCREEN },
+    EXTRA_LIFE: { type: 'extraLife', color: ITEM_COLORS.EXTRA_LIFE }
 };
 
-
-const gameLevelsConfig = [
-    { scoreToNext: 50, fallSpeed: 0.15, genRate: 6500, wordMinLenDefault: 2, wordMaxLenDefault: 2, fastWordChance: 0.01, fastWordMultiplier: 1.3 },
-    { scoreToNext: 120, fallSpeed: 0.22, genRate: 5500, wordMinLenDefault: 2, wordMaxLenDefault: 3, fastWordChance: 0.02, fastWordMultiplier: 1.5 },
-    { scoreToNext: 200, fallSpeed: 0.28, genRate: 5000, wordMinLenDefault: 2, wordMaxLenDefault: 4, fastWordChance: 0.03, fastWordMultiplier: 1.6 },
-    { scoreToNext: 300, fallSpeed: 0.33, genRate: 4500, wordMinLenDefault: 3, wordMaxLenDefault: 4, fastWordChance: 0.04, fastWordMultiplier: 1.7 },
-    { scoreToNext: 450, fallSpeed: 0.38, genRate: 4200, wordMinLenDefault: 3, wordMaxLenDefault: 5, fastWordChance: 0.05, fastWordMultiplier: 1.8 },
-    { scoreToNext: 600, fallSpeed: 0.43, genRate: 4000, wordMinLenDefault: 3, wordMaxLenDefault: 5, fastWordChance: 0.06, fastWordMultiplier: 1.9 },
-    { scoreToNext: 800, fallSpeed: 0.48, genRate: 3700, wordMinLenDefault: 4, wordMaxLenDefault: 6, fastWordChance: 0.07, fastWordMultiplier: 2.0 },
-    { scoreToNext: 1000, fallSpeed: 0.53, genRate: 3400, wordMinLenDefault: 4, wordMaxLenDefault: 6, fastWordChance: 0.08, fastWordMultiplier: 2.1 },
-    { scoreToNext: 1250, fallSpeed: 0.58, genRate: 3100, wordMinLenDefault: 4, wordMaxLenDefault: 7, fastWordChance: 0.09, fastWordMultiplier: 2.2 },
-    { scoreToNext: 1500, fallSpeed: 0.63, genRate: 2900, wordMinLenDefault: 5, wordMaxLenDefault: 7, fastWordChance: 0.10, fastWordMultiplier: 2.3 },
-    { scoreToNext: 1800, fallSpeed: 0.68, genRate: 2600, wordMinLenDefault: 5, wordMaxLenDefault: 8, fastWordChance: 0.11, fastWordMultiplier: 2.4 },
-    { scoreToNext: 2100, fallSpeed: 0.73, genRate: 2300, wordMinLenDefault: 5, wordMaxLenDefault: 8, fastWordChance: 0.12, fastWordMultiplier: 2.5 },
-    { scoreToNext: 2500, fallSpeed: 0.78, genRate: 2100, wordMinLenDefault: 6, wordMaxLenDefault: 9, fastWordChance: 0.13, fastWordMultiplier: 2.6 },
-    { scoreToNext: 3000, fallSpeed: 0.85, genRate: 1900, wordMinLenDefault: 6, wordMaxLenDefault: 9, fastWordChance: 0.15, fastWordMultiplier: 2.8 },
-    { scoreToNext: Infinity, fallSpeed: 1.00, genRate: 1600, wordMinLenDefault: 7, wordMaxLenDefault: 10, fastWordChance: 0.25, fastWordMultiplier: 3.2 }
+const gameMainLevelsConfig = [
+    {
+        subLevels: [
+            { fallSpeed: 0.20, genRate: 6000, wordMinLen: 2, wordMaxLen: 2, fastWordChance: 0.02, fastWordMultiplier: 1.3 },
+            { fallSpeed: 0.25, genRate: 5500, wordMinLen: 2, wordMaxLen: 3, fastWordChance: 0.03, fastWordMultiplier: 1.4 },
+            { fallSpeed: 0.30, genRate: 5000, wordMinLen: 2, wordMaxLen: 3, fastWordChance: 0.04, fastWordMultiplier: 1.5 }
+        ]
+    },
+    {
+        subLevels: [
+            { fallSpeed: 0.35, genRate: 4800, wordMinLen: 2, wordMaxLen: 4, fastWordChance: 0.05, fastWordMultiplier: 1.6 },
+            { fallSpeed: 0.42, genRate: 4500, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.06, fastWordMultiplier: 1.7 },
+            { fallSpeed: 0.50, genRate: 4200, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.07, fastWordMultiplier: 1.8 }
+        ]
+    },
+    {
+        subLevels: [
+            { fallSpeed: 0.58, genRate: 3900, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.08, fastWordMultiplier: 1.9 },
+            { fallSpeed: 0.66, genRate: 3600, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.10, fastWordMultiplier: 2.0 },
+            { fallSpeed: 0.75, genRate: 3300, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.12, fastWordMultiplier: 2.1 }
+        ]
+    },
+    {
+        subLevels: [
+            { fallSpeed: 0.84, genRate: 3000, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.14, fastWordMultiplier: 2.2 },
+            { fallSpeed: 0.93, genRate: 2700, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.16, fastWordMultiplier: 2.4 },
+            { fallSpeed: 1.05, genRate: 2400, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.18, fastWordMultiplier: 2.6 }
+        ]
+    },
+    {
+        subLevels: [
+            { fallSpeed: 1.18, genRate: 2100, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.20, fastWordMultiplier: 2.8 },
+            { fallSpeed: 1.30, genRate: 1800, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.25, fastWordMultiplier: 3.1 },
+            { fallSpeed: 1.50, genRate: 1500, wordMinLen: 3, wordMaxLen: 5, fastWordChance: 0.30, fastWordMultiplier: 3.4 }
+        ]
+    }
 ];
 
 const gameWordsKor = [
-    "안녕", "하늘", "바다", "구름", "사랑", "행복", "미소", "바람", "햇살", "나무", "꽃잎", "별빛", "마음", "시간", "친구", "소망", "기억", "이유", "결심", "순간",
-    "이야기", "노래", "꿈속", "추억", "선물", "감사", "희망", "용기", "믿음", "약속", "미래", "현실", "세계", "우주", "자연", "동물", "식물", "인형", "장난감",
-    "과자", "사탕", "우유", "학교", "공부", "도전", "성공", "실패", "과정", "결과", "노력", "결실", "인생", "여정", "목표", "방향", "지도", "나침반", "등대",
-    "게임", "놀이", "책상", "의자", "컴퓨터", "키보드", "마우스", "모니터", "프린터", "스캐너", "스피커", "헤드폰", "마이크", "카메라", "휴대폰", "태블릿",
-    "음악", "영화", "여행", "사진", "그림", "조각", "건축", "디자인", "패션", "요리", "운동", "취미", "독서", "글쓰기", "토론", "발표", "강연", "세미나",
-    "강아지", "고양이", "햄스터", "토끼", "새", "물고기", "거북이", "도마뱀", "뱀", "사자", "호랑이", "코끼리", "기린", "하마", "악어", "판다", "펭귄",
-    "여름", "가을", "겨울", "봄날", "계절", "날씨", "온도", "습도", "바람", "태풍", "장마", "눈보라", "폭염", "한파", "미세먼지", "황사", "일기예보",
-    "딸기", "포도", "수박", "사과", "바나나", "오렌지", "귤", "레몬", "자몽", "키위", "망고", "파인애플", "체리", "복숭아", "자두", "살구", "매실",
-    "주스", "스무디", "에이드", "칵테일", "와인", "맥주", "소주", "막걸리", "위스키", "브랜디", "샴페인", "보드카", "데킬라", "하이볼", "막걸리",
-    "비행기", "기차", "버스", "택시", "자전거", "오토바이", "지하철", "배", "요트", "크루즈", "우주선", "로켓", "드론", "행글라이더", "패러글라이딩",
-    "병원", "약국", "의사", "간호사", "환자", "진료", "처방", "수술", "입원", "퇴원", "응급실", "구급차", "백신", "마스크", "소독제", "체온계",
-    "공원", "산책", "등산", "캠핑", "낚시", "수영", "서핑", "스키", "스노보드", "골프", "테니스", "축구", "야구", "농구", "배구", "탁구", "배드민턴",
-    "인터넷뱅킹", "스마트폰중독", "프로그래밍언어", "인공지능로봇", "가상현실체험", "블록체인기술", "데이터분석가", "클라우드컴퓨팅", "우주정거장", "심해탐사선",
-    "사이버보안전문가", "머신러닝알고리즘", "자율주행자동차", "사물인터넷기기", "빅데이터플랫폼", "디지털트랜스포메이션", "지속가능한개발목표", "기후변화협약"
+    "안녕", "하늘", "바다", "구름", "사랑", "행복", "미소", "바람", "햇살", "나무", "꽃잎", "별빛", "마음", "시간", "친구", "소망", "기억", "이유", "결심", "순간", "여름", "가을", "겨울", "봄날",
+    "이야기", "노래", "꿈속", "추억", "선물", "감사", "희망", "용기", "믿음", "약속", "미래", "현실", "세계", "우주", "자연", "동물", "식물", "인형", "장난감", "그림",
+    "과자", "사탕", "우유", "학교", "공부", "도전", "성공", "실패", "과정", "결과", "노력", "결실", "인생", "여정", "목표", "방향", "지도", "나침반", "등대", "열쇠",
+    "게임", "놀이", "책상", "의자", "컴퓨터", "키보드", "마우스", "모니터", "프린터", "스피커", "헤드폰", "마이크", "카메라", "휴대폰", "태블릿", "충전기", "배터리",
+    "음악", "영화", "여행", "사진", "조각", "건축", "디자인", "패션", "요리", "운동", "취미", "독서", "글쓰기", "토론", "발표", "강연", "세미나", "회의", "수업",
+    "강아지", "고양이", "햄스터", "토끼", "새", "물고기", "거북이", "도마뱀", "뱀", "사자", "호랑이", "코끼리", "기린", "하마", "악어", "판다", "펭귄", "고래",
+    "계절", "날씨", "온도", "습도", "태풍", "장마", "눈보라", "폭염", "한파", "미세먼지", "황사", "일기예보", "천둥", "번개", "소나기", "안개", "이슬",
+    "딸기", "포도", "수박", "사과", "바나나", "오렌지", "귤", "레몬", "자몽", "키위", "망고", "파인애플", "체리", "복숭아", "자두", "살구", "매실", "감", "배",
+    "주스", "스무디", "에이드", "칵테일", "와인", "맥주", "소주", "막걸리", "위스키", "브랜디", "샴페인", "보드카", "데킬라", "하이볼", "탄산수", "이온음료",
+    "비행기", "기차", "버스", "택시", "자전거", "오토바이", "지하철", "배", "요트", "크루즈", "우주선", "로켓", "드론", "행글라이더", "자동차", "트럭",
+    "병원", "약국", "의사", "간호사", "환자", "진료", "처방", "수술", "입원", "퇴원", "응급실", "구급차", "백신", "마스크", "소독제", "체온계", "반창고",
+    "공원", "산책", "등산", "캠핑", "낚시", "수영", "서핑", "스키", "스노보드", "골프", "테니스", "축구", "야구", "농구", "배구", "탁구", "배드민턴", "볼링",
+    "가족", "부모", "형제", "자매", "친척", "친구", "이웃", "동료", "선배", "후배", "연인", "배우자", "아기", "어린이", "청소년", "어른", "노인",
+    "얼굴", "머리", "눈썹", "속눈썹", "눈동자", "코", "입술", "이빨", "혀", "턱", "목", "어깨", "팔", "손목", "손가락", "손톱", "가슴", "배", "허리", "등", "엉덩이", "다리", "무릎", "발목", "발가락",
+    "감정", "기쁨", "슬픔", "화남", "놀람", "두려움", "부끄럼", "지루함", "흥미", "만족", "불만", "질투", "연민", "공감", "자신감", "자존감", "열등감",
+    "색깔", "빨강", "주황", "노랑", "초록", "파랑", "남색", "보라", "분홍", "하양", "검정", "회색", "갈색", "금색", "은색", "무지개", "단색", "혼합색",
+    "숫자", "하나", "둘", "셋", "넷", "다섯", "여섯", "일곱", "여덟", "아홉", "열", "스물", "서른", "마흔", "쉰", "예순", "일흔", "여든", "아흔",
+    "시작", "중단", "계속", "종료", "확인", "취소", "저장", "삭제", "편집", "검색", "추가", "변경", "도움", "안내", "경고", "오류", "성공", "정보", "항목", "목록",
+    "유리", "금속", "나무", "돌", "흙", "물", "불", "공기", "빛", "소리", "냄새", "맛", "느낌", "생각", "감각", "지능", "창의", "상상", "표현", "예술", "과학",
+    "수학", "역사", "지리", "사회", "경제", "정치", "법률", "윤리", "철학", "종교", "언어", "문학", "교육", "심리", "의학", "공학", "기술", "정보", "통신" , "우주인", "방울뱀", "사막여우"
 ];
 const gameWordsEng = [
-    "hello", "sky", "sea", "cloud", "love", "happy", "smile", "wind", "sun", "tree", "petal", "star", "heart", "time", "friend", "wish", "dream", "hope", "idea",
-    "story", "song", "memory", "gift", "thanks", "brave", "faith", "promise", "future", "world", "space", "nature", "animal", "plant", "flower", "river", "ocean",
-    "snack", "candy", "milk", "school", "study", "effort", "result", "target", "vision", "policy", "market", "value", "price", "trade", "power", "energy", "force",
-    "game", "play", "desk", "chair", "music", "movie", "trip", "photo", "image", "audio", "video", "chart", "graph", "table", "report", "paper", "letter",
-    "apple", "grape", "melon", "pear", "berry", "juice", "water", "bread", "toast", "butter", "cheese", "yogurt", "sugar", "flour", "yeast", "honey", "syrup",
-    "plane", "train", "bus", "taxi", "bike", "boat", "ship", "yacht", "truck", "ferry", "metro", "rocket", "drone", "cycle", "motor", "engine", "wheel",
-    "park", "walk", "shop", "book", "code", "debug", "array", "loop", "class", "object", "method", "query", "index", "stack", "queue", "node", "link",
-    "programming", "javascript", "algorithm", "database", "interface", "framework", "library", "variable", "function", "parameter", "argument", "constant", "operator",
-    "developer", "engineer", "designer", "manager", "architect", "consultant", "analyst", "scientist", "professor", "student", "teacher", "mentor", "leader",
-    "keyboarding", "challenge", "adventure", "mystery", "fantasy", "science", "history", "culture", "language", "education", "knowledge", "wisdom", "success"
+    "hello", "sky", "sea", "cloud", "love", "happy", "smile", "wind", "sun", "tree", "petal", "star", "heart", "time", "friend", "wish", "dream", "hope", "idea", "song", "gift", "baby", "coin", "dice", "card", "door", "cake",
+    "story", "memory", "thanks", "brave", "faith", "promise", "future", "world", "space", "earth", "moon", "mars", "venus", "comet", "orbit", "galaxy", "dust", "atom", "cell", "gene", "code", "data",
+    "nature", "animal", "plant", "flower", "river", "ocean", "beach", "coast", "wave", "sand", "shell", "coral", "fish", "shark", "whale", "bird", "eagle", "lion", "tiger", "bear", "wolf",
+    "snack", "candy", "milk", "school", "study", "class", "grade", "exam", "test", "quiz", "score", "point", "award", "prize", "medal", "cup", "flag", "badge", "sign", "logo",
+    "effort", "result", "target", "vision", "policy", "market", "value", "price", "trade", "power", "energy", "force", "speed", "light", "sound", "echo", "pulse", "rate", "flow", "zone",
+    "game", "play", "desk", "chair", "music", "movie", "trip", "photo", "image", "audio", "video", "chart", "graph", "table", "report", "paper", "letter", "note", "file", "folder", "item",
+    "apple", "grape", "melon", "pear", "berry", "juice", "water", "bread", "toast", "butter", "cheese", "yogurt", "sugar", "flour", "yeast", "honey", "syrup", "salt", "rice", "bean", "corn",
+    "plane", "train", "bus", "taxi", "bike", "boat", "ship", "yacht", "truck", "ferry", "metro", "rocket", "drone", "cycle", "motor", "engine", "wheel", "road", "path", "lane", "ally",
+    "park", "walk", "shop", "book", "debug", "array", "loop", "object", "method", "query", "index", "stack", "queue", "node", "link", "byte", "pixel", "font", "icon", "text",
+    "java", "ruby", "swift", "basic", "agent", "alert", "align", "alpha", "angle", "arena", "armor", "arrow", "asset", "atlas", "audio", "avoid", "award", "axis", "azure", "bacon", "magic",
+    "baker", "badge", "banjo", "baron", "basin", "baton", "beach", "beard", "beast", "begin", "being", "belly", "below", "bench", "bingo", "birth", "blade", "blame", "blank", "blaze",
+    "blast", "blend", "bless", "blind", "blink", "bliss", "block", "blood", "bloom", "bluff", "board", "boast", "bonus", "boost", "booth", "bound", "bowel", "boxer", "brace",
+    "brain", "brand", "brass", "bravo", "brawl", "bread", "break", "breed", "breeze", "brick", "bride", "brief", "brine", "bring", "brisk", "broad", "brook", "broom", "brush", "buckle",
+    "buddy", "build", "bulge", "bunch", "bunny", "burst", "cabin", "cable", "cache", "camel", "canal", "candy", "canoe", "canyon", "cape", "chaos", "charm", "chase", "chief",
+    "carry", "carve", "catch", "cause", "cease", "chain", "chalk", "cheap", "check", "cheek", "cheer", "chess", "chest", "chill", "chimp", "chip", "choir",
+    "child", "chime", "china", "choke", "chord", "chunk", "cigar", "civic", "civil", "claim", "clamp", "clash", "clasp", "clean", "clear", "clerk", "click", "cliff", "climax",
+    "climb", "cloak", "clock", "clone", "close", "cloth", "clown", "coach", "coast", "cobra", "cocoa", "colon", "color", "combo", "comic", "coral", "count", "court", "cover"
 ];
 
 
@@ -831,7 +1030,7 @@ function getRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-const sentencePool = { kor: ["따뜻한 햇살이 창가에 가득 내린다."], eng: ["The weather is lovely today perfect for a nice walk."], korLong: [ "낡은 골목의 초입, 허리 굽은 노파의 손길이 햇살에 바래진 담벼락을 어루만진다. 그녀의 손가락 마디마디에 지난 세월의 주름이 강물처럼 새겨져 있었고, 그 마디 끝에서 스며 나온 이야기들이 무성한 담쟁이덩굴처럼 벽을 휘감았다. 담쟁이 잎사귀들은 바람에 지난날의 속삭임처럼 흔들렸고, 그 사이로 비치는 햇살은 희미한 기억의 파편들을 흩뿌렸다. 노파의 발걸음은 더 이상 빠르지 않았다. 한 걸음, 한 걸음 옮길 때마다 아스팔트 바닥에 찍히는 그림자는 더욱 길고 아득해졌다. 그녀는 문득 걸음을 멈춰 서서, 오래된 전봇대 아래 놓인 작은 벤치에 앉았다. 벤치 옆에는 누군가 심어놓은 듯한 봉숭아 꽃이 붉은 얼굴을 내밀고 있었다. 그 빛깔이 너무나 선명해서, 마치 오래된 흑백사진 속에 홀로 채색된 부분처럼 이질적이었다. 노파는 봉숭아 꽃을 한참 동안 바라보았다. 그 시선 속에는 알 수 없는 그리움과 함께, 어린 시절의 순수한 미소가 언뜻 스쳐 지나갔다. 그녀의 기억 속에는 봉숭아 꽃잎으로 손톱을 물들이며 깔깔대던 작은 소녀의 모습이 선명하게 떠올랐다. 세월은 모든 것을 앗아가지만, 어떤 기억들은 시간의 파도를 거슬러 더욱 또렷하게 남아있는 법이었다. 노파는 주머니에서 빛바랜 손수건을 꺼내 봉숭아 꽃잎을 조심스럽게 감쌌다. 그리고는 다시 천천히 발걸음을 옮겼다. 낡은 골목 끝, 그녀의 그림자가 사라지는 순간까지 담쟁이덩굴은 여전히 바람에 흔들리며, 잊혀진 시간의 노래를 부르고 있었다. 삶이란 어쩌면, 이렇듯 희미해지는 풍경 속에서 선명하게 피어나는 꽃 한 송이 같은 것인지도 모른다. 그 꽃을 가슴에 품고, 우리는 묵묵히 저물어가는 하루를 걸어간다.", "간밤의 꿈은 짙은 안개처럼 형체를 알 수 없었고, 그 희미한 잔상만이 새벽의 고요 속에 떠돈다. 현실의 차가운 공기를 마주하며 침대에서 일어선다. 동이 트기 전의 하늘은 짙은 남색을 띠고 있었고, 그 너머로 희미하게 떠오르는 여명은 마치 거대한 그림자가 서서히 물러나는 듯했다."], engLong: [ "The old attic window, streaked with the dust of ages, allowed the afternoon sun to filter in, casting a soft, golden glow over forgotten treasures. The air hung heavy with the scent of aged paper and faint wood, a nostalgic perfume that seemed to whisper tales of bygone eras. Tiny dust motes danced in the invading sunbeams, sparkling like miniature galaxies, and the world outside, viewed through the grimy pane, appeared as a distant, dreamlike watercolor. I had creaked my way up the wooden stairs, settling into the worn comfort of a rocking chair by the window. Below, an ancient oak stood sentinel, its leaves rustling a quiet, timeless song with every breeze, a silent observer of centuries unfolding. In that tranquil tableau, I found myself sifting through childhood memories: a grandmother's gentle voice narrating fairy tales, the vibrant hues of a sunset over a familiar alleyway, the first stirrings of a young heart's joy and sorrow. Time, in its relentless march, may alter all things, yet the warmth embedded in memory."]
+const sentencePool = { kor: ["따뜻한 햇살이 창가에 가득 내린다."], eng: ["The weather is lovely today perfect for a nice walk."], korLong: [ "낡은 골목의 초입, 허리 굽은 노파의 손길이 햇살에 바래진 담벼락을 어루만진다. 그녀의 손가락 마디마디에 지난 세월의 주름이 강물처럼 새겨져 있었고, 그 마디 끝에서 스며 나온 이야기들이 무성한 담쟁이덩굴처럼 벽을 휘감았다. 담쟁이 잎사귀들은 바람에 지난날의 속삭임처럼 흔들렸고, 그 사이로 비치는 햇살은 희미한 기억의 파편들을 흩뿌렸다. 노파의 발걸음은 더 이상 빠르지 않았다. 한 걸음, 한 걸음 옮길 때마다 아스팔트 바닥에 찍히는 그림자는 더욱 길고 아득해졌다. 그녀는 문득 걸음을 멈춰 서서, 오래된 전봇대 아래 놓인 작은 벤치에 앉았다. 벤치 옆에는 누군가 심어놓은 듯한 봉숭아 꽃이 붉은 얼굴을 내밀고 있었다. 그 빛깔이 너무나 선명해서, 마치 오래된 흑백사진 속에 홀로 채색된 부분처럼 이질적이었다. 노파는 봉숭아 꽃을 한참 동안 바라보았다. 그 시선 속에는 알 수 없는 그리움과 함께, 어린 시절의 순수한 미소가 언뜻 스쳐 지나갔다. 그녀의 기억 속에는 봉숭아 꽃잎으로 손톱을 물들이며 깔깔대던 작은 소녀의 모습이 선명하게 떠올랐다. 세월은 모든 것을 앗아가지만, 어떤 기억들은 시간의 파도를 거슬러 더욱 또렷하게 남아있는 법이었다. 노파는 주머니에서 빛바랜 손수건을 꺼내 봉숭아 꽃잎을 조심스럽게 감쌌다. 그리고는 다시 천천히 발걸음을 옮겼다. 낡은 골목 끝, 그녀의 그림자가 사라지는 순간까지 담쟁이덩굴은 여전히 바람에 흔들리며, 잊혀진 시간의 노래를 부르고 있었다. 삶이란 어쩌면, 이렇듯 희미해지는 풍경 속에서 선명하게 피어나는 꽃 한 송이 같은 것인지도 모른다. 그 꽃을 가슴에 품고, 우리는 묵묵히 저물어가는 하루를 걸어간다.", "간밤의 꿈은 짙은 안개처럼 형체를 알 수 없었고, 그 희미한 잔상만이 새벽의 고요 속에 떠돈다. 현실의 차가운 공기를 마주하며 침대에서 일어선다. 동이 트기 전의 하늘은 짙은 남색을 띠고 있었고, 그 너머로 희미하게 떠오르는 여명은 마치 거대한 그림자가 서서히 물러나는 듯했다. 오래된 시장을 찾는 것을 좋아한다. 대형마트의 깔끔함과 편리함도 좋지만, 시장에는 그곳에서만 느낄 수 있는 특별한 활기와 정겨움이 있다. 좌판 가득 싱싱한 채소와 과일을 진열해놓고 구성진 목소리로 손님을 부르는 상인들, 흥정을 하며 덤을 얻어가는 손님들의 웃음소리, 맛있는 냄새를 풍기며 발길을 유혹하는 길거리 음식들까지. 시장은 살아있는 사람들의 이야기로 가득한 공간이다. 나는 천천히 시장 골목을 걸으며, 다양한 물건들을 구경하고 사람들의 살아가는 모습을 관찰한다. 그 속에서 나는 잊고 지냈던 인간적인 따뜻함과 소박한 삶의 아름다움을 발견한다. 시장 상인들의 거친 손마디에는 정직한 땀의 가치가 담겨 있고, 그들의 구릿빛 얼굴에는 세월의 흔적과 삶의 지혜가 새겨져 있다. 그들은 단순히 물건을 파는 것이 아니라, 자신의 삶을 나누고 사람들과 정을 주고받는다. 그래서 시장에서의 거래는 단순한 매매를 넘어, 따뜻한 인간관계의 한 형태가 된다. 나는 시장 한구석 작은 분식집에 앉아 뜨끈한 어묵 국물을 마시며, 시장의 활기찬 풍경을 다시 한번 눈에 담았다. 이곳에는 여전히 변치 않는 사람 사는 냄새가 있었고, 그것이 나를 위로하고 새로운 힘을 주는 것 같았다."], engLong: [ "The old attic window, streaked with the dust of ages, allowed the afternoon sun to filter in, casting a soft, golden glow over forgotten treasures. The air hung heavy with the scent of aged paper and faint wood, a nostalgic perfume that seemed to whisper tales of bygone eras. Tiny dust motes danced in the invading sunbeams, sparkling like miniature galaxies, and the world outside, vieweat only such an elemental landscape could provide. The desert, in its starkness, mirrored the landscape of his own inner world, challenging and ultimately, offering a path to understanding."]
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -869,6 +1068,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('typingTheme') || 'dark';
   applyTheme(savedTheme);
   themeSelectEl.value = savedTheme;
+
+  document.getElementById('soundPackLabel').textContent = '타건음:';
+  document.getElementById('themeSelectLabel').textContent = '테마:';
+
 
   initializeAudioPool();
 
@@ -1015,7 +1218,11 @@ function startPractice(mode, resetSessionStats = false) {
         btn.classList.remove('active');
         if (btn.dataset.mode === mode) btn.classList.add('active');
     });
-    if (gameModeBtnEl) gameModeBtnEl.classList.remove('active');
+    if (gameModeBtnEl) {
+        gameModeBtnEl.innerHTML = '<i class="fas fa-gamepad"></i> 게임하기';
+        gameModeBtnEl.classList.remove('active');
+    }
+
 
     if (statsVisible && statsEl) statsEl.classList.remove('hidden');
 
@@ -1087,15 +1294,17 @@ function splitTextIntoLines(text, mode, screenWidth) {
 
 function renderTypingLayout() {
     if (!lineDisplayArea || !upcomingLinesArea) return;
-    lineDisplayArea.innerHTML = ''; upcomingLinesArea.innerHTML = '';
+    lineDisplayArea.innerHTML = '';
+    upcomingLinesArea.innerHTML = '';
+
     const fragmentPassedCurrent = document.createDocumentFragment();
     const fragmentUpcoming = document.createDocumentFragment();
 
-    const passedLineText = (currentDisplayLineIndex > 0 && linesToPractice[currentDisplayLineIndex - 1] !== undefined) ? linesToPractice[currentDisplayLineIndex - 1] : " ";
+    const passedLineText = (currentDisplayLineIndex > 0 && linesToPractice[currentDisplayLineIndex - 1] !== undefined) ? linesToPractice[currentDisplayLineIndex - 1] : " ";
     const passedEl = document.createElement('div');
     passedEl.classList.add('typing-line', 'passed');
-    passedEl.innerHTML = passedLineText.replace(/ /g, ' ');
-    if (passedLineText === " ") passedEl.style.visibility = 'hidden';
+    passedEl.textContent = passedLineText;
+    if (passedLineText === " ") passedEl.style.visibility = 'hidden';
     fragmentPassedCurrent.appendChild(passedEl);
 
     const currentLineText = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : "";
@@ -1108,7 +1317,7 @@ function renderTypingLayout() {
         currentEl.dataset.originalLine = currentLineText;
         handleHighlightUpdate(currentEl, "", currentLineText);
     } else {
-        currentEl.innerHTML = ' ';
+        currentEl.textContent = ' ';
         currentEl.style.boxShadow = 'none';
         currentEl.style.backgroundColor = 'transparent';
         currentEl.style.border = '1px solid transparent';
@@ -1118,18 +1327,29 @@ function renderTypingLayout() {
 
     for (let i = 1; i <= MAX_VISIBLE_UPCOMING_LINES; i++) {
         const upcomingIndex = currentDisplayLineIndex + i;
-        const upcomingLineText = (upcomingIndex < linesToPractice.length && linesToPractice[upcomingIndex] !== undefined) ? linesToPractice[upcomingIndex] : " ";
-        const upcomingEl = document.createElement('div');
-        upcomingEl.classList.add('typing-line', 'upcoming');
-        upcomingEl.innerHTML = upcomingLineText.replace(/ /g, ' ');
-        if (upcomingLineText === " ") upcomingEl.style.visibility = 'hidden';
-        fragmentUpcoming.appendChild(upcomingEl);
+        if (upcomingIndex < linesToPractice.length && linesToPractice[upcomingIndex] !== undefined) {
+            const upcomingLineText = linesToPractice[upcomingIndex];
+            const upcomingEl = document.createElement('div');
+            upcomingEl.classList.add('typing-line', 'upcoming');
+            upcomingEl.textContent = upcomingLineText;
+            fragmentUpcoming.appendChild(upcomingEl);
+        } else {
+            const upcomingEl = document.createElement('div');
+            upcomingEl.classList.add('typing-line', 'upcoming');
+            upcomingEl.textContent = ' ';
+            upcomingEl.style.visibility = 'hidden';
+            fragmentUpcoming.appendChild(upcomingEl);
+        }
     }
     upcomingLinesArea.appendChild(fragmentUpcoming);
 }
 
 function handleInputEvent() {
-    if (currentMode === 'game' || isGameActive) return;
+    if (currentMode === 'game' && isGameActive) {
+        playTypingSound();
+        return;
+    }
+    if (currentMode === 'game' && !isGameActive) return;
 
     const typedValue = typingInputField.value;
     const currentLineEl = document.getElementById('current-typing-line');
@@ -1150,17 +1370,25 @@ function handleInputEvent() {
 
 function handleHighlightUpdate(targetElement, typedValue, originalLine) {
     if (!targetElement) return;
-    if (typeof originalLine !== 'string') { targetElement.innerHTML = ' '; return; }
-    let formattedOriginalHTML = '';
+    if (typeof originalLine !== 'string') {
+        targetElement.textContent = ' '; // Or some other placeholder if originalLine is undefined
+        return;
+    }
+    let builtHTML = "";
     for (let i = 0; i < originalLine.length; i++) {
-        const char = originalLine[i] === ' ' ? ' ' : originalLine[i];
+        const char = originalLine[i];
+
         if (i < typedValue.length) {
             if (highlightEnabled && typedValue[i] !== originalLine[i]) {
-                formattedOriginalHTML += `<span class="highlight">${char}</span>`;
-            } else formattedOriginalHTML += `<strong>${char}</strong>`;
-        } else formattedOriginalHTML += `<span class="untyped-char">${char}</span>`;
+                builtHTML += `<span class="highlight">${char}</span>`;
+            } else {
+                builtHTML += `<strong>${char}</strong>`;
+            }
+        } else {
+            builtHTML += `<span class="untyped-char">${char}</span>`;
+        }
     }
-    targetElement.innerHTML = formattedOriginalHTML || ' ';
+    targetElement.innerHTML = builtHTML || ' '; // Ensure there's always content or a space
 }
 
 function handleKeyDownEvent(e) {
@@ -1175,16 +1403,20 @@ function handleKeyDownEvent(e) {
         playTypingSound();
     }
     const isModifierKey = e.ctrlKey || e.altKey || e.metaKey;
-    if (e.key.length === 1 && !isModifierKey) {
+    if (e.key.length === 1 && !isModifierKey) { // Regular character input
         if (!startTime) startTime = Date.now();
         if (originalLine && !currentLineStartTime) currentLineStartTime = Date.now();
         updateStatsDisplay(false);
     }
+
     if (e.key === 'Enter') {
         e.preventDefault();
-        if (originalLine !== null && originalLine !== undefined) processCurrentLineCompletion();
-        else if (currentDisplayLineIndex >= linesToPractice.length) startPractice(currentMode, false);
-    } else if (e.key === ' ' && originalLine !== null && typedValue.length >= originalLine.length) {
+        if (originalLine !== null && originalLine !== undefined) { // Check if there's a line to process
+            processCurrentLineCompletion();
+        } else if (currentDisplayLineIndex >= linesToPractice.length) { // No more lines, restart practice
+            startPractice(currentMode, false);
+        }
+    } else if (e.key === ' ' && originalLine !== null && typedValue.length >= originalLine.length) { // Spacebar at the end of the line
         e.preventDefault();
         processCurrentLineCompletion();
     }
@@ -1192,11 +1424,11 @@ function handleKeyDownEvent(e) {
 
 function processCurrentLineCompletion() {
     const typedValue = typingInputField.value;
-    if (currentDisplayLineIndex >= linesToPractice.length) {
+    if (currentDisplayLineIndex >= linesToPractice.length) { // Should ideally not happen if called correctly
         startPractice(currentMode, false); return;
     }
     const originalLine = linesToPractice[currentDisplayLineIndex];
-    if (originalLine === null || originalLine === undefined) {
+    if (originalLine === null || originalLine === undefined) { // Should not happen
         currentDisplayLineIndex++;
         if (currentDisplayLineIndex < linesToPractice.length) renderTypingLayout();
         else startPractice(currentMode, false);
@@ -1205,81 +1437,107 @@ function processCurrentLineCompletion() {
 
     let lineCorrectCharsThisLine = 0;
     let lineMistypedCharsOnThisLine = 0;
+
     for (let i = 0; i < originalLine.length; i++) {
         if (i < typedValue.length) {
-            if (typedValue[i] === originalLine[i]) lineCorrectCharsThisLine++;
-            else lineMistypedCharsOnThisLine++;
-        } else lineMistypedCharsOnThisLine++;
+            if (typedValue[i] === originalLine[i]) {
+                lineCorrectCharsThisLine++;
+            } else {
+                lineMistypedCharsOnThisLine++;
+            }
+        } else { // User pressed Enter/Space before typing the whole line
+            lineMistypedCharsOnThisLine++;
+        }
     }
-    if (typedValue.length > originalLine.length) lineMistypedCharsOnThisLine += (typedValue.length - originalLine.length);
+    if (typedValue.length > originalLine.length) { // User typed more characters than the line
+        lineMistypedCharsOnThisLine += (typedValue.length - originalLine.length);
+    }
 
     currentArticleCorrectChars += lineCorrectCharsThisLine;
     sessionTotalCorrectChars += lineCorrectCharsThisLine;
     sessionTotalMistypedChars += lineMistypedCharsOnThisLine;
-    sessionTotalValidChars += originalLine.length;
+    sessionTotalValidChars += originalLine.length; // Count all characters in the original line as valid attempts
 
     if (currentLineStartTime && lineCorrectCharsThisLine > 0) {
         const elapsedLineMinutes = (Date.now() - currentLineStartTime) / 60000;
-        if (elapsedLineMinutes > 0.0001) {
+        if (elapsedLineMinutes > 0.0001) { // Avoid division by zero or tiny numbers
             lastArticleSpeed = Math.round((lineCorrectCharsThisLine / elapsedLineMinutes) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1));
-        } else {
-            lastArticleSpeed = Math.round((lineCorrectCharsThisLine / 0.0001) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1) / 60 );
+        } else { // Handle very fast typing on short lines
+            lastArticleSpeed = Math.round((lineCorrectCharsThisLine / (0.5 / 60000)) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1)); // Assume at least 0.5 sec
         }
-        if (lastArticleSpeed > 0 && lastArticleSpeed < 5000) {
+        if (lastArticleSpeed > 0 && lastArticleSpeed < 5000) { // Add to log if speed is reasonable
             overallAvgSpeedLog.push(lastArticleSpeed);
             if (lastArticleSpeed > overallMaxSpeed) overallMaxSpeed = lastArticleSpeed;
         }
-    } else if (lineCorrectCharsThisLine === 0 && originalLine.length > 0) {
+    } else if (originalLine.length > 0) { // If the line had characters but none were typed correctly (or no time)
         lastArticleSpeed = 0;
-         if (overallAvgSpeedLog.length > 0 || lastArticleSpeed === 0) overallAvgSpeedLog.push(0);
+         if (overallAvgSpeedLog.length > 0 || lastArticleSpeed === 0) overallAvgSpeedLog.push(0); // Push 0 to average if it makes sense
     }
+
 
     currentDisplayLineIndex++;
     if(typingInputField) typingInputField.value = '';
     currentLineStartTime = null;
 
-    if (!currentMode.includes('Long')) {
-        currentArticleCorrectChars = 0; startTime = null;
+    if (!currentMode.includes('Long')) { // For short sentences, reset article stats for next sentence
+        currentArticleCorrectChars = 0;
+        startTime = null;
     }
 
     if (currentDisplayLineIndex < linesToPractice.length) {
         renderTypingLayout();
         if(resultEl) resultEl.textContent = currentMode.includes('Long') ? '다음 줄...' : '다음 문제!';
-        updateStatsDisplay(false); updateProgressBar();
+        updateStatsDisplay(false);
+        updateProgressBar();
         setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
-    } else {
-        updateStatsDisplay(false); updateProgressBar();
+    } else { // All lines/article completed
+        updateStatsDisplay(false);
+        updateProgressBar(); // Ensure progress bar is 100%
         if(resultEl) resultEl.textContent = currentMode.includes('Long') ? '장문 완료! 새로운 문제 준비 중...' : '연습 완료! 새로운 문제 준비 중...';
-        if (currentMode.includes('Long')) {
-            currentArticleCorrectChars = 0; startTime = null;
+        if (currentMode.includes('Long')) { // For long text, reset article stats after completion
+            currentArticleCorrectChars = 0;
+            startTime = null;
         }
-        setTimeout(() => startPractice(currentMode, false), 800);
+        setTimeout(() => startPractice(currentMode, false), 800); // Start new practice (same mode, don't reset session stats)
     }
 }
 
 function updateStatsDisplay(isNewArticleOrSessionReset = false) {
   const statsElements = {
-    speed: document.getElementById('speedStat'), accuracy: document.getElementById('accuracyStat'),
-    avg: document.getElementById('avgSpeedStat'), max: document.getElementById('maxSpeedStat')
+    speed: document.getElementById('speedStat'),
+    accuracy: document.getElementById('accuracyStat'),
+    avg: document.getElementById('avgSpeedStat'),
+    max: document.getElementById('maxSpeedStat')
   };
   if (!Object.values(statsElements).every(el => el)) return;
 
   let currentSpeedToShow = 0;
-  if (sessionResetInProgress || (isNewArticleOrSessionReset && startTime === null)) currentSpeedToShow = 0;
-  else if (currentMode.includes('Long') && startTime && currentArticleCorrectChars > 0) {
+  if (sessionResetInProgress || (isNewArticleOrSessionReset && startTime === null)) {
+      currentSpeedToShow = 0;
+  } else if (currentMode.includes('Long') && startTime && currentArticleCorrectChars > 0) {
       const elapsedMinutes = (Date.now() - startTime) / 60000;
-      if (elapsedMinutes > 0.0001) currentSpeedToShow = Math.round((currentArticleCorrectChars / elapsedMinutes) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1));
-  } else currentSpeedToShow = lastArticleSpeed;
+      if (elapsedMinutes > 0.0001) {
+        currentSpeedToShow = Math.round((currentArticleCorrectChars / elapsedMinutes) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1));
+      }
+  } else {
+      currentSpeedToShow = lastArticleSpeed; // For short sentences, show speed of the last completed line
+  }
   statsElements.speed.textContent = `${currentSpeedToShow} 타/분`;
 
   let accuracy = 0;
-  if (sessionResetInProgress) accuracy = 0;
-  else if (sessionTotalValidChars > 0) accuracy = Math.max(0, Math.min(Math.round((sessionTotalCorrectChars / sessionTotalValidChars) * 100), 100));
+  if (sessionResetInProgress) {
+      accuracy = 0;
+  } else if (sessionTotalValidChars > 0) {
+      accuracy = Math.max(0, Math.min(Math.round((sessionTotalCorrectChars / sessionTotalValidChars) * 100), 100));
+  }
   statsElements.accuracy.textContent = `${accuracy}%`;
 
   let finalOverallAverageSpeed = 0;
-  if (sessionResetInProgress) finalOverallAverageSpeed = 0;
-  else if (overallAvgSpeedLog.length > 0) finalOverallAverageSpeed = Math.round(overallAvgSpeedLog.reduce((a,b) => a+b,0) / overallAvgSpeedLog.length);
+  if (sessionResetInProgress) {
+      finalOverallAverageSpeed = 0;
+  } else if (overallAvgSpeedLog.length > 0) {
+      finalOverallAverageSpeed = Math.round(overallAvgSpeedLog.reduce((a,b) => a+b,0) / overallAvgSpeedLog.length);
+  }
   statsElements.avg.textContent = `${finalOverallAverageSpeed} 타/분`;
 
   statsElements.max.textContent = `${sessionResetInProgress ? 0 : overallMaxSpeed} 타/분`;
@@ -1289,29 +1547,57 @@ function updateProgressBar() {
     if (progressBarEl && progressBarContainerEl && linesToPractice.length > 0 && currentMode.includes('Long')) {
         const progress = linesToPractice.length > 1 ? (currentDisplayLineIndex / linesToPractice.length) * 100 : (currentDisplayLineIndex >= 1 ? 100 : 0);
         progressBarEl.style.width = `${Math.min(progress, 100)}%`;
-    } else if (progressBarEl) progressBarEl.style.width = '0%';
+    } else if (progressBarEl) {
+        progressBarEl.style.width = '0%';
+    }
 }
 
 function playTypingSound() {
   if (!soundEnabled || !currentSoundPack || !soundFiles[currentSoundPack] || !audioPool[currentSoundPack]) return;
+
   const soundPackSounds = soundFiles[currentSoundPack];
   const currentAudioPoolForPack = audioPool[currentSoundPack];
+
   if (soundPackSounds.length === 0 || currentAudioPoolForPack.length === 0) return;
 
   const soundSrc = getRandom(soundPackSounds);
   if (!soundSrc) return;
 
-  if (audioPointer[currentSoundPack] === undefined || audioPointer[currentSoundPack] === null || audioPointer[currentSoundPack] >= currentAudioPoolForPack.length) audioPointer[currentSoundPack] = 0;
+  // Ensure audioPointer is initialized for the current pack
+  if (audioPointer[currentSoundPack] === undefined || audioPointer[currentSoundPack] === null || audioPointer[currentSoundPack] >= currentAudioPoolForPack.length) {
+      audioPointer[currentSoundPack] = 0;
+  }
 
   let audioToPlay = currentAudioPoolForPack[audioPointer[currentSoundPack]];
   audioPointer[currentSoundPack] = (audioPointer[currentSoundPack] + 1) % currentAudioPoolForPack.length;
 
-  if (audioToPlay && !audioToPlay.paused) { audioToPlay.pause(); audioToPlay.currentTime = 0; }
   if (audioToPlay) {
-    audioToPlay.src = soundSrc;
-    const playPromise = audioToPlay.play();
-    if (playPromise !== undefined) playPromise.catch(error => { /* console.warn("오디오 재생 시도 실패:", error); */ });
-  } else initializeAudioPoolForPack(currentSoundPack);
+      if (!audioToPlay.paused) {
+          // If an audio object is still playing, try to find another one or create a new temporary one
+          // This is a simple approach; more robust pooling might be needed for very high typing speeds
+          let newAudio = currentAudioPoolForPack.find(a => a.paused);
+          if (newAudio) {
+              audioToPlay = newAudio;
+          } else {
+              // console.warn("Audio pool exhausted, consider increasing MAX_AUDIO_OBJECTS or a more advanced pool.");
+              // Optionally, create a temporary audio object if pool is exhausted, but this can lead to too many objects.
+              // audioToPlay = new Audio(soundSrc);
+              // audioToPlay.play().catch(e => console.warn("Temp audio play error:", e));
+              // return;
+          }
+      }
+      if (audioToPlay && audioToPlay.paused) { // Check again if it's paused
+        audioToPlay.src = soundSrc; // Set src before playing
+        const playPromise = audioToPlay.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => { /* console.warn("Audio play error:", error); */ });
+        }
+      }
+  } else {
+      // This case should ideally not be reached if initializeAudioPoolForPack works correctly.
+      // console.error("Audio object is undefined in pool for pack:", currentSoundPack);
+      initializeAudioPoolForPack(currentSoundPack); // Attempt to re-initialize
+  }
 }
 
 function activateGameMode() {
@@ -1322,17 +1608,23 @@ function activateGameMode() {
     if (gameLoopId) cancelAnimationFrame(gameLoopId);
     if (wordGenerationIntervalId) clearInterval(wordGenerationIntervalId);
     isTimeStopped = false;
+    usedWordsInLevel.clear();
 
     gameAreaContainerEl.innerHTML = `
         <div id="gameInternalControlsBar">
-            <div class="game-control-row" id="gameControlsRow1"></div>
-            <div class="game-control-row" id="gameControlsRow2"></div>
-            <div class="game-control-row" id="gameControlsRow3"></div>
+            <div class="game-control-row" id="gameTypeSelectionRow"></div>
+            <div class="game-control-row" id="gameSettingsRow1"></div>
+            <div class="game-control-row" id="gameSettingsRow2"></div>
         </div>
         <div class="game-ui-wrapper">
             <div id="game-start-message" style="display: flex; flex-direction: column; align-items: center;">
-                 <h2><i class="fas fa-gamepad"></i> 단어 게임</h2>
-                 <p>떨어지는 단어를 빠르게 입력하세요!<br>레벨을 선택하고 게임 시작 버튼을 눌러주세요.<br>각 레벨은 2분 동안 진행됩니다. 특수 아이템을 노려보세요!</p>
+                 <h2><i class="fas fa-cloud-showers-heavy"></i> 소나기</h2>
+                 <p>떨어지는 단어를 빠르게 입력하세요!<br>레벨을 선택하고 게임 시작 버튼을 눌러주세요.<br>각 레벨은 2분 동안 3단계의 난이도로 진행됩니다.</p>
+                 <div class="item-info">
+                    <div><span style="background-color:${ITEM_COLORS.EXTRA_LIFE};"></span> 생명 +1</div>
+                    <div><span style="background-color:${ITEM_COLORS.TIME_STOP};"></span> 3초 멈춤</div>
+                    <div><span style="background-color:${ITEM_COLORS.CLEAR_SCREEN};"></span> 화면 단어 삭제</div>
+                 </div>
                  <button id="startGameFromCanvasBtn" class="game-button"><i class="fas fa-play"></i> 게임 시작</button>
             </div>
             <canvas id="game-canvas"></canvas>
@@ -1345,52 +1637,39 @@ function activateGameMode() {
 
 
     const gameInternalControlsBar = document.getElementById('gameInternalControlsBar');
-    const row1 = document.getElementById('gameControlsRow1');
-    const row2 = document.getElementById('gameControlsRow2');
-    const row3 = document.getElementById('gameControlsRow3');
+    const gameTypeRow = document.getElementById('gameTypeSelectionRow');
+    const settingsRow1 = document.getElementById('gameSettingsRow1');
+    const settingsRow2 = document.getElementById('gameSettingsRow2');
+
+    // 1열: 게임 종류 선택 버튼
+    const sonagiBtn = document.createElement('button');
+    sonagiBtn.classList.add('game-type-button', 'active');
+    sonagiBtn.innerHTML = '<i class="fas fa-cloud-showers-heavy"></i> 소나기';
+    gameTypeRow.appendChild(sonagiBtn);
+
+    const preparingBtn1 = document.createElement('button');
+    preparingBtn1.classList.add('game-type-button', 'disabled');
+    preparingBtn1.textContent = '준비중';
+    preparingBtn1.disabled = true;
+    gameTypeRow.appendChild(preparingBtn1);
+
+    const preparingBtn2 = document.createElement('button');
+    preparingBtn2.classList.add('game-type-button', 'disabled');
+    preparingBtn2.textContent = '준비중';
+    preparingBtn2.disabled = true;
+    gameTypeRow.appendChild(preparingBtn2);
 
 
-    const levelSelectLabel = document.createElement('label');
-    levelSelectLabel.htmlFor = 'gameLevelSelect';
-    levelSelectLabel.classList.add('select-label');
-    levelSelectLabel.textContent = '레벨:';
-    row1.appendChild(levelSelectLabel);
+    // 2열: 테마, 타건음 종류, 타건음 ON/OFF
+    const themeControlItem = document.createElement('div');
+    themeControlItem.classList.add('game-control-item');
+    themeControlItem.appendChild(themeSettingsEl);
+    settingsRow1.appendChild(themeControlItem);
 
-    const gameLevelSelect = document.createElement('select');
-    gameLevelSelect.id = 'gameLevelSelect';
-    for (let i = 0; i < gameLevelsConfig.length; i++) {
-        const option = document.createElement('option');
-        option.value = i + 1;
-        option.textContent = `${i + 1}`;
-        gameLevelSelect.appendChild(option);
-    }
-    gameLevelSelect.value = gameLevel;
-    gameLevelSelect.addEventListener('change', (e) => {
-        gameLevel = parseInt(e.target.value);
-        if (isGameActive) initGame(false);
-    });
-    row1.appendChild(gameLevelSelect);
-
-    const langSelectLabel = document.createElement('label');
-    langSelectLabel.htmlFor = 'gameLangSelect';
-    langSelectLabel.classList.add('select-label');
-    langSelectLabel.textContent = '언어:';
-    row1.appendChild(langSelectLabel);
-
-    const gameLangSelect = document.createElement('select');
-    gameLangSelect.id = 'gameLangSelect';
-    const korOption = document.createElement('option');
-    korOption.value = 'kor'; korOption.textContent = '한국어';
-    const engOption = document.createElement('option');
-    engOption.value = 'eng'; engOption.textContent = '영어';
-    gameLangSelect.appendChild(korOption);
-    gameLangSelect.appendChild(engOption);
-    gameLangSelect.value = preferredGameLanguage;
-    gameLangSelect.addEventListener('change', (e) => {
-        preferredGameLanguage = e.target.value;
-        if (isGameActive) initGame(false);
-    });
-    row1.appendChild(gameLangSelect);
+    const soundPackControlItem = document.createElement('div');
+    soundPackControlItem.classList.add('game-control-item');
+    soundPackControlItem.appendChild(soundSettingsEl);
+    settingsRow1.appendChild(soundPackControlItem);
 
     gameToggleSoundBtn = document.createElement('button');
     gameToggleSoundBtn.id = 'gameToggleSoundBtn';
@@ -1405,19 +1684,71 @@ function activateGameMode() {
             toggleSoundBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> 타건음 ON' : '<i class="fas fa-volume-mute"></i> 타건음 OFF';
         }
     });
-    row1.appendChild(gameToggleSoundBtn);
+    const soundToggleControlItem = document.createElement('div');
+    soundToggleControlItem.classList.add('game-control-item');
+    soundToggleControlItem.appendChild(gameToggleSoundBtn);
+    settingsRow1.appendChild(soundToggleControlItem);
 
 
-    row2.appendChild(soundSettingsEl);
-    row2.appendChild(themeSettingsEl);
+    // 3열: 레벨, 언어, 타자연습 가기
+    const levelControlItem = document.createElement('div');
+    levelControlItem.classList.add('game-control-item');
+    const levelSelectLabel = document.createElement('label');
+    levelSelectLabel.htmlFor = 'gameLevelSelect';
+    levelSelectLabel.classList.add('select-label');
+    levelSelectLabel.textContent = '레벨:';
+    levelControlItem.appendChild(levelSelectLabel);
+    const gameLevelSelect = document.createElement('select');
+    gameLevelSelect.id = 'gameLevelSelect';
+    for (let i = 0; i < gameMainLevelsConfig.length; i++) {
+        const option = document.createElement('option');
+        option.value = i + 1;
+        option.textContent = `${i + 1}`;
+        gameLevelSelect.appendChild(option);
+    }
+    gameLevelSelect.value = gameLevel;
+    gameLevelSelect.addEventListener('change', (e) => {
+        gameLevel = parseInt(e.target.value);
+        currentSubLevelIndex = 0;
+        if (isGameActive) initGame(false);
+        else usedWordsInLevel.clear();
+    });
+    levelControlItem.appendChild(gameLevelSelect);
+    settingsRow2.appendChild(levelControlItem);
 
+    const langControlItem = document.createElement('div');
+    langControlItem.classList.add('game-control-item');
+    const langSelectLabel = document.createElement('label');
+    langSelectLabel.htmlFor = 'gameLangSelect';
+    langSelectLabel.classList.add('select-label');
+    langSelectLabel.textContent = '언어:';
+    langControlItem.appendChild(langSelectLabel);
+    const gameLangSelect = document.createElement('select');
+    gameLangSelect.id = 'gameLangSelect';
+    const korOption = document.createElement('option');
+    korOption.value = 'kor'; korOption.textContent = '한국어';
+    const engOption = document.createElement('option');
+    engOption.value = 'eng'; engOption.textContent = '영어';
+    gameLangSelect.appendChild(korOption);
+    gameLangSelect.appendChild(engOption);
+    gameLangSelect.value = preferredGameLanguage;
+    gameLangSelect.addEventListener('change', (e) => {
+        preferredGameLanguage = e.target.value;
+        if (isGameActive) initGame(false);
+        else usedWordsInLevel.clear();
+    });
+    langControlItem.appendChild(gameLangSelect);
+    settingsRow2.appendChild(langControlItem);
 
     const returnBtn = document.createElement('button');
     returnBtn.id = 'returnToPracticeBtnGame';
     returnBtn.classList.add('game-button');
-    returnBtn.innerHTML = `<i class="fas fa-keyboard"></i> 타자연습 하러가기`;
+    returnBtn.innerHTML = `<i class="fas fa-keyboard"></i> 타자연습 가기`;
     returnBtn.addEventListener('click', () => returnToPracticeMode(true));
-    row3.appendChild(returnBtn);
+    const returnBtnControlItem = document.createElement('div');
+    returnBtnControlItem.classList.add('game-control-item');
+    returnBtnControlItem.appendChild(returnBtn);
+    settingsRow2.appendChild(returnBtnControlItem);
 
 
     gameCanvas = document.getElementById('game-canvas');
@@ -1427,21 +1758,25 @@ function activateGameMode() {
 
     const containerWidth = gameAreaContainerEl.querySelector('.game-ui-wrapper').clientWidth;
     gameCanvas.width = Math.min(containerWidth > 0 ? containerWidth : 600, 800);
-    gameCanvas.height = Math.max(window.innerHeight * 0.65, 400);
+    gameCanvas.height = Math.max(window.innerHeight * 0.52, 320);
 
 
     document.querySelectorAll('.practice-mode-controls button').forEach(btn => btn.classList.remove('active'));
-    if (gameModeBtnEl) gameModeBtnEl.classList.add('active');
+    if (gameModeBtnEl) {
+        gameModeBtnEl.innerHTML = '<i class="fas fa-gamepad"></i> 게임하기';
+        gameModeBtnEl.classList.add('active');
+    }
+
 
     document.getElementById('startGameFromCanvasBtn').addEventListener('click', () => {
         initGame(true);
     });
-    drawGame();
+    drawGame(); // Initial draw for game mode UI
 }
 
 
 function showGameOverlayMessage(type, score = 0, level = 1) {
-    gamePausedForOverlay = true;
+    gamePausedForOverlay = true; // Pause game logic when overlay is shown
     let content = '';
     switch(type) {
         case "gameOver":
@@ -1449,30 +1784,39 @@ function showGameOverlayMessage(type, score = 0, level = 1) {
                 <h2><i class="fas fa-skull-crossbones"></i> 게임 오버</h2>
                 <p>최종 점수: ${score}<br>달성 레벨: ${level}</p>
                 <button id="playAgainBtnOverlay" class="game-button"><i class="fas fa-redo"></i> 다시 시작</button>
-                <button id="returnToPracticeOverlayBtn" class="game-button" style="background: var(--text-secondary); border-color: var(--text-secondary);"><i class="fas fa-keyboard"></i> 타자연습 하러가기</button>
+                <button id="returnToPracticeOverlayBtn" class="game-button" style="background: var(--text-secondary); border-color: var(--text-secondary);"><i class="fas fa-keyboard"></i> 타자연습 가기</button>
             `;
             break;
-        case "levelUp":
+        case "levelUp": // This case is handled differently to just show a quick message
             gameOverlayEl.innerHTML = `<h2>레벨 ${level} 달성!</h2>`;
             gameOverlayEl.classList.add('visible');
             setTimeout(() => {
                 gameOverlayEl.classList.remove('visible');
-                gamePausedForOverlay = false;
-            }, 1500);
-            return;
+                gamePausedForOverlay = false; // Resume game logic
+                // If game ended due to max level, this won't be called before gameOver
+            }, 1500); // Show for 1.5 seconds
+            return; // Early return for levelUp message
     }
+
+    // For gameOver, show the overlay and attach event listeners
     if (type !== "levelUp") {
         gameOverlayEl.innerHTML = content;
         gameOverlayEl.classList.add('visible');
     }
 
     if (type === "gameOver") {
-        document.getElementById('playAgainBtnOverlay').addEventListener('click', () => {
-            gameOverlayEl.classList.remove('visible');
-            gamePausedForOverlay = false;
-            initGame(true);
-        });
-        document.getElementById('returnToPracticeOverlayBtn').addEventListener('click', () => returnToPracticeMode(true));
+        const playAgainBtn = document.getElementById('playAgainBtnOverlay');
+        if (playAgainBtn) {
+            playAgainBtn.addEventListener('click', () => {
+                gameOverlayEl.classList.remove('visible');
+                gamePausedForOverlay = false;
+                initGame(true); // Start a new game
+            });
+        }
+        const returnToPracticeBtn = document.getElementById('returnToPracticeOverlayBtn');
+        if (returnToPracticeBtn) {
+            returnToPracticeBtn.addEventListener('click', () => returnToPracticeMode(true));
+        }
     }
 }
 
@@ -1484,6 +1828,8 @@ function initGame(fromStartButton = false) {
     isGameActive = true;
     gamePausedForOverlay = false;
     levelStartTime = Date.now();
+    usedWordsInLevel.clear();
+    currentSubLevelIndex = 0;
 
     const gameLevelSelectInBar = document.getElementById('gameLevelSelect');
     if (gameLevelSelectInBar) gameLevel = parseInt(gameLevelSelectInBar.value);
@@ -1499,17 +1845,18 @@ function initGame(fromStartButton = false) {
     if(gameInputField) {
       gameInputField.disabled = false;
       gameInputField.value = '';
-      setTimeout(() => gameInputField.focus(), 100);
+      setTimeout(() => gameInputField.focus(), 100); // Focus after elements are surely rendered
 
+      // Ensure event listeners are not duplicated if initGame is called multiple times
       if (!gameInputField.gameInputListenerAdded_input) {
-          gameInputField.addEventListener('input', () => {
+          gameInputField.addEventListener('input', () => { // Game typing sound
               if (isGameActive && !gamePausedForOverlay) {
                   playTypingSound();
               }
           });
           gameInputField.gameInputListenerAdded_input = true;
       }
-      if (!gameInputField.gameInputListenerAdded_keydown) { // 엔터키 핸들러는 한 번만 등록
+      if (!gameInputField.gameInputListenerAdded_keydown) { // Enter key handler for game
           gameInputField.addEventListener('keydown', handleGameInput);
           gameInputField.gameInputListenerAdded_keydown = true;
       }
@@ -1520,18 +1867,24 @@ function initGame(fromStartButton = false) {
 }
 
 function startGameLoop() {
-    if (gameLoopId) cancelAnimationFrame(gameLoopId);
+    if (gameLoopId) cancelAnimationFrame(gameLoopId); // Clear previous loop if any
+
     function loop() {
+        // Condition to stop the loop if the game is no longer active AND no overlay is active
+        // (unless it's the initial start message screen)
         if (!isGameActive && !gamePausedForOverlay) {
              if(gameOverlayEl && !gameOverlayEl.classList.contains('visible') && gameStartMessageEl && gameStartMessageEl.style.display !== 'flex'){
-                 cancelAnimationFrame(gameLoopId);
+                 cancelAnimationFrame(gameLoopId); // Stop the loop
                  return;
              }
         }
+
         if (isGameActive && !gamePausedForOverlay) {
             updateGameLogic();
         }
-        drawGame();
+        drawGame(); // Always draw to show UI or paused state
+
+        // Continue the loop if the game is active, or paused for an overlay, or on the start screen
         if (isGameActive || gamePausedForOverlay || (gameStartMessageEl && gameStartMessageEl.style.display === 'flex')) {
              gameLoopId = requestAnimationFrame(loop);
         }
@@ -1541,11 +1894,21 @@ function startGameLoop() {
 
 function startWordGeneration() {
     if (wordGenerationIntervalId) clearInterval(wordGenerationIntervalId);
-    const currentLevelIndex = Math.max(0, Math.min(gameLevel - 1, gameLevelsConfig.length - 1));
-    const currentLevelConfig = gameLevelsConfig[currentLevelIndex];
-    generateGameWord();
+
+    const mainLevelIndex = Math.max(0, Math.min(gameLevel - 1, gameMainLevelsConfig.length - 1));
+    const mainLevelConfig = gameMainLevelsConfig[mainLevelIndex];
+
+    if (!mainLevelConfig || !mainLevelConfig.subLevels || !mainLevelConfig.subLevels[currentSubLevelIndex]) {
+        console.error("Cannot find level config in startWordGeneration:", gameLevel, currentSubLevelIndex);
+        // Potentially stop the game or revert to a default level if config is missing
+        gameOver("configError");
+        return;
+    }
+    const currentLevelConfig = mainLevelConfig.subLevels[currentSubLevelIndex];
+
+    generateGameWord(); // Generate the first word immediately
     wordGenerationIntervalId = setInterval(() => {
-        if (!isTimeStopped) {
+        if (isGameActive && !isTimeStopped && !gamePausedForOverlay) { // Only generate if game is active and not paused/stopped
             generateGameWord();
         }
     }, currentLevelConfig.genRate);
@@ -1553,119 +1916,194 @@ function startWordGeneration() {
 
 function generateGameWord() {
     if (!isGameActive || !gameCanvas || gamePausedForOverlay || isTimeStopped) return;
-    const currentLevelIndex = Math.max(0, Math.min(gameLevel - 1, gameLevelsConfig.length - 1));
-    const currentLevelConfig = gameLevelsConfig[currentLevelIndex];
-    const wordPool = preferredGameLanguage === 'kor' ? gameWordsKor : gameWordsEng;
-    const MAX_DUPLICATE_CHECK_ATTEMPTS = 10;
+
+    const mainLevelIndex = Math.max(0, Math.min(gameLevel - 1, gameMainLevelsConfig.length - 1));
+    const mainLevelConfig = gameMainLevelsConfig[mainLevelIndex];
+
+     if (!mainLevelConfig || !mainLevelConfig.subLevels || !mainLevelConfig.subLevels[currentSubLevelIndex]) {
+        console.error("Cannot find level config in generateGameWord:", gameLevel, currentSubLevelIndex);
+        // Potentially stop the game or revert to a default level
+        return; // Avoid further errors
+    }
+    const currentLevelConfig = mainLevelConfig.subLevels[currentSubLevelIndex];
+
+
+    let baseWordPool = preferredGameLanguage === 'kor' ? gameWordsKor : gameWordsEng;
+    // Filter for words up to 5 chars for general pool, can be adjusted
+    let wordPool = baseWordPool.filter(word => word.length >= currentLevelConfig.wordMinLen && word.length <= Math.min(currentLevelConfig.wordMaxLen, 5));
+    if (wordPool.length === 0) { // Fallback if primary filter yields no words
+        wordPool = baseWordPool.filter(word => word.length <=5); // Broader fallback
+    }
+    if (wordPool.length === 0) { // Ultimate fallback
+        wordPool = baseWordPool;
+    }
+    if (wordPool.length === 0) { // If still no words (e.g., empty base pool)
+        console.error("Word pool is empty for language:", preferredGameLanguage);
+        return; // Cannot generate a word
+    }
+
+
+    const MAX_DUPLICATE_CHECK_ATTEMPTS = 30; // Max attempts to find a unique word
 
     let newWordText;
     let attempts = 0;
-    let isDuplicate;
+    let isDuplicateInLevel;
+    let isDuplicateOnScreen;
     let itemTypeDetails = null;
 
-    let minLen = currentLevelConfig.wordMinLenDefault;
-    let maxLen = currentLevelConfig.wordMaxLenDefault;
-
-    // 레벨에 따라 단어 길이 범위 동적 조정 (좀 더 세분화)
-    if (gameLevel >= 3 && gameLevel <= 5) { minLen = Math.max(minLen, 2); maxLen = Math.min(maxLen +1, 4); }
-    else if (gameLevel >= 6 && gameLevel <= 8) { minLen = Math.max(minLen, 3); maxLen = Math.min(maxLen +1, 5); }
-    else if (gameLevel >= 9 && gameLevel <= 11) { minLen = Math.max(minLen, 3); maxLen = Math.min(maxLen + 2, 6); }
-    else if (gameLevel >= 12 && gameLevel <= 14) { minLen = Math.max(minLen, 4); maxLen = Math.min(maxLen + 2, 8); }
-    else if (gameLevel >= 15) { minLen = Math.max(minLen, 5); maxLen = Math.min(maxLen + 3, 10); }
-
-
+    // Determine if this word should be an item
     if (Math.random() < ITEM_SPAWN_PROBABILITY) {
         const itemKeys = Object.keys(ITEM_TYPES);
         const randomItemKey = itemKeys[Math.floor(Math.random() * itemKeys.length)];
         itemTypeDetails = ITEM_TYPES[randomItemKey];
     }
 
+    // Try to find a suitable word (unique on screen, and unique in level for non-items)
     do {
         newWordText = getRandom(wordPool);
-        if (!newWordText) { attempts = MAX_DUPLICATE_CHECK_ATTEMPTS + 1; continue; }
-
-        if (itemTypeDetails && attempts < 1) {
-            isDuplicate = wordsOnScreen.some(word => word.text === newWordText && word.itemType === itemTypeDetails.type);
-        } else {
-            isDuplicate = wordsOnScreen.some(word => word.text === newWordText && !word.itemType);
+        if (!newWordText) { // Should not happen if wordPool is not empty
+            attempts = MAX_DUPLICATE_CHECK_ATTEMPTS + 1; // Force exit if getRandom fails
+            continue;
         }
+
+        // If it's an item, its length restriction might be different or none
+        // For simplicity, let items be any word from the pool if it's an item
+        // but ensure regular words meet length criteria.
+        const currentWordLength = newWordText.length;
+        if (itemTypeDetails && (currentWordLength < 2 || currentWordLength > 5)) { // Item words also have some length sanity check
+             itemTypeDetails = null; // If chosen item word is too short/long, revert to normal word
+        }
+
+
+        isDuplicateInLevel = usedWordsInLevel.has(newWordText);
+        isDuplicateOnScreen = wordsOnScreen.some(word => word.text === newWordText);
+
         attempts++;
-        if (attempts > MAX_DUPLICATE_CHECK_ATTEMPTS && isDuplicate && !itemTypeDetails) { break; }
-    } while (
-        (!newWordText || newWordText.length < minLen || newWordText.length > maxLen || (isDuplicate && !itemTypeDetails) ) &&
-        attempts <= MAX_DUPLICATE_CHECK_ATTEMPTS
+    } while ( // Continue if:
+        (!newWordText || // No word selected (should not happen)
+         (!itemTypeDetails && (newWordText.length < currentLevelConfig.wordMinLen || newWordText.length > Math.min(currentLevelConfig.wordMaxLen, 5))) || // Normal word, but wrong length
+         (!itemTypeDetails && (isDuplicateInLevel || isDuplicateOnScreen)) || // Normal word, but duplicate in level or on screen
+         (itemTypeDetails && isDuplicateOnScreen) // Item word, but duplicate on screen
+        ) && attempts <= MAX_DUPLICATE_CHECK_ATTEMPTS
     );
 
-    if (!newWordText) newWordText = preferredGameLanguage === 'kor' ? "단어" : "word";
+    // Fallback if too many attempts or criteria not met
+    if (!newWordText || (!itemTypeDetails && (newWordText.length < currentLevelConfig.wordMinLen || newWordText.length > Math.min(currentLevelConfig.wordMaxLen, 5) || isDuplicateInLevel))) {
+        let fallbackAttempts = 0;
+        const fallbackPool = baseWordPool.filter(word =>
+            word.length >= currentLevelConfig.wordMinLen &&
+            word.length <= Math.min(currentLevelConfig.wordMaxLen, 5) &&
+            !usedWordsInLevel.has(word) &&
+            !wordsOnScreen.some(w => w.text === word)
+        );
+        do {
+            newWordText = getRandom(fallbackPool.length > 0 ? fallbackPool : baseWordPool.filter(w => w.length >= currentLevelConfig.wordMinLen && w.length <= Math.min(currentLevelConfig.wordMaxLen, 5)));
+            fallbackAttempts++;
+        } while ((!newWordText || ( newWordText.length < currentLevelConfig.wordMinLen || newWordText.length > Math.min(currentLevelConfig.wordMaxLen, 5) ) ) && fallbackAttempts < 30);
+
+        if (!newWordText || newWordText.length < currentLevelConfig.wordMinLen || newWordText.length > Math.min(currentLevelConfig.wordMaxLen, 5)) {
+             newWordText = preferredGameLanguage === 'kor' ? "단어" : "word"; // Ultimate fallback
+        }
+        itemTypeDetails = null; // Ensure fallback words are not items
+    }
+
 
     gameCtx.font = GAME_FONT;
-    const displayText = itemTypeDetails ? itemTypeDetails.textPrefix + newWordText : newWordText;
+    const displayText = newWordText; // The actual word text
     const wordWidth = gameCtx.measureText(displayText).width;
 
+    // Determine fall speed, possibly with a fast word chance
     let fallSpeed = currentLevelConfig.fallSpeed;
     if (Math.random() < currentLevelConfig.fastWordChance) {
         fallSpeed *= currentLevelConfig.fastWordMultiplier;
     }
-    fallSpeed += (Math.random() * 0.05 - 0.025); // 불규칙성 약간 줄임
+    fallSpeed += (Math.random() * 0.05 - 0.025); // Slight random variation in speed
 
 
     const wordObj = {
         text: newWordText,
-        displayText: displayText,
-        x: Math.random() * (gameCanvas.width - wordWidth - 20) + 10,
-        y: 45,
-        speed: fallSpeed,
-        color: itemTypeDetails ? itemTypeDetails.color : null,
+        displayText: displayText, // For display on canvas
+        x: Math.random() * (gameCanvas.width - wordWidth - 20) + 10, // Random X, ensuring it's within canvas
+        y: 45, // Start just below the top UI
+        speed: Math.max(0.1, fallSpeed), // Ensure minimum speed
+        color: itemTypeDetails ? itemTypeDetails.color : null, // Color if it's an item
         itemType: itemTypeDetails ? itemTypeDetails.type : null,
         itemDuration: itemTypeDetails ? itemTypeDetails.duration : null
     };
     wordsOnScreen.push(wordObj);
+    if (!itemTypeDetails) { // Only add non-item words to usedWordsInLevel
+        usedWordsInLevel.add(newWordText);
+    }
 }
 
 function updateGameLogic() {
     if (!isGameActive || !gameCanvas || gamePausedForOverlay || !levelStartTime) return;
 
+    const elapsedTimeSinceLevelStart = Date.now() - levelStartTime;
+
+    // Handle Time Stop Item Effect
     if (isTimeStopped) {
-        const elapsedTimeSinceLevelStart = Date.now() - levelStartTime;
+         // Check for level completion even if time is stopped, if lives are > 0
          if (elapsedTimeSinceLevelStart >= LEVEL_DURATION_MS && gameLives > 0) {
-            if (gameLevel < gameLevelsConfig.length) {
+            if (gameLevel < gameMainLevelsConfig.length) {
                 gameLevel++;
+                currentSubLevelIndex = 0;
                 const gameLevelSelectInBar = document.getElementById('gameLevelSelect');
                 if (gameLevelSelectInBar) gameLevelSelectInBar.value = gameLevel;
                 showGameOverlayMessage("levelUp", gameScore, gameLevel);
-                levelStartTime = Date.now();
-                isTimeStopped = false;
+                levelStartTime = Date.now(); // Reset level timer
+                isTimeStopped = false; // Ensure time stop is reset
                 if(window.timeStopTimeoutId) clearTimeout(window.timeStopTimeoutId);
-            } else {
-                gameOver("maxLevelReached"); return;
+                usedWordsInLevel.clear();
+                if (wordGenerationIntervalId) clearInterval(wordGenerationIntervalId); // Restart word generation for new level
+                startWordGeneration();
+            } else { // Max level reached
+                gameOver("maxLevelReached");
+                return;
             }
         }
-        return;
+        return; // Don't move words or check for misses if time is stopped
+    }
+
+    // Sub-level progression
+    const newSubLevelIndex = Math.floor(elapsedTimeSinceLevelStart / SUB_LEVEL_DURATION_MS);
+    if (newSubLevelIndex > currentSubLevelIndex && newSubLevelIndex < gameMainLevelsConfig[gameLevel - 1].subLevels.length) {
+        currentSubLevelIndex = newSubLevelIndex;
+        // Potentially show a small notification for sub-level change if desired
+        if (wordGenerationIntervalId) clearInterval(wordGenerationIntervalId);
+        startWordGeneration(); // Restart with new sub-level's genRate
     }
 
 
-    const elapsedTime = Date.now() - levelStartTime;
-    if (elapsedTime >= LEVEL_DURATION_MS && gameLives > 0) {
-        if (gameLevel < gameLevelsConfig.length) {
+    // Check for level completion
+    if (elapsedTimeSinceLevelStart >= LEVEL_DURATION_MS && gameLives > 0) {
+        if (gameLevel < gameMainLevelsConfig.length) { // Not the last level
             gameLevel++;
+            currentSubLevelIndex = 0; // Reset sub-level for the new main level
             const gameLevelSelectInBar = document.getElementById('gameLevelSelect');
             if (gameLevelSelectInBar) gameLevelSelectInBar.value = gameLevel;
             showGameOverlayMessage("levelUp", gameScore, gameLevel);
-            levelStartTime = Date.now();
-        } else {
-            gameOver("maxLevelReached"); return;
+            levelStartTime = Date.now(); // Reset timer for the new level
+            usedWordsInLevel.clear(); // Clear used words for the new level
+            if (wordGenerationIntervalId) clearInterval(wordGenerationIntervalId); // Restart word generation for new level
+            startWordGeneration();
+        } else { // Max level reached
+            gameOver("maxLevelReached");
+            return; // Important to return to avoid further logic in this frame
         }
     }
 
+    // Move words and check for misses
     for (let i = wordsOnScreen.length - 1; i >= 0; i--) {
         wordsOnScreen[i].y += wordsOnScreen[i].speed;
-        if (wordsOnScreen[i].y > gameCanvas.height + parseInt(GAME_FONT)) {
-            wordsOnScreen.splice(i, 1);
+        if (wordsOnScreen[i].y > gameCanvas.height + parseInt(GAME_FONT)) { // Word passed bottom
+            wordsOnScreen.splice(i, 1); // Remove word
             if (gameLives > 0) {
                 gameLives--;
                 triggerLifeLostEffect();
                 if (gameLives <= 0) {
-                    gameOver("lives"); return;
+                    gameOver("lives"); // Pass reason for game over
+                    return; // Stop further processing in this frame after game over
                 }
             }
         }
@@ -1677,59 +2115,71 @@ function triggerLifeLostEffect() {
         gameCanvas.classList.add('flash-effect');
         setTimeout(() => {
             if(gameCanvas) gameCanvas.classList.remove('flash-effect');
-        }, 300);
+        }, 300); // Duration of the flash effect animation
     }
 }
-
 
 function drawGame() {
     if (!gameCtx || !gameCanvas) return;
     gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
     if (!isGameActive && gameStartMessageEl && gameStartMessageEl.style.display === 'flex') {
+        // If game hasn't started and start message is visible, don't draw game elements yet
         return;
     }
 
     let defaultGameWordColor;
-    if (document.body.classList.contains('light-theme')) {
-        defaultGameWordColor = '#3a322d';
-    } else if (document.body.classList.contains('pink-theme')) {
-        defaultGameWordColor = '#78283e';
-    } else {
-        defaultGameWordColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
+    // Determine word color based on the current theme for better visibility
+    if (document.body.classList.contains('light-theme')) { // 아이보리 테마
+        defaultGameWordColor = '#4A443F'; // 어둡고 명확한 갈색 계열
+    } else if (document.body.classList.contains('pink-theme')) { // 핑크 테마
+        defaultGameWordColor = '#4F2E3D'; // 어둡고 명확한 자주색 계열
+    } else { // 다크 테마 (기본)
+        defaultGameWordColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(); // 기존 로직 유지 (밝은 색상)
     }
     gameCtx.font = GAME_FONT;
 
 
+    // Draw words on screen
     for (const word of wordsOnScreen) {
-        gameCtx.fillStyle = word.color || defaultGameWordColor;
+        gameCtx.fillStyle = word.color || defaultGameWordColor; // Use item color or default (이제 테마에 맞게 개선된)
         gameCtx.fillText(word.displayText, word.x, word.y);
     }
 
+    // Draw UI elements (Score, Level, Lives, Timer)
     const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
-    const topUiY = 20;
-    const timerBarY = 30;
+    const topUiY = 20; // Y position for Score, Level, Lives
+    const timerBarY = 30; // Y position for the timer bar
     const timerBarHeight = 8;
-    const timerBarWidth = gameCanvas.width * 0.6;
-    const timerBarX = (gameCanvas.width - timerBarWidth) / 2;
+    const timerBarWidth = gameCanvas.width * 0.6; // Timer bar width relative to canvas
+    const timerBarX = (gameCanvas.width - timerBarWidth) / 2; // Center the timer bar
 
-    gameCtx.fillStyle = accentColor;
+    // Set style for UI text (Score, Level, Lives)
+    let uiTextColor = accentColor;
+    if (document.body.classList.contains('light-theme') || document.body.classList.contains('pink-theme')) {
+        uiTextColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-darker').trim();
+    }
+    gameCtx.fillStyle = uiTextColor;
     gameCtx.font = "bold 14px " + getComputedStyle(document.documentElement).getPropertyValue('--font-ui').trim();
 
+    // Score
     gameCtx.textAlign = "left";
     gameCtx.fillText(`점수: ${gameScore}`, 10, topUiY);
 
+    // Level
     gameCtx.textAlign = "center";
     gameCtx.fillText(`레벨: ${gameLevel}`, gameCanvas.width / 2, topUiY);
 
+    // Lives
     gameCtx.textAlign = "right";
     let livesDisplay = "";
     for(let i=0; i<INITIAL_LIVES; i++) {
-        livesDisplay += (i < gameLives ? "❤️" : "🖤");
+        livesDisplay += (i < gameLives ? "❤️" : "🖤"); // Heart icons for lives
     }
     gameCtx.fillText(`생명: ${livesDisplay}`, gameCanvas.width - 10, topUiY);
 
 
+    // Timer display and bar
     if (isGameActive && levelStartTime) {
         const currentElapsedTime = Date.now() - levelStartTime;
         const remainingTimeMs = Math.max(0, LEVEL_DURATION_MS - currentElapsedTime);
@@ -1739,17 +2189,27 @@ function drawGame() {
         const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
         gameCtx.textAlign = "center";
-        gameCtx.fillStyle = defaultGameWordColor;
-        gameCtx.fillText(timeString, gameCanvas.width / 2, timerBarY + timerBarHeight + 12);
+        // Timer text color should be easily readable on the game background
+        let timerTextColor;
+        if (document.body.classList.contains('light-theme') || document.body.classList.contains('pink-theme')) {
+            timerTextColor = '#555'; // 밝은 테마에서는 어두운 회색으로 타이머 텍스트
+        } else {
+             timerTextColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim(); // 다크 테마에서는 기존 설정
+        }
 
-        gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--input-border').trim();
+        gameCtx.fillStyle = timerTextColor;
+        gameCtx.fillText(timeString, gameCanvas.width / 2, timerBarY + timerBarHeight + 12); // Position timer text below the bar
+
+        // Draw timer bar background
+        gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-progress-bar-track').trim();
         gameCtx.fillRect(timerBarX, timerBarY, timerBarWidth, timerBarHeight);
 
+        // Draw timer bar progress
         const progressWidth = (remainingTimeMs / LEVEL_DURATION_MS) * timerBarWidth;
-        gameCtx.fillStyle = accentColor;
+        gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-progress-bar').trim();
         gameCtx.fillRect(timerBarX, timerBarY, progressWidth, timerBarHeight);
     }
-     gameCtx.textAlign = "left";
+     gameCtx.textAlign = "left"; // Reset textAlign for other potential drawings
 }
 
 function handleGameInput(e) {
@@ -1760,34 +2220,45 @@ function handleGameInput(e) {
         const typedWord = gameInputField.value.trim();
         if (typedWord === "") return;
 
+        // Prioritize words that are lower on the screen (closer to "dying")
         const sortedWordsOnScreen = [...wordsOnScreen].sort((a, b) => b.y - a.y);
 
         let foundMatch = false;
         for (let i = 0; i < sortedWordsOnScreen.length; i++) {
             const wordObj = sortedWordsOnScreen[i];
-            if (wordObj.text.toLowerCase() === typedWord.toLowerCase()) {
-                gameScore += wordObj.text.length * (preferredGameLanguage === 'kor' ? 5 : 10);
+            // Case-insensitive comparison for English words
+            const comparisonWord = preferredGameLanguage === 'eng' ? typedWord.toLowerCase() : typedWord;
+            const wordToMatch = preferredGameLanguage === 'eng' ? wordObj.text.toLowerCase() : wordObj.text;
 
+            if (wordToMatch === comparisonWord) {
+                // Correct word typed
+                gameScore += wordObj.text.length * (preferredGameLanguage === 'kor' ? 5 : 10); // Score based on word length and language
+
+                // Remove word from screen
                 const originalIndex = wordsOnScreen.findIndex(w => w === wordObj);
                 if (originalIndex > -1) {
                     wordsOnScreen.splice(originalIndex, 1);
                 }
 
                 foundMatch = true;
-                playTypingSound(); // 엔터로 단어 맞출 때 타건음
+                playTypingSound(); // Play sound for correct input
 
+                // Activate item effect if the word was an item
                 if (wordObj.itemType) {
                     activateItemEffect(wordObj.itemType, wordObj.itemDuration);
                 }
-                break;
+                break; // Exit loop once a match is found
             }
         }
 
         if (!foundMatch) {
-            gameAreaContainerEl.classList.add('shake-effect');
-            setTimeout(() => gameAreaContainerEl.classList.remove('shake-effect'), 200);
+            // Incorrect word: shake effect
+            if(gameAreaContainerEl) gameAreaContainerEl.classList.add('shake-effect');
+            setTimeout(() => {
+                if(gameAreaContainerEl) gameAreaContainerEl.classList.remove('shake-effect');
+            }, 200);
         }
-        gameInputField.value = "";
+        if(gameInputField) gameInputField.value = ""; // Clear input field
     }
 }
 
@@ -1795,13 +2266,14 @@ function activateItemEffect(itemType, duration) {
     switch (itemType) {
         case ITEM_TYPES.TIME_STOP.type:
             isTimeStopped = true;
-            if (window.timeStopTimeoutId) clearTimeout(window.timeStopTimeoutId);
+            if (window.timeStopTimeoutId) clearTimeout(window.timeStopTimeoutId); // Clear any existing timeout
             window.timeStopTimeoutId = setTimeout(() => {
                 isTimeStopped = false;
-            }, duration || 3000);
+            }, duration || 3000); // Default 3 seconds if duration not specified
             break;
         case ITEM_TYPES.CLEAR_SCREEN.type:
-            wordsOnScreen = wordsOnScreen.filter(word => word.itemType !== null);
+            // Remove all non-item words (words that don't have an itemType or are not the clear screen item itself if it's typed)
+            wordsOnScreen = wordsOnScreen.filter(word => word.itemType !== null && word.itemType !== ITEM_TYPES.CLEAR_SCREEN.type);
             break;
         case ITEM_TYPES.EXTRA_LIFE.type:
             if (gameLives < INITIAL_LIVES) {
@@ -1812,14 +2284,16 @@ function activateItemEffect(itemType, duration) {
 }
 
 function gameOver(reason = "lives") {
-    isGameActive = false;
-    if (gameInputField) gameInputField.disabled = true;
-    if (wordGenerationIntervalId) clearInterval(wordGenerationIntervalId);
+    isGameActive = false; // Stop game activity
+    if (gameInputField) gameInputField.disabled = true; // Disable input
+    if (wordGenerationIntervalId) clearInterval(wordGenerationIntervalId); // Stop new words
     wordGenerationIntervalId = null;
-    if (window.timeStopTimeoutId) clearTimeout(window.timeStopTimeoutId);
+    if (window.timeStopTimeoutId) clearTimeout(window.timeStopTimeoutId); // Clear time stop if active
     isTimeStopped = false;
 
     let messageType = "gameOver";
+    // Example: if (reason === "maxLevelReached") { messageType = "gameComplete"; }
+    // For now, all game ends are "gameOver"
     showGameOverlayMessage(messageType, gameScore, gameLevel);
 }
 
@@ -1832,28 +2306,45 @@ function returnToPracticeMode(resetSessionStats = true) {
     levelStartTime = null;
     isTimeStopped = false;
     if (window.timeStopTimeoutId) clearTimeout(window.timeStopTimeoutId);
+    usedWordsInLevel.clear();
 
 
     if (gameOverlayEl) gameOverlayEl.classList.remove('visible');
     if (gameStartMessageEl) gameStartMessageEl.style.display = 'none';
     document.body.classList.remove('game-mode-active');
 
-    if (mainControlsEl && originalSoundParent && originalThemeParent) {
+    // Restore sound and theme selectors to their original positions in the main controls
+    // Ensure originalSoundParent and originalThemeParent were captured correctly in DOMContentLoaded
+    if (mainControlsEl && originalSoundParent && originalThemeParent && soundSettingsEl && themeSettingsEl) {
         const gameInternalControlsBar = document.getElementById('gameInternalControlsBar');
-        if (gameInternalControlsBar && soundSettingsEl.parentNode === gameInternalControlsBar) {
+        // Check if the elements are currently children of the game controls bar before attempting to move them.
+        // This avoids errors if they were already moved or not part of the game bar.
+        if (gameInternalControlsBar && soundSettingsEl.parentNode !== originalSoundParent) {
             originalSoundParent.insertBefore(soundSettingsEl, originalSoundNextSibling);
         }
-        if (gameInternalControlsBar && themeSettingsEl.parentNode === gameInternalControlsBar) {
+        if (gameInternalControlsBar && themeSettingsEl.parentNode !== originalThemeParent) {
             originalThemeParent.insertBefore(themeSettingsEl, originalThemeNextSibling);
         }
-        if (gameToggleSoundBtn && gameToggleSoundBtn.parentNode) {
+        // Remove game-specific sound toggle button if it exists and is part of the game controls
+        if (gameToggleSoundBtn && gameToggleSoundBtn.parentNode && gameInternalControlsBar && gameInternalControlsBar.contains(gameToggleSoundBtn)) {
             gameToggleSoundBtn.parentNode.removeChild(gameToggleSoundBtn);
             gameToggleSoundBtn = null;
         }
     }
 
-    const lastPracticeMode = Array.from(document.querySelectorAll('.practice-mode-controls button.active'))
-                              .map(b => b.dataset.mode).find(m => m) || 'kor';
+
+    // Determine the last practice mode to return to
+    let lastPracticeMode = 'kor'; // Default practice mode
+    const activePracticeButton = document.querySelector('.practice-mode-controls button.active[data-mode]');
+    if(activePracticeButton && activePracticeButton.id !== 'gameModeBtn'){ //Ensure it's not the gameModeBtn itself
+        lastPracticeMode = activePracticeButton.dataset.mode;
+    } else {
+        // If no active practice button, or if gameModeBtn was active, find the first non-game button
+        const firstPracticeBtn = document.querySelector('.practice-mode-controls button[data-mode]:not(#gameModeBtn)');
+        if (firstPracticeBtn) {
+            lastPracticeMode = firstPracticeBtn.dataset.mode;
+        }
+    }
     startPractice(lastPracticeMode, resetSessionStats);
 }
 </script>
