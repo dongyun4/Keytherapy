@@ -885,6 +885,45 @@
       #lbb-timer-bar-container { height: 6px; margin: 3px auto 5px; }
       #lbb-timer-text {font-size: 0.6em;}
      }
+
+.hero-section a {
+  display: inline-block; /* a 태그가 올바르게 transform 효과를 받도록 */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* 부드러운 전환 효과 */
+  text-decoration: none; /* 밑줄 제거는 이미 되어 있지만 명시적으로 */
+  border-radius: var(--border-radius-small); /* 약간의 둥근 모서리 (선택 사항) */
+  padding: 18px; /* 클릭 영역을 살짝 넓히고 시각적 균형 (선택 사항) */
+}
+
+.hero-section a:hover {
+  transform: scale(1.03); /* 마우스 오버 시 약간 확대 */
+  /* 아래는 선택적으로 추가할 수 있는 효과들입니다. 원하는 것을 골라 사용하세요. */
+  /* box-shadow: 0 0 20px rgba(var(--accent-primary-rgb), 0.5); */ /* 주변에 부드러운 빛 효과 */
+}
+
+.hero-section a:hover .hero-title {
+  /* 마우스 오버 시 타이틀 텍스트 색 변경 (현재 테마의 accent-active 사용) */
+  color: var(--accent-active);
+  text-shadow: 0 0 18px rgba(var(--accent-primary-rgb), 0.45), 0 2px 5px rgba(0,0,0,0.6); /* 그림자 강조 */
+}
+
+.hero-section a:hover .hero-tagline {
+  /* 마우스 오버 시 태그라인 텍스트 색 변경 (현재 테마의 text-primary 사용 또는 accent-secondary 등) */
+  color: var(--text-primary); /* 더 밝게 또는 강조되도록 */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.35); /* 그림자 강조 */
+}
+
+/* 라이트 테마 및 핑크 테마에 대한 hover 색상 조정 (필요시) */
+.light-theme .hero-section a:hover .hero-title,
+.pink-theme .hero-section a:hover .hero-title {
+  color: var(--accent-primary); /* 라이트/핑크 테마에서는 hover시 primary 색상으로 */
+  text-shadow: 0 0 15px rgba(var(--accent-rgb),0.3), 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.light-theme .hero-section a:hover .hero-tagline,
+.pink-theme .hero-section a:hover .hero-tagline {
+  color: var(--text-secondary); /* 혹은 var(--text-primary) */
+  text-shadow: 0 1px 3px rgba(100,50,60,0.12);
+}
 </style>
 </head>
 <body>
@@ -892,7 +931,7 @@
     <div class="hero-section">
         <a href="https://www.youtube.com/@KeyTherapy" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;">
             <h1 class="hero-title">Key Therapy</h1>
-            <p class="hero-tagline">🎧 깊은 수면과 집중을 위한<br>키보드 타건 ASMR</p>
+            <p class="hero-tagline">깊은 수면과 집중을 위한<br>🎧키보드 타건 ASMR🎧</p>
         </a>
     </div>
   <div class="controls-and-stats-wrapper">
@@ -1013,7 +1052,7 @@ let rainfall_usedWordsInLevel = new Set();
 let rainfall_gameLoopId = null;
 let rainfall_wordGenerationIntervalId = null;
 const RAINFALL_INITIAL_LIVES = 5;
-const RAINFALL_GAME_FONT = "18px 'Noto Sans KR', sans-serif";
+const RAINFALL_GAME_FONT = "24px 'Noto Sans KR', sans-serif";
 let rainfall_preferredGameLanguage = 'kor';
 let rainfall_gamePausedForOverlay = false;
 let rainfall_levelStartTime = null;
@@ -2925,9 +2964,9 @@ function drawLetterBlockBattleGame() {
     else blockTextColorDark = '#333333';
 
 
-    const twoCharFontSize = Math.max(8, effectiveBlockSize * 0.26);
-    const threeCharFontSize = Math.max(7, effectiveBlockSize * 0.20);
-    const iconFontSize = Math.max(6, effectiveBlockSize * 0.18);
+    const twoCharFontSize = Math.max(8, effectiveBlockSize * 0.40);
+    const threeCharFontSize = Math.max(7, effectiveBlockSize * 0.32);
+    const iconFontSize = Math.max(6, effectiveBlockSize * 0.25);
 
 
     for (let r = 0; r < LBB_BOARD_ROWS; r++) {
@@ -2991,17 +3030,30 @@ function drawLetterBlockBattleGame() {
                 }
                 gameCtx.fillStyle = useLightText ? blockTextColorLight : blockTextColorDark;
 
-                const currentFontSize = block.displayChar.length >= 3 ? threeCharFontSize : twoCharFontSize;
-                gameCtx.font = `bold ${currentFontSize}px 'Noto Sans KR', sans-serif`;
-                gameCtx.textAlign = 'center';
-                gameCtx.textBaseline = 'middle';
-                const textYOffset = block.icon ? -effectiveBlockSize * 0.12 : 0;
-                gameCtx.fillText(block.displayChar, x + effectiveBlockSize / 2, y + effectiveBlockSize / 2 + 1 + textYOffset);
+                 gameCtx.textAlign = 'center';
+                gameCtx.textBaseline = 'middle'; // 수직 정렬 기준을 중앙으로 설정
+
+                const blockCenterX = x + effectiveBlockSize / 2;
+                const currentWordFontSize = block.displayChar.length >= 3 ? threeCharFontSize : twoCharFontSize;
 
                 if (block.icon) {
-                    gameCtx.font = `normal ${iconFontSize}px sans-serif`;
-                    const iconYOffset = effectiveBlockSize * 0.25;
-                    gameCtx.fillText(block.icon, x + effectiveBlockSize / 2, y + effectiveBlockSize / 2 + 1 + iconYOffset);
+                    // 아이콘이 있는 경우: 텍스트를 위쪽, 아이콘을 아래쪽에 배치
+                    // 텍스트 그리기
+                    gameCtx.font = `bold ${currentWordFontSize}px 'Noto Sans KR', sans-serif`;
+                    // Y 좌표는 블록 높이의 약 35% 지점 (위쪽). 비율은 조절 가능합니다.
+                    const textDrawY = y + effectiveBlockSize * 0.35;
+                    gameCtx.fillText(block.displayChar, blockCenterX, textDrawY);
+
+                    // 아이콘 그리기
+                    gameCtx.font = `normal ${iconFontSize}px sans-serif`; // 아이콘 폰트는 일반 두께로
+                    // Y 좌표는 블록 높이의 약 70% 지점 (아래쪽). 비율은 조절 가능합니다.
+                    const iconDrawY = y + effectiveBlockSize * 0.70;
+                    gameCtx.fillText(block.icon, blockCenterX, iconDrawY);
+                } else {
+                    // 아이콘이 없는 경우: 텍스트만 블록 중앙에 그리기
+                    gameCtx.font = `bold ${currentWordFontSize}px 'Noto Sans KR', sans-serif`;
+                    const textDrawY = y + effectiveBlockSize / 2; // 블록의 수직 중앙
+                    gameCtx.fillText(block.displayChar, blockCenterX, textDrawY);
                 }
             }
         }
