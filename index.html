@@ -1009,7 +1009,6 @@ let sessionTotalCorrectChars = 0;
 let sessionTotalMistypedChars = 0;
 let overallAvgSpeedLog = [];
 let overallMaxSpeed = 0;
-let sessionResetInProgress = false;
 
 const KOR_SPEED_FACTOR = 2.1;
 let soundEnabled = false;
@@ -1424,7 +1423,6 @@ function startPractice(mode, resetSessionStats = false) {
 
     if (statsVisible && statsEl) statsEl.classList.remove('hidden');
 
-    sessionResetInProgress = resetSessionStats;
     if (resetSessionStats) {
         overallMaxSpeed = 0; overallAvgSpeedLog = [];
         sessionTotalValidChars = 0; sessionTotalCorrectChars = 0; sessionTotalMistypedChars = 0;
@@ -1433,7 +1431,10 @@ function startPractice(mode, resetSessionStats = false) {
     startTime = null;
     currentLineStartTime = null;
     currentArticleCorrectChars = 0;
-    if (!resetSessionStats && !currentMode.includes('Long')) lastArticleSpeed = 0;
+    if (!resetSessionStats && !currentMode.includes('Long')) {
+        // lastArticleSpeed is intentionally kept for the first display after a non-reset new article.
+    }
+
 
     currentDisplayLineIndex = 0;
     const poolToUse = sentencePool[currentMode];
@@ -1454,11 +1455,10 @@ function startPractice(mode, resetSessionStats = false) {
 
     renderTypingLayout();
     if(resultEl) resultEl.textContent = '타자를 시작하세요!';
-    updateStatsDisplay(true);
+    updateStatsDisplay(resetSessionStats); // Pass resetSessionStats here
     updateProgressBar();
 
     setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
-    sessionResetInProgress = false;
 }
 
 function splitTextIntoLines(text, mode, screenWidth) {
@@ -1556,9 +1556,9 @@ function handleInputEvent(e) {
         if (typedValue.length > 0) {
             if (!startTime) startTime = Date.now();
             if (originalLine && !currentLineStartTime) currentLineStartTime = Date.now();
-            if (startTime) updateStatsDisplay(false);
+            if (startTime) updateStatsDisplay(false); // Not a session reset
         } else if (startTime && typedValue.length === 0) {
-            updateStatsDisplay(false);
+            updateStatsDisplay(false); // Not a session reset
         }
         handleHighlightUpdate(currentLineEl, typedValue, originalLine);
     }
@@ -1695,28 +1695,28 @@ function processCurrentLineCompletion() {
 
     if (!currentMode.includes('Long')) {
         currentArticleCorrectChars = 0;
-        startTime = null;
+        startTime = null; // Important: Reset startTime for 단문 to trigger speed retention
     }
 
     if (currentDisplayLineIndex < linesToPractice.length) {
         renderTypingLayout();
         if(resultEl) resultEl.textContent = currentMode.includes('Long') ? '다음 줄...' : '다음 문제!';
-        updateStatsDisplay(false);
+        updateStatsDisplay(false); // Not a session reset
         updateProgressBar();
         setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
     } else {
-        updateStatsDisplay(false);
+        updateStatsDisplay(false); // Not a session reset
         updateProgressBar();
         if(resultEl) resultEl.textContent = currentMode.includes('Long') ? '장문 완료! 새로운 문제 준비 중...' : '연습 완료! 새로운 문제 준비 중...';
         if (currentMode.includes('Long')) {
             currentArticleCorrectChars = 0;
             startTime = null;
         }
-        setTimeout(() => startPractice(currentMode, false), 800);
+        setTimeout(() => startPractice(currentMode, false), 200); // Reduced delay
     }
 }
 
-function updateStatsDisplay(isNewArticleOrSessionReset = false) {
+function updateStatsDisplay(isSessionReset = false) {
   const statsElements = {
     speed: document.getElementById('speedStat'),
     accuracy: document.getElementById('accuracyStat'),
@@ -1726,20 +1726,24 @@ function updateStatsDisplay(isNewArticleOrSessionReset = false) {
   if (!Object.values(statsElements).every(el => el)) return;
 
   let currentSpeedToShow = 0;
-  if (sessionResetInProgress || (isNewArticleOrSessionReset && startTime === null)) {
+  if (isSessionReset) {
       currentSpeedToShow = 0;
-  } else if (currentMode.includes('Long') && startTime && currentArticleCorrectChars > 0) {
+  } else if (startTime === null && !currentMode.includes('Long')) { // 단문 다음 문제 대기
+      currentSpeedToShow = lastArticleSpeed;
+  } else if (currentMode.includes('Long') && startTime && currentArticleCorrectChars > 0) { // 장문 진행 중
       const elapsedMinutes = (Date.now() - startTime) / 60000;
       if (elapsedMinutes > 0.0001) {
         currentSpeedToShow = Math.round((currentArticleCorrectChars / elapsedMinutes) * (currentMode.includes('kor') ? KOR_SPEED_FACTOR : 1));
+      } else {
+        currentSpeedToShow = 0; // Avoid division by zero or extremely high speeds
       }
-  } else {
+  } else { // 그 외 (장문 다음 줄 대기, 단문 입력 중 등)
       currentSpeedToShow = lastArticleSpeed;
   }
   statsElements.speed.textContent = `${currentSpeedToShow} 타/분`;
 
   let accuracy = 0;
-  if (sessionResetInProgress) {
+  if (isSessionReset) {
       accuracy = 0;
   } else if (sessionTotalValidChars > 0) {
       accuracy = Math.max(0, Math.min(Math.round((sessionTotalCorrectChars / sessionTotalValidChars) * 100), 100));
@@ -1747,15 +1751,16 @@ function updateStatsDisplay(isNewArticleOrSessionReset = false) {
   statsElements.accuracy.textContent = `${accuracy}%`;
 
   let finalOverallAverageSpeed = 0;
-  if (sessionResetInProgress) {
+  if (isSessionReset) {
       finalOverallAverageSpeed = 0;
   } else if (overallAvgSpeedLog.length > 0) {
       finalOverallAverageSpeed = Math.round(overallAvgSpeedLog.reduce((a,b) => a+b,0) / overallAvgSpeedLog.length);
   }
   statsElements.avg.textContent = `${finalOverallAverageSpeed} 타/분`;
 
-  statsElements.max.textContent = `${sessionResetInProgress ? 0 : overallMaxSpeed} 타/분`;
+  statsElements.max.textContent = `${isSessionReset ? 0 : overallMaxSpeed} 타/분`;
 }
+
 
 function updateProgressBar() {
     if (progressBarEl && progressBarContainerEl && linesToPractice.length > 0 && currentMode.includes('Long')) {
@@ -2016,14 +2021,14 @@ function activateGameMode(gameType) {
     gameCanvas.width = Math.min(containerWidth > 0 ? containerWidth : 600, 800);
     if (gameType === 'letterBlockBattle') {
         gameCanvas.height = Math.max(window.innerHeight * 0.48, 300);
-        const boardAreaHeight = gameCanvas.height - 50;
+        const boardAreaHeight = gameCanvas.height - 50; // Account for top UI space
         LBB_BLOCK_SIZE = Math.floor(Math.min(gameCanvas.width / LBB_BOARD_COLS, boardAreaHeight / LBB_BOARD_ROWS));
-        const baseFontSize = LBB_BLOCK_SIZE * 0.28;
+        const baseFontSize = LBB_BLOCK_SIZE * 0.28; // Adjusted for better fit
         lbb_blockTextFont = `bold ${Math.max(6, baseFontSize)}px 'Noto Sans KR', sans-serif`;
         if(lbbTimerBarContainerEl) lbbTimerBarContainerEl.style.display = 'block';
 
-    } else {
-        gameCanvas.height = Math.max(window.innerHeight * 0.52, 320);
+    } else { // Rainfall
+        gameCanvas.height = Math.max(window.innerHeight * 0.52, 320); // Slightly more height for rainfall
         if(lbbTimerBarContainerEl) lbbTimerBarContainerEl.style.display = 'none';
     }
 
@@ -2072,7 +2077,7 @@ function showGamePopup(text, duration = 1200, styleProps = {}) {
         itemEffectPopupEl.textContent = text;
         itemEffectPopupEl.style.backgroundColor = styleProps.backgroundColor || getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
         itemEffectPopupEl.style.color = styleProps.color || getComputedStyle(document.documentElement).getPropertyValue('--button-text-on-accent').trim();
-        
+
         itemEffectPopupEl.classList.add('visible');
         setTimeout(() => {
             itemEffectPopupEl.classList.remove('visible');
@@ -2270,13 +2275,14 @@ function drawRainfallGame() {
     gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
     if (!rainfall_isGameActive && gameStartMessageEl && gameStartMessageEl.style.display === 'flex' && currentGameType === 'rainfall') {
+        // Draw a placeholder or initial screen if needed before game starts
         return;
     }
 
     let defaultGameWordColor;
     const currentThemeBodyClass = document.body.classList.contains('light-theme') ? 'light' : (document.body.classList.contains('pink-theme') ? 'pink' : 'dark');
-    if (currentThemeBodyClass === 'light') defaultGameWordColor = '#4A443F';
-    else if (currentThemeBodyClass === 'pink') defaultGameWordColor = '#4F2E3D';
+    if (currentThemeBodyClass === 'light') defaultGameWordColor = '#4A443F'; // Darker text for light theme
+    else if (currentThemeBodyClass === 'pink') defaultGameWordColor = '#4F2E3D'; // Darker text for pink theme
     else defaultGameWordColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
 
     gameCtx.font = RAINFALL_GAME_FONT;
@@ -2285,6 +2291,7 @@ function drawRainfallGame() {
         gameCtx.fillStyle = word.color || defaultGameWordColor;
         gameCtx.fillText(word.displayText, word.x, word.y);
     }
+    // UI elements (score, lives, timer)
     const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
     const topUiY = 20, timerBarY = 30, timerBarHeight = 8, timerBarWidth = gameCanvas.width * 0.6, timerBarX = (gameCanvas.width - timerBarWidth) / 2;
     let uiTextColor = accentColor;
@@ -2296,6 +2303,7 @@ function drawRainfallGame() {
     gameCtx.textAlign = "center"; gameCtx.fillText(`레벨: ${rainfall_gameLevel}`, gameCanvas.width / 2, topUiY);
     gameCtx.textAlign = "right"; let livesDisplay = ""; for(let i=0; i<RAINFALL_INITIAL_LIVES; i++) livesDisplay += (i < rainfall_gameLives ? "❤️" : "🖤"); gameCtx.fillText(`생명: ${livesDisplay}`, gameCanvas.width - 10, topUiY);
 
+    // Timer Bar and Text
     if (rainfall_isGameActive && rainfall_levelStartTime) {
         const currentElapsedTime = Date.now() - rainfall_levelStartTime;
         const remainingTimeMs = Math.max(0, RAINFALL_LEVEL_DURATION_MS - currentElapsedTime);
@@ -2305,20 +2313,21 @@ function drawRainfallGame() {
         const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
         gameCtx.textAlign = "center";
-        let timerTextColor = defaultGameWordColor;
-        if (currentThemeBodyClass !== 'dark') timerTextColor = '#555';
+        let timerTextColor = defaultGameWordColor; // Default to game word color
+        if (currentThemeBodyClass !== 'dark') timerTextColor = '#555'; // Specific for light/pink themes if needed
         else timerTextColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
 
         gameCtx.fillStyle = timerTextColor;
-        gameCtx.fillText(timeString, gameCanvas.width / 2, timerBarY + timerBarHeight + 12);
+        gameCtx.fillText(timeString, gameCanvas.width / 2, timerBarY + timerBarHeight + 12); // Timer text below bar
 
+        // Timer progress bar
         gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-progress-bar-track').trim();
         gameCtx.fillRect(timerBarX, timerBarY, timerBarWidth, timerBarHeight);
         const progressWidth = (remainingTimeMs / RAINFALL_LEVEL_DURATION_MS) * timerBarWidth;
         gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-progress-bar').trim();
         gameCtx.fillRect(timerBarX, timerBarY, progressWidth, timerBarHeight);
     }
-    gameCtx.textAlign = "left";
+    gameCtx.textAlign = "left"; // Reset alignment
 }
 
 function handleRainfallGameInputSubmit() {
@@ -2326,7 +2335,7 @@ function handleRainfallGameInputSubmit() {
     const typedWord = gameInputField.value.trim();
     if (typedWord === "") return;
 
-    const sortedWordsOnScreen = [...rainfall_wordsOnScreen].sort((a, b) => b.y - a.y);
+    const sortedWordsOnScreen = [...rainfall_wordsOnScreen].sort((a, b) => b.y - a.y); // Prioritize lower (older) words
     let foundMatch = false;
     for (let i = 0; i < sortedWordsOnScreen.length; i++) {
         const wordObj = sortedWordsOnScreen[i];
@@ -2339,7 +2348,7 @@ function handleRainfallGameInputSubmit() {
             if (originalIndex > -1) rainfall_wordsOnScreen.splice(originalIndex, 1);
             foundMatch = true;
             if (wordObj.itemType) activateRainfallItemEffect(wordObj.itemType, wordObj.itemDuration);
-            break;
+            break; // Match found, no need to check further
         }
     }
     if (!foundMatch) {
@@ -2361,6 +2370,7 @@ function activateRainfallItemEffect(itemType, duration) {
             break;
         case RAINFALL_ITEM_TYPES.CLEAR_SCREEN.type:
             popupText = `${RAINFALL_ITEM_TYPES.CLEAR_SCREEN.icon} 화면 정리!`;
+            // Keep items, remove normal words
             rainfall_wordsOnScreen = rainfall_wordsOnScreen.filter(word => word.itemType !== null && word.itemType !== RAINFALL_ITEM_TYPES.CLEAR_SCREEN.type);
             break;
         case RAINFALL_ITEM_TYPES.EXTRA_LIFE.type:
@@ -2381,7 +2391,7 @@ function rainfallGameOver(reason = "lives") {
 
 // --- LETTER BLOCK BATTLE GAME FUNCTIONS ---
 function initLetterBlockBattleGame(fromStartButtonOrNextLevel = false) {
-    if (gameStartMessageEl && fromStartButtonOrNextLevel && !lbb_isGameActive) {
+    if (gameStartMessageEl && fromStartButtonOrNextLevel && !lbb_isGameActive) { // Only hide if starting a new game from message
         gameStartMessageEl.style.display = 'none';
     }
     if (lbbTimerBarContainerEl) lbbTimerBarContainerEl.style.display = 'block';
@@ -2399,7 +2409,7 @@ function initLetterBlockBattleGame(fromStartButtonOrNextLevel = false) {
     lbb_playerScore = 0;
     lbb_enemyScore = 0;
     lbb_playerPos = { r: 0, c: 0 };
-    lbb_enemyOriginalStartPos = { r: LBB_BOARD_ROWS - 1, c: LBB_BOARD_COLS - 1};
+    lbb_enemyOriginalStartPos = { r: LBB_BOARD_ROWS - 1, c: LBB_BOARD_COLS - 1}; // Reset enemy's original start for consistency
     lbb_enemyPos = { ...lbb_enemyOriginalStartPos };
 
     lbb_isEnemyFrozen = false;
@@ -2407,14 +2417,14 @@ function initLetterBlockBattleGame(fromStartButtonOrNextLevel = false) {
 
     const gameLevelSelectInBar = document.getElementById('gameLevelSelect');
     if (gameLevelSelectInBar) {
-        if (fromStartButtonOrNextLevel && !lbb_finalBattleAnimation.isActive && !lbb_isGameActive ) {
+        if (fromStartButtonOrNextLevel && !lbb_finalBattleAnimation.isActive && !lbb_isGameActive ) { // Starting new game, not continuing
              lbb_gameLevel = parseInt(gameLevelSelectInBar.value);
-        } else if (fromStartButtonOrNextLevel && lbb_gameLevel > 0) {
+        } else if (fromStartButtonOrNextLevel && lbb_gameLevel > 0) { // This is a "Next Level" call from overlay
             // lbb_gameLevel is already incremented by the overlay logic for "Next Level"
-        } else {
+        } else { // Fallback or initial load without explicit button press
             lbb_gameLevel = parseInt(gameLevelSelectInBar.value) || 1;
         }
-        gameLevelSelectInBar.value = lbb_gameLevel;
+        gameLevelSelectInBar.value = lbb_gameLevel; // Ensure select matches current level
     }
     lbb_enemyMoveDelay = lbb_levelDelays[Math.min(lbb_gameLevel - 1, lbb_levelDelays.length - 1)];
     lbb_gameStartTime = Date.now();
@@ -2440,9 +2450,10 @@ function generateLBBGameBoard() {
     for (let r = 0; r < LBB_BOARD_ROWS; r++) {
         const row = [];
         for (let c = 0; c < LBB_BOARD_COLS; c++) {
-            let blockWord = getRandom(lbb_wordPool) || "단어";
+            let blockWord = getRandom(lbb_wordPool) || "단어"; // Fallback word
             let blockEffectDetails = LBB_BLOCK_EFFECT_TYPES.NORMAL;
 
+            // Spawn items, but not on player/enemy starting squares
             if (Math.random() < LBB_ITEM_SPAWN_PROBABILITY && !(r === 0 && c === 0) && !(r === LBB_BOARD_ROWS -1 && c === LBB_BOARD_COLS -1) ) {
                 const itemTypeKeys = Object.keys(LBB_BLOCK_EFFECT_TYPES).filter(k => k !== 'NORMAL');
                 const randomItemKey = getRandom(itemTypeKeys);
@@ -2452,7 +2463,7 @@ function generateLBBGameBoard() {
             }
             row.push({
                 char: blockWord,
-                displayChar: blockWord,
+                displayChar: blockWord, // Initially same, might change with icons
                 type: blockEffectDetails.type,
                 color: blockEffectDetails.color,
                 score: blockEffectDetails.score,
@@ -2464,9 +2475,10 @@ function generateLBBGameBoard() {
         }
         lbb_gameBoard.push(row);
     }
+    // Ensure player and enemy start on broken blocks
     if (lbb_gameBoard[lbb_playerPos.r] && lbb_gameBoard[lbb_playerPos.r][lbb_playerPos.c]) {
       lbb_gameBoard[lbb_playerPos.r][lbb_playerPos.c].broken = true;
-      lbb_gameBoard[lbb_playerPos.r][lbb_playerPos.c].char = ' ';
+      lbb_gameBoard[lbb_playerPos.r][lbb_playerPos.c].char = ' '; // No word on start block
       lbb_gameBoard[lbb_playerPos.r][lbb_playerPos.c].displayChar = ' ';
     }
     if (lbb_gameBoard[lbb_enemyPos.r] && lbb_gameBoard[lbb_enemyPos.r][lbb_enemyPos.c]) {
@@ -2482,14 +2494,14 @@ function getSurroundingLBBBlocks(pos) {
     }
     const { r, c } = pos;
     const blocks = [];
-    const moves = [ {dr: -1, dc: 0}, {dr: 1, dc: 0}, {dr: 0, dc: -1}, {dr: 0, dc: 1} ];
+    const moves = [ {dr: -1, dc: 0}, {dr: 1, dc: 0}, {dr: 0, dc: -1}, {dr: 0, dc: 1} ]; // N, S, W, E
     for (const move of moves) {
         const nr = r + move.dr;
         const nc = c + move.dc;
         if (nr >= 0 && nr < LBB_BOARD_ROWS && nc >= 0 && nc < LBB_BOARD_COLS &&
             lbb_gameBoard[nr] && lbb_gameBoard[nr][nc] && !lbb_gameBoard[nr][nc].broken) {
             const blockData = lbb_gameBoard[nr][nc];
-            blocks.push({...blockData, r: nr, c: nc });
+            blocks.push({...blockData, r: nr, c: nc }); // Include position for easy access
         }
     }
     return blocks;
@@ -2529,30 +2541,31 @@ function lbb_playerMoveAndBreak(targetBlock) {
         lbb_applyEffect(blockData.effect, lbb_playerPos, true, blockData.freezeDuration, blockData.icon);
     }
 
+    // Clear relocation timer if a move is made
     if (lbb_playerNoPlayableBlocksTimerId !== null) {
         clearTimeout(lbb_playerNoPlayableBlocksTimerId);
         lbb_playerNoPlayableBlocksTimerId = null;
     }
 
-    if (checkLBBBattleCondition()) return;
-    if (!lbb_gamePausedForEffect) drawLetterBlockBattleGame();
+    if (checkLBBBattleCondition()) return; // If battle triggered, stop here
+    if (!lbb_gamePausedForEffect) drawLetterBlockBattleGame(); // Only redraw if not paused for an effect like swap
 }
 
 let lbb_blockBreakParticles = [];
 function lbb_triggerBlockBreakEffect(r, c, color) {
-    const particleCount = 5 + Math.floor(Math.random() * 5);
+    const particleCount = 5 + Math.floor(Math.random() * 5); // 5 to 9 particles
     const blockCenterX = c * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + (gameCanvas.width - LBB_BOARD_COLS * LBB_BLOCK_SIZE) / 2;
-    const blockCenterY = r * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + 30;
+    const blockCenterY = r * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + 30; // 30 is boardOffsetY
 
     for (let i = 0; i < particleCount; i++) {
         lbb_blockBreakParticles.push({
             x: blockCenterX,
             y: blockCenterY,
-            size: Math.random() * 3 + 2,
-            color: color || '#ffffff',
-            vx: (Math.random() - 0.5) * 3,
-            vy: (Math.random() - 0.5) * 3 - 1,
-            life: 20 + Math.random() * 10
+            size: Math.random() * 3 + 2, // Size 2 to 5
+            color: color || '#ffffff', // Default white if no color
+            vx: (Math.random() - 0.5) * 3, // Horizontal velocity
+            vy: (Math.random() - 0.5) * 3 - 1, // Vertical velocity (slight upward bias)
+            life: 20 + Math.random() * 10 // Lifetime in frames (0.33 to 0.5 seconds at 60fps)
         });
     }
 }
@@ -2564,27 +2577,29 @@ function lbb_enemyAIAction() {
     const surroundingBlocks = getSurroundingLBBBlocks(lbb_enemyPos);
     if (surroundingBlocks.length > 0) {
         let targetBlock = null;
-        const aggressionLevel = lbb_gameLevel / LBB_MAX_LEVEL;
-        const pursuitChance = 0.4 + aggressionLevel * 0.5;
+        // AI Logic: Try to move towards player, otherwise random
+        const aggressionLevel = lbb_gameLevel / LBB_MAX_LEVEL; // 0.1 to 1.0
+        const pursuitChance = 0.4 + aggressionLevel * 0.5; // Chance to pursue: 45% to 90%
 
         if (Math.random() < pursuitChance) {
+            // Prioritize moves that reduce distance to player
             const dx = lbb_playerPos.c - lbb_enemyPos.c;
             const dy = lbb_playerPos.r - lbb_enemyPos.r;
             let preferredMoves = [];
-            if (Math.abs(dx) > Math.abs(dy)) {
-                if (dx > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c + 1 && b.r === lbb_enemyPos.r)));
-                else if (dx < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c - 1 && b.r === lbb_enemyPos.r)));
-                if (dy > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r + 1 && b.c === lbb_enemyPos.c)));
-                else if (dy < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r - 1 && b.c === lbb_enemyPos.c)));
-            } else {
-                if (dy > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r + 1 && b.c === lbb_enemyPos.c)));
-                else if (dy < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r - 1 && b.c === lbb_enemyPos.c)));
-                if (dx > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c + 1 && b.r === lbb_enemyPos.r)));
-                else if (dx < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c - 1 && b.r === lbb_enemyPos.r)));
+            if (Math.abs(dx) > Math.abs(dy)) { // Move horizontally first if farther
+                if (dx > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c + 1 && b.r === lbb_enemyPos.r))); // Right
+                else if (dx < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c - 1 && b.r === lbb_enemyPos.r))); // Left
+                if (dy > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r + 1 && b.c === lbb_enemyPos.c))); // Down
+                else if (dy < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r - 1 && b.c === lbb_enemyPos.c))); // Up
+            } else { // Move vertically first
+                if (dy > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r + 1 && b.c === lbb_enemyPos.c))); // Down
+                else if (dy < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.r === lbb_enemyPos.r - 1 && b.c === lbb_enemyPos.c))); // Up
+                if (dx > 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c + 1 && b.r === lbb_enemyPos.r))); // Right
+                else if (dx < 0) preferredMoves.push(surroundingBlocks.find(b=>(b.c === lbb_enemyPos.c - 1 && b.r === lbb_enemyPos.r))); // Left
             }
-            targetBlock = preferredMoves.find(b => b);
+            targetBlock = preferredMoves.find(b => b); // First valid preferred move
         }
-        if (!targetBlock) {
+        if (!targetBlock) { // If no preferred move or random choice
             targetBlock = getRandom(surroundingBlocks);
         }
 
@@ -2595,8 +2610,8 @@ function lbb_enemyAIAction() {
             lbb_enemyPos = { r: targetBlock.r, c: targetBlock.c };
             lbb_enemyScore += blockData.score;
             lbb_triggerBlockBreakEffect(targetBlock.r, targetBlock.c, blockData.color || LBB_BLOCK_EFFECT_TYPES.NORMAL.color);
-            
-            if (lbb_enemyNoPlayableBlocksTimerId !== null) {
+
+            if (lbb_enemyNoPlayableBlocksTimerId !== null) { // Clear relocation timer if a move is made
                 clearTimeout(lbb_enemyNoPlayableBlocksTimerId);
                 lbb_enemyNoPlayableBlocksTimerId = null;
             }
@@ -2620,39 +2635,46 @@ function lbb_applyEffect(effectType, pos, isPlayer, duration, icon = '') {
 
     switch(effectType) {
         case 'freezeEnemy':
-            if (isPlayer) {
+            if (isPlayer) { // Only player can freeze enemy
                 popupText = `${effectIcon}적 정지!`;
                 lbb_isEnemyFrozen = true;
                 if (lbb_enemyFreezeTimeoutId) clearTimeout(lbb_enemyFreezeTimeoutId);
                 lbb_enemyFreezeTimeoutId = setTimeout(() => {
                     lbb_isEnemyFrozen = false;
+                    // Potentially restart enemy AI interval if it was paused due to freeze
                 }, duration || 2000);
             }
+            // (Enemy cannot freeze player in current design)
             break;
         case 'swapPositions':
             popupText = `${effectIcon}위치 변경!`;
-            lbb_gamePausedForEffect = true;
+            lbb_gamePausedForEffect = true; // Pause game logic during animation
             lbb_swapEffect.active = true;
             lbb_swapEffect.step = 0;
-            lbb_swapEffect.totalSteps = 30;
-            lbb_swapEffect.effectDuration = 800;
+            lbb_swapEffect.totalSteps = 30; // Animation frames
+            lbb_swapEffect.effectDuration = 800; // Total duration of swap visual effect
 
+            // Store old positions for animation start
             lbb_swapEffect.playerOld = {...lbb_playerPos};
             lbb_swapEffect.enemyOld = {...lbb_enemyPos};
+            // These will be updated during animation
             lbb_swapEffect.animPlayerPos = {...lbb_playerPos};
             lbb_swapEffect.animEnemyPos = {...lbb_enemyPos};
 
+            // Actual swap of logical positions
             const tempPlayerPos = {...lbb_playerPos};
             const tempEnemyPos = {...lbb_enemyPos};
             lbb_playerPos = tempEnemyPos;
             lbb_enemyPos = tempPlayerPos;
 
+            // Resume game after animation
             setTimeout(() => {
                 lbb_swapEffect.active = false;
                 lbb_gamePausedForEffect = false;
-                drawLetterBlockBattleGame();
+                drawLetterBlockBattleGame(); // Redraw with final positions
             }, lbb_swapEffect.effectDuration);
             break;
+        // Add other effects here
     }
 
     if (popupText) {
@@ -2664,7 +2686,8 @@ function lbb_applyEffect(effectType, pos, isPlayer, duration, icon = '') {
 function checkLBBBattleCondition() {
     if (!lbb_isGameActive || lbb_finalBattleAnimation.isActive || lbb_gamePausedForEffect || lbb_isRelocating) return false;
 
-    const queue = [{...lbb_playerPos, path: [`${lbb_playerPos.r}-${lbb_playerPos.c}`]}];
+    // BFS to find if player and enemy are connected by broken blocks
+    const queue = [{...lbb_playerPos, path: [`${lbb_playerPos.r}-${lbb_playerPos.c}`]}]; // Store path for animation
     const visited = new Set([`${lbb_playerPos.r}-${lbb_playerPos.c}`]);
     let pathToEnemy = null;
 
@@ -2682,7 +2705,7 @@ function checkLBBBattleCondition() {
             const key = `${nr}-${nc}`;
 
             if (nr >= 0 && nr < LBB_BOARD_ROWS && nc >= 0 && nc < LBB_BOARD_COLS &&
-                lbb_gameBoard[nr] && lbb_gameBoard[nr][nc] && lbb_gameBoard[nr][nc].broken &&
+                lbb_gameBoard[nr] && lbb_gameBoard[nr][nc] && lbb_gameBoard[nr][nc].broken && // Must be broken to be a path
                 !visited.has(key)) {
                 visited.add(key);
                 queue.push({r: nr, c: nc, path: [...current.path, key] });
@@ -2698,15 +2721,17 @@ function checkLBBBattleCondition() {
 }
 
 function lbb_triggerFinalBattleAnimation(pathToMeet) {
-    lbb_isGameActive = false;
+    lbb_isGameActive = false; // Stop normal game logic
     lbb_finalBattleAnimation.isActive = true;
     lbb_finalBattleAnimation.step = 0;
-    lbb_finalBattleAnimation.totalSteps = 50;
+    lbb_finalBattleAnimation.totalSteps = 50; // Animation frames
 
     lbb_finalBattleAnimation.playerStartPos = {...lbb_playerPos};
     lbb_finalBattleAnimation.enemyStartPos = {...lbb_enemyPos};
 
+    // Determine meeting point (midpoint of the path or a default if path is short/null)
     if (!pathToMeet || pathToMeet.length === 0) {
+        // If no direct path (e.g., time up), meet in center
         lbb_finalBattleAnimation.meetingPoint = {
             r: Math.floor(LBB_BOARD_ROWS / 2),
             c: Math.floor(LBB_BOARD_COLS / 2)
@@ -2716,8 +2741,8 @@ function lbb_triggerFinalBattleAnimation(pathToMeet) {
         if (pathToMeet[meetingPointIndex]) {
             const meetingCoords = pathToMeet[meetingPointIndex].split('-').map(Number);
             lbb_finalBattleAnimation.meetingPoint = { r: meetingCoords[0], c: meetingCoords[1] };
-        } else {
-            lbb_finalBattleAnimation.meetingPoint = {...lbb_playerPos};
+        } else { // Fallback if path is very short (should not happen if battle triggered by connection)
+            lbb_finalBattleAnimation.meetingPoint = {...lbb_playerPos}; // Meet at player's spot
         }
     }
 
@@ -2725,6 +2750,7 @@ function lbb_triggerFinalBattleAnimation(pathToMeet) {
     lbb_finalBattleAnimation.enemyAnimPos = {...lbb_finalBattleAnimation.enemyStartPos};
 
 
+    // Stop other intervals/timers
     if (lbb_enemyActionIntervalId) clearInterval(lbb_enemyActionIntervalId);
     if (lbb_enemyFreezeTimeoutId) clearTimeout(lbb_enemyFreezeTimeoutId);
     if (lbb_playerNoPlayableBlocksTimerId) clearTimeout(lbb_playerNoPlayableBlocksTimerId);
@@ -2746,8 +2772,9 @@ function startLetterBlockBattleGameLoop() {
         if (lbb_isGameActive && !lbb_finalBattleAnimation.isActive && !lbb_gamePausedForEffect && !lbb_isRelocating) {
             const elapsedTime = Date.now() - lbb_gameStartTime;
             if (elapsedTime >= LBB_GAME_DURATION_MS) {
-                lbb_triggerFinalBattleAnimation([]);
+                lbb_triggerFinalBattleAnimation([]); // Trigger battle on time up, path might be empty
             }
+            // Update Timer Bar
             if (lbbTimerBarEl && lbbTimerBarContainerEl.style.display === 'block') {
                 const progress = Math.max(0, (LBB_GAME_DURATION_MS - elapsedTime) / LBB_GAME_DURATION_MS) * 100;
                 lbbTimerBarEl.style.width = `${progress}%`;
@@ -2759,6 +2786,7 @@ function startLetterBlockBattleGameLoop() {
                     lbbTimerTextEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 }
             }
+            // Check for player stuck
             checkAndTriggerPlayerLBBRelocation();
             // Enemy relocation check is now primarily handled within lbb_enemyAIAction
         }
@@ -2767,11 +2795,11 @@ function startLetterBlockBattleGameLoop() {
         if(lbb_finalBattleAnimation.isActive) {
             updateLBBFinalBattleAnimation();
         } else if (lbb_swapEffect.active) {
-            lbb_swapEffect.step++;
+            lbb_swapEffect.step++; // Increment step for animation
         }
 
 
-        if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
+        if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame(); // Always draw
 
         lbb_gameLoopId = requestAnimationFrame(loop);
     }
@@ -2784,6 +2812,7 @@ function updateLBBFinalBattleAnimation() {
     if (lbb_finalBattleAnimation.step < lbb_finalBattleAnimation.totalSteps) {
         lbb_finalBattleAnimation.step++;
         const progress = lbb_finalBattleAnimation.step / lbb_finalBattleAnimation.totalSteps;
+        // Simple linear interpolation, can be replaced with easing function for smoother animation
         const moveFactor = progress;
 
 
@@ -2796,7 +2825,7 @@ function updateLBBFinalBattleAnimation() {
             lbb_finalBattleAnimation.enemyAnimPos.c = lbb_finalBattleAnimation.enemyStartPos.c + (lbb_finalBattleAnimation.meetingPoint.c - lbb_finalBattleAnimation.enemyStartPos.c) * moveFactor;
         }
 
-    } else {
+    } else { // Animation finished
         lbb_finalBattleAnimation.isActive = false;
         const gameTimedOut = (lbb_gameStartTime && (Date.now() - lbb_gameStartTime >= LBB_GAME_DURATION_MS));
         lbb_letterBlockBattleGameOver(lbb_playerScore > lbb_enemyScore, gameTimedOut ? "timeUp" : "battle");
@@ -2806,11 +2835,11 @@ function updateLBBFinalBattleAnimation() {
 // --- LBB Relocation Logic ---
 function checkAndTriggerPlayerLBBRelocation() {
     if (lbb_isGameActive && !lbb_gamePausedForOverlay && !lbb_gamePausedForEffect && !lbb_isRelocating && !lbb_finalBattleAnimation.isActive) {
-        if (getSurroundingLBBBlocks(lbb_playerPos).length === 0) {
-            if (lbb_playerNoPlayableBlocksTimerId === null) {
+        if (getSurroundingLBBBlocks(lbb_playerPos).length === 0) { // Player is stuck
+            if (lbb_playerNoPlayableBlocksTimerId === null) { // Start timer if not already started
                 lbb_playerNoPlayableBlocksTimerId = setTimeout(() => lbb_initiateRelocation(true), LBB_NO_PLAYABLE_RELOCATE_DELAY);
             }
-        } else {
+        } else { // Player has moves, cancel timer if active
             if (lbb_playerNoPlayableBlocksTimerId !== null) {
                 clearTimeout(lbb_playerNoPlayableBlocksTimerId);
                 lbb_playerNoPlayableBlocksTimerId = null;
@@ -2825,11 +2854,11 @@ function checkAndTriggerEnemyLBBRelocation() {
     // This function is less critical now as AI handles its own stuck state.
     // Kept for potential edge cases or if AI logic needs a backup.
     if (lbb_isGameActive && !lbb_gamePausedForOverlay && !lbb_gamePausedForEffect && !lbb_isRelocating && !lbb_finalBattleAnimation.isActive && !lbb_isEnemyFrozen) {
-        if (getSurroundingLBBBlocks(lbb_enemyPos).length === 0) {
-            if (lbb_enemyNoPlayableBlocksTimerId === null) {
+        if (getSurroundingLBBBlocks(lbb_enemyPos).length === 0) { // Enemy is stuck
+            if (lbb_enemyNoPlayableBlocksTimerId === null) { // Start timer if not already started
                 lbb_enemyNoPlayableBlocksTimerId = setTimeout(() => lbb_initiateRelocation(false), LBB_NO_PLAYABLE_RELOCATE_DELAY);
             }
-        } else {
+        } else { // Enemy has moves, cancel timer if active
             if (lbb_enemyNoPlayableBlocksTimerId !== null) {
                 clearTimeout(lbb_enemyNoPlayableBlocksTimerId);
                 lbb_enemyNoPlayableBlocksTimerId = null;
@@ -2840,11 +2869,12 @@ function checkAndTriggerEnemyLBBRelocation() {
 
 
 function lbb_initiateRelocation(isPlayerRelocation) {
-    if (!lbb_isGameActive || lbb_isRelocating) return;
+    if (!lbb_isGameActive || lbb_isRelocating) return; // Don't relocate if already relocating or game not active
     
     const relocatingWho = isPlayerRelocation ? "플레이어" : "적";
     console.log(`${relocatingWho} relocation initiated.`);
 
+    // Clear the specific timer that triggered this
     if (isPlayerRelocation) {
         if (lbb_playerNoPlayableBlocksTimerId) clearTimeout(lbb_playerNoPlayableBlocksTimerId);
         lbb_playerNoPlayableBlocksTimerId = null;
@@ -2853,15 +2883,16 @@ function lbb_initiateRelocation(isPlayerRelocation) {
         lbb_enemyNoPlayableBlocksTimerId = null;
     }
     
+    // Double-check if still stuck (path might have opened by opponent)
     const currentTargetPos = isPlayerRelocation ? lbb_playerPos : lbb_enemyPos;
     if (getSurroundingLBBBlocks(currentTargetPos).length > 0) {
         console.log(`${relocatingWho} relocation cancelled, path opened.`);
-        return;
+        return; // Path opened, no need to relocate
     }
 
     lbb_isRelocating = true;
-    showGamePopup(`${relocatingWho} 재배치 중...`, 1500);
-    setTimeout(() => { lbb_performRelocation(isPlayerRelocation); }, 1000);
+    showGamePopup(`${relocatingWho} 재배치 중...`, 1500); // Show popup for 1.5s
+    setTimeout(() => { lbb_performRelocation(isPlayerRelocation); }, 1000); // Perform after 1s delay
 }
 
 function lbb_performRelocation(isPlayerRelocation) {
@@ -2873,8 +2904,8 @@ function lbb_performRelocation(isPlayerRelocation) {
     if (newPos) {
         if (isPlayerRelocation) {
             lbb_playerPos = newPos;
-            lbb_gameBoard[newPos.r][newPos.c].broken = true;
-            lbb_gameBoard[newPos.r][newPos.c].char = ' ';
+            lbb_gameBoard[newPos.r][newPos.c].broken = true; // Mark new spot as broken (player occupies it)
+            lbb_gameBoard[newPos.r][newPos.c].char = ' '; // Clear char/effect from new spot
             lbb_gameBoard[newPos.r][newPos.c].displayChar = ' ';
         } else { // Enemy relocation
             lbb_enemyPos = newPos;
@@ -2884,21 +2915,24 @@ function lbb_performRelocation(isPlayerRelocation) {
         }
         showGamePopup(`${relocatingWho} 위치 재배치!`, 1500);
     } else {
+        // This case should be rare if board isn't full
         showGamePopup(`${relocatingWho} 재배치 실패! 공간 부족.`, 2000, { backgroundColor: 'var(--highlight-error)', color: 'var(--button-text-on-accent)'});
     }
-    lbb_isRelocating = false;
-    drawLetterBlockBattleGame();
+    lbb_isRelocating = false; // End relocation lock
+    drawLetterBlockBattleGame(); // Redraw after relocation
 }
 
 function findValidLbbRelocationSpot(opponentCurrentPos, boardRows, boardCols, minDistanceFromOpponent) {
     let attempts = 0;
-    const maxAttempts = boardRows * boardCols;
+    const maxAttempts = boardRows * boardCols; // Try at most all spots
     let potentialSpots = [];
+    // Create a list of all possible spots
     for(let r=0; r<boardRows; r++) {
         for(let c=0; c<boardCols; c++) {
             potentialSpots.push({r,c});
         }
     }
+    // Shuffle potential spots for randomness
     for (let i = potentialSpots.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [potentialSpots[i], potentialSpots[j]] = [potentialSpots[j], potentialSpots[i]];
@@ -2908,28 +2942,33 @@ function findValidLbbRelocationSpot(opponentCurrentPos, boardRows, boardCols, mi
         const r = spot.r;
         const c = spot.c;
 
+        // Cannot relocate to opponent's current position
         if (opponentCurrentPos && r === opponentCurrentPos.r && c === opponentCurrentPos.c) continue;
 
+        // Check minimum distance from opponent if specified
         if (opponentCurrentPos && minDistanceFromOpponent > 0) {
-            const dist = Math.abs(r - opponentCurrentPos.r) + Math.abs(c - opponentCurrentPos.c);
+            const dist = Math.abs(r - opponentCurrentPos.r) + Math.abs(c - opponentCurrentPos.c); // Manhattan distance
             if (dist < minDistanceFromOpponent) continue;
         }
         
+        // Spot must be on board and currently NOT broken (so it can be "broken" by moving there)
+        // And it must have at least one breakable neighbor AFTER moving there
         if (lbb_gameBoard[r] && lbb_gameBoard[r][c] && !lbb_gameBoard[r][c].broken) {
+            // Temporarily mark as broken to check neighbors
             const originalBrokenState = lbb_gameBoard[r][c].broken;
-            lbb_gameBoard[r][c].broken = true;
+            lbb_gameBoard[r][c].broken = true; // Simulate moving here
             const neighbors = getSurroundingLBBBlocks({ r, c });
-            lbb_gameBoard[r][c].broken = originalBrokenState;
+            lbb_gameBoard[r][c].broken = originalBrokenState; // Revert
 
-            if (neighbors.length > 0) {
+            if (neighbors.length > 0) { // Found a valid spot
                 return { r, c };
             }
         }
         attempts++;
-        if (attempts > maxAttempts) break;
+        if (attempts > maxAttempts) break; // Safety break
     }
     console.warn("Could not find a valid relocation spot.");
-    return null;
+    return null; // No suitable spot found
 }
 
 
@@ -2938,6 +2977,8 @@ function drawLetterBlockBattleGame() {
     gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
     if ((gameStartMessageEl && gameStartMessageEl.style.display === 'flex' && currentGameType === 'letterBlockBattle' && !lbb_isGameActive && !lbb_finalBattleAnimation.isActive && !lbb_gamePausedForEffect && !lbb_isRelocating)) {
+        // Initial state, game not started, show message or placeholder if needed.
+        // For now, just return if message is visible to avoid drawing over it.
         return;
     }
 
@@ -2948,22 +2989,26 @@ function drawLetterBlockBattleGame() {
     const LBB_CURRENT_PLAYER_BLOCK_BG = getComputedStyle(document.documentElement).getPropertyValue('--current-lbb-player-block-bg').trim();
 
 
+    // Background
     gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-typing-area').trim();
     gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
+    // Board rendering
     const blockPadding = 1;
     const effectiveBlockSize = LBB_BLOCK_SIZE - blockPadding * 2;
-    const boardOffsetY = 30;
-    const boardDrawOffsetX = (gameCanvas.width - LBB_BOARD_COLS * LBB_BLOCK_SIZE) / 2;
+    const boardOffsetY = 30; // Space for scores/timer at the top
+    const boardDrawOffsetX = (gameCanvas.width - LBB_BOARD_COLS * LBB_BLOCK_SIZE) / 2; // Center the board
 
-    const blockTextColorLight = currentTheme === 'pink' ? '#FFFFFF' : '#FAFAFA';
-    let blockTextColorDark;
+    // Define text colors based on theme for better contrast on colored blocks
+    const blockTextColorLight = currentTheme === 'pink' ? '#FFFFFF' : '#FAFAFA'; // For dark backgrounds
+    let blockTextColorDark; // For light backgrounds
 
     if (currentTheme === 'light') blockTextColorDark = '#5D4037';
     else if (currentTheme === 'pink') blockTextColorDark = '#6A283A';
-    else blockTextColorDark = '#333333';
+    else blockTextColorDark = '#333333'; // Default dark theme
 
 
+    // Adaptive font sizes based on block size
     const twoCharFontSize = Math.max(8, effectiveBlockSize * 0.40);
     const threeCharFontSize = Math.max(7, effectiveBlockSize * 0.32);
     const iconFontSize = Math.max(6, effectiveBlockSize * 0.25);
@@ -2981,33 +3026,36 @@ function drawLetterBlockBattleGame() {
                                  (currentTheme === 'light' ? '#EAE0D5' : (currentTheme === 'pink' ? '#FDDDEE' : getComputedStyle(document.documentElement).getPropertyValue(LBB_BROKEN_BLOCK_COLOR_VAR).trim()));
                 gameCtx.fillStyle = brokenColor;
                 gameCtx.fillRect(x, y, effectiveBlockSize, effectiveBlockSize);
+                // Subtle border for broken blocks
                 gameCtx.strokeStyle = currentTheme === 'light' ? '#D0C8BE' : (currentTheme === 'pink' ? '#F0C0D0' : 'rgba(100,100,100,0.1)');
                 
+                // Player highlight
                 if(lbb_playerPos && lbb_playerPos.r === r && lbb_playerPos.c === c && !lbb_finalBattleAnimation.isActive && !lbb_gamePausedForEffect && !lbb_isRelocating) {
-                    const highlightStrength = (Math.sin(Date.now() / 120) + 1) / 2;
+                    const highlightStrength = (Math.sin(Date.now() / 120) + 1) / 2; // Pulsating effect
                     const baseColor = hexToRgb(LBB_CURRENT_PLAYER_HIGHLIGHT_BORDER);
                     if (baseColor) {
                          gameCtx.strokeStyle = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${0.6 + highlightStrength * 0.4})`;
                     } else {
                          gameCtx.strokeStyle = LBB_CURRENT_PLAYER_HIGHLIGHT_BORDER;
                     }
-                    gameCtx.lineWidth = 3 + highlightStrength * 2;
+                    gameCtx.lineWidth = 3 + highlightStrength * 2; // Pulsating width
                 }
                 gameCtx.strokeRect(x, y, effectiveBlockSize, effectiveBlockSize);
-                gameCtx.lineWidth = 1;
+                gameCtx.lineWidth = 1; // Reset line width
 
-            } else {
+            } else { // Unbroken block
                 let blockBgColor;
                 if (block.color) {
                     blockBgColor = block.color;
-                } else {
+                } else { // Default unbroken block color
                     if (currentTheme === 'dark') blockBgColor = getComputedStyle(document.documentElement).getPropertyValue('--input-bg').trim();
-                    else if (currentTheme === 'light') blockBgColor = '#F7F1E9';
-                    else blockBgColor = '#FFF3F6';
+                    else if (currentTheme === 'light') blockBgColor = '#F7F1E9'; // Lighter than broken for light
+                    else blockBgColor = '#FFF3F6'; // Lighter for pink
                 }
                 gameCtx.fillStyle = blockBgColor;
                 gameCtx.fillRect(x, y, effectiveBlockSize, effectiveBlockSize);
 
+                // Border for unbroken blocks
                 let blockBorderColor;
                 const blockRgbForBorder = hexToRgb(blockBgColor);
                 if (currentTheme === 'light') blockBorderColor = block.color && blockRgbForBorder ? `rgba(${blockRgbForBorder.r*0.85}, ${blockRgbForBorder.g*0.85}, ${blockRgbForBorder.b*0.85}, 1)`: '#C8BEB2';
@@ -3018,12 +3066,13 @@ function drawLetterBlockBattleGame() {
                 gameCtx.strokeStyle = blockBorderColor;
                 gameCtx.strokeRect(x, y, effectiveBlockSize, effectiveBlockSize);
 
-                let useLightText = true;
+                // Determine text color based on background luminance
+                let useLightText = true; // Default for dark item blocks
                 const rgbForText = hexToRgb(blockBgColor);
                 if (rgbForText) {
                     const luminance = (0.299 * rgbForText.r + 0.587 * rgbForText.g + 0.114 * rgbForText.b) / 255;
-                    if (luminance > 0.52) useLightText = false;
-                } else {
+                    if (luminance > 0.52) useLightText = false; // Use dark text on light backgrounds
+                } else { // Fallback for non-hex colors (e.g. 'gold')
                      if (['#F7F1E9', '#FFF3F6', 'gold', 'deepskyblue', 'limegreen'].includes(blockBgColor) || (blockBgColor && blockBgColor.startsWith("rgba") && blockBgColor.endsWith("0.7)"))) {
                         useLightText = false;
                     }
@@ -3059,44 +3108,48 @@ function drawLetterBlockBattleGame() {
         }
     }
 
+    // Draw particles
     for (let i = lbb_blockBreakParticles.length - 1; i >= 0; i--) {
         const p = lbb_blockBreakParticles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.1;
+        p.vy += 0.1; // Gravity
         p.life--;
         if (p.life <= 0) {
             lbb_blockBreakParticles.splice(i, 1);
         } else {
-            gameCtx.fillStyle = p.color || '#fff';
-            gameCtx.globalAlpha = Math.max(0, p.life / 20);
+            gameCtx.fillStyle = p.color || '#fff'; // Use particle color or default
+            gameCtx.globalAlpha = Math.max(0, p.life / 20); // Fade out
             gameCtx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-            gameCtx.globalAlpha = 1.0;
+            gameCtx.globalAlpha = 1.0; // Reset alpha
         }
     }
 
+    // Highlight surrounding breakable blocks for player (if game is active and not in special state)
     if (lbb_isGameActive && !lbb_gamePausedForEffect && !lbb_isRelocating && !lbb_finalBattleAnimation.isActive) {
         const breakablePlayerBlocks = getSurroundingLBBBlocks(lbb_playerPos);
         for (const block of breakablePlayerBlocks) {
             const hx = block.c * LBB_BLOCK_SIZE + blockPadding + boardDrawOffsetX;
             const hy = block.r * LBB_BLOCK_SIZE + blockPadding + boardOffsetY;
-            gameCtx.strokeStyle = 'rgba(255, 255, 0, ' + (0.4 + Math.sin(Date.now() / 150) * 0.3) + ')';
+            gameCtx.strokeStyle = 'rgba(255, 255, 0, ' + (0.4 + Math.sin(Date.now() / 150) * 0.3) + ')'; // Pulsating yellow
             gameCtx.lineWidth = 2;
             gameCtx.strokeRect(hx - 1, hy - 1, effectiveBlockSize + 2, effectiveBlockSize + 2);
         }
-        gameCtx.lineWidth = 1;
+        gameCtx.lineWidth = 1; // Reset
     }
 
 
-    const charDrawOffsetX = boardDrawOffsetX;
+    // Player and Enemy rendering
+    const charDrawOffsetX = boardDrawOffsetX; // Same as board
     const playerDrawPos = (lbb_finalBattleAnimation.isActive && lbb_finalBattleAnimation.playerAnimPos) ? lbb_finalBattleAnimation.playerAnimPos :
                           (lbb_swapEffect.active && lbb_swapEffect.animPlayerPos) ? lbb_swapEffect.animPlayerPos : lbb_playerPos;
     const enemyDrawPos = (lbb_finalBattleAnimation.isActive && lbb_finalBattleAnimation.enemyAnimPos) ? lbb_finalBattleAnimation.enemyAnimPos :
                          (lbb_swapEffect.active && lbb_swapEffect.animEnemyPos) ? lbb_swapEffect.animEnemyPos : lbb_enemyPos;
 
 
-    const charRadius = effectiveBlockSize / 2.8;
+    const charRadius = effectiveBlockSize / 2.8; // Character circle radius
 
+    // Draw Player
     if(playerDrawPos && typeof playerDrawPos.r === 'number' && typeof playerDrawPos.c === 'number') {
         const playerRenderX = playerDrawPos.c * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + charDrawOffsetX;
         const playerRenderY = playerDrawPos.r * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + boardOffsetY;
@@ -3104,7 +3157,8 @@ function drawLetterBlockBattleGame() {
         gameCtx.beginPath();
         gameCtx.arc(playerRenderX, playerRenderY, charRadius, 0, Math.PI * 2);
         gameCtx.fill();
-        gameCtx.font = `bold ${Math.max(9, LBB_BLOCK_SIZE * 0.32)}px sans-serif`;
+        // Player Score
+        gameCtx.font = `bold ${Math.max(9, LBB_BLOCK_SIZE * 0.32)}px sans-serif`; // Slightly larger for score
         gameCtx.textAlign = 'center';
         gameCtx.textBaseline = 'middle';
         gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--lbb-score-color').trim();
@@ -3114,13 +3168,15 @@ function drawLetterBlockBattleGame() {
     }
 
 
+    // Draw Enemy
     if(enemyDrawPos && typeof enemyDrawPos.r === 'number' && typeof enemyDrawPos.c === 'number') {
         const enemyRenderX = enemyDrawPos.c * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + charDrawOffsetX;
         const enemyRenderY = enemyDrawPos.r * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + boardOffsetY;
-        gameCtx.fillStyle = lbb_isEnemyFrozen ? 'rgba(173, 216, 230, 0.7)' : LBB_CURRENT_ENEMY_COLOR;
+        gameCtx.fillStyle = lbb_isEnemyFrozen ? 'rgba(173, 216, 230, 0.7)' : LBB_CURRENT_ENEMY_COLOR; // Semi-transparent blue if frozen
         gameCtx.beginPath();
         gameCtx.arc(enemyRenderX, enemyRenderY, charRadius, 0, Math.PI * 2);
         gameCtx.fill();
+        // Enemy Score
         gameCtx.font = `bold ${Math.max(9, LBB_BLOCK_SIZE * 0.32)}px sans-serif`;
         gameCtx.textAlign = 'center';
         gameCtx.textBaseline = 'middle';
@@ -3129,25 +3185,27 @@ function drawLetterBlockBattleGame() {
         gameCtx.strokeText(lbb_enemyScore, enemyRenderX, enemyRenderY);
         gameCtx.fillText(lbb_enemyScore, enemyRenderX, enemyRenderY);
     }
-    gameCtx.lineWidth = 1;
+    gameCtx.lineWidth = 1; // Reset line width
 
 
-
+    // Swap Effect Animation
     if (lbb_swapEffect.active && lbb_swapEffect.playerOld && lbb_swapEffect.enemyOld && lbb_swapEffect.animPlayerPos && lbb_swapEffect.animEnemyPos) {
         const animProgress = lbb_swapEffect.step / lbb_swapEffect.totalSteps;
-        const easeInOutQuad = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        const easeInOutQuad = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // Easing function
         const easedProgress = easeInOutQuad(animProgress);
 
+        // Interpolate positions for animation
         const playerCurrentX = (lbb_swapEffect.playerOld.c + (lbb_enemyPos.c - lbb_swapEffect.playerOld.c) * easedProgress) * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + charDrawOffsetX;
         const playerCurrentY = (lbb_swapEffect.playerOld.r + (lbb_enemyPos.r - lbb_swapEffect.playerOld.r) * easedProgress) * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + boardOffsetY;
         const enemyCurrentX = (lbb_swapEffect.enemyOld.c + (lbb_playerPos.c - lbb_swapEffect.enemyOld.c) * easedProgress) * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + charDrawOffsetX;
         const enemyCurrentY = (lbb_swapEffect.enemyOld.r + (lbb_playerPos.r - lbb_swapEffect.enemyOld.r) * easedProgress) * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + boardOffsetY;
 
 
-        const effectRadius = LBB_BLOCK_SIZE * 1.2 * Math.sin(Math.PI * easedProgress);
-        gameCtx.globalAlpha = 0.7 * (1 - easedProgress);
+        // Draw expanding/contracting circle effect
+        const effectRadius = LBB_BLOCK_SIZE * 1.2 * Math.sin(Math.PI * easedProgress); // Pulsates
+        gameCtx.globalAlpha = 0.7 * (1 - easedProgress); // Fades out
 
-        gameCtx.fillStyle = LBB_BLOCK_EFFECT_TYPES.GREEN.color;
+        gameCtx.fillStyle = LBB_BLOCK_EFFECT_TYPES.GREEN.color; // Swap effect color
         gameCtx.beginPath();
         gameCtx.arc(playerCurrentX, playerCurrentY, effectRadius, 0, Math.PI * 2);
         gameCtx.fill();
@@ -3156,28 +3214,31 @@ function drawLetterBlockBattleGame() {
         gameCtx.arc(enemyCurrentX, enemyCurrentY, effectRadius, 0, Math.PI * 2);
         gameCtx.fill();
 
-        gameCtx.globalAlpha = 1.0;
+        gameCtx.globalAlpha = 1.0; // Reset alpha
     }
 
 
+    // Final Battle Animation
     if (lbb_finalBattleAnimation.isActive && lbb_finalBattleAnimation.playerStartPos && lbb_finalBattleAnimation.enemyStartPos && lbb_finalBattleAnimation.meetingPoint) {
-        gameCtx.lineWidth = Math.max(2, LBB_BLOCK_SIZE * 0.1);
-        const pathOffset = LBB_BLOCK_SIZE / 2 + charDrawOffsetX;
+        gameCtx.lineWidth = Math.max(2, LBB_BLOCK_SIZE * 0.1); // Thicker lines for paths
+        const pathOffset = LBB_BLOCK_SIZE / 2 + charDrawOffsetX; // Center of block for path
         const pathYOffset = LBB_BLOCK_SIZE / 2 + boardOffsetY;
 
         const playerAnimPos = lbb_finalBattleAnimation.playerAnimPos;
         const enemyAnimPos = lbb_finalBattleAnimation.enemyAnimPos;
 
 
+        // Draw player path trail
         if (playerAnimPos) {
-             gameCtx.strokeStyle = LBB_CURRENT_PLAYER_COLOR.replace(')', ', 0.7)').replace(/rgb/i, 'rgba');
+             gameCtx.strokeStyle = LBB_CURRENT_PLAYER_COLOR.replace(')', ', 0.7)').replace(/rgb/i, 'rgba'); // Semi-transparent player color
              gameCtx.beginPath();
              gameCtx.moveTo(lbb_finalBattleAnimation.playerStartPos.c * LBB_BLOCK_SIZE + pathOffset, lbb_finalBattleAnimation.playerStartPos.r * LBB_BLOCK_SIZE + pathYOffset);
              gameCtx.lineTo(playerAnimPos.c * LBB_BLOCK_SIZE + pathOffset, playerAnimPos.r * LBB_BLOCK_SIZE + pathYOffset);
              gameCtx.stroke();
         }
+        // Draw enemy path trail
         if (enemyAnimPos) {
-             gameCtx.strokeStyle = LBB_CURRENT_ENEMY_COLOR.replace(')', ', 0.7)').replace(/rgb/i, 'rgba');
+             gameCtx.strokeStyle = LBB_CURRENT_ENEMY_COLOR.replace(')', ', 0.7)').replace(/rgb/i, 'rgba'); // Semi-transparent enemy color
              gameCtx.beginPath();
              gameCtx.moveTo(lbb_finalBattleAnimation.enemyStartPos.c * LBB_BLOCK_SIZE + pathOffset, lbb_finalBattleAnimation.enemyStartPos.r * LBB_BLOCK_SIZE + pathYOffset);
              gameCtx.lineTo(enemyAnimPos.c * LBB_BLOCK_SIZE + pathOffset, enemyAnimPos.r * LBB_BLOCK_SIZE + pathYOffset);
@@ -3185,21 +3246,23 @@ function drawLetterBlockBattleGame() {
         }
 
 
+        // Explosion effect at meeting point (halfway through animation)
         if (lbb_finalBattleAnimation.step >= lbb_finalBattleAnimation.totalSteps / 2) {
             const meetX = lbb_finalBattleAnimation.meetingPoint.c * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + charDrawOffsetX;
             const meetY = lbb_finalBattleAnimation.meetingPoint.r * LBB_BLOCK_SIZE + LBB_BLOCK_SIZE / 2 + boardOffsetY;
-            gameCtx.fillStyle = 'rgba(255, 223, 0, 0.8)';
+            gameCtx.fillStyle = 'rgba(255, 223, 0, 0.8)'; // Yellowish explosion
             gameCtx.beginPath();
-            const explosionRadius = LBB_BLOCK_SIZE * (0.5 + ( (lbb_finalBattleAnimation.step - lbb_finalBattleAnimation.totalSteps/2) / (lbb_finalBattleAnimation.totalSteps/2) ) * 0.7);
+            const explosionRadius = LBB_BLOCK_SIZE * (0.5 + ( (lbb_finalBattleAnimation.step - lbb_finalBattleAnimation.totalSteps/2) / (lbb_finalBattleAnimation.totalSteps/2) ) * 0.7); // Grows
             gameCtx.arc(meetX, meetY, explosionRadius, 0, Math.PI * 2);
             gameCtx.fill();
         }
-        gameCtx.lineWidth = 1;
+        gameCtx.lineWidth = 1; // Reset line width
     }
 
+    // Top UI: Scores and Level
     const topUiY = 18;
     let uiTextColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
-    if (currentTheme !== 'dark') {
+    if (currentTheme !== 'dark') { // For light/pink themes, use a darker accent for UI text
         uiTextColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-darker').trim();
     }
     gameCtx.fillStyle = uiTextColor;
@@ -3209,13 +3272,14 @@ function drawLetterBlockBattleGame() {
     gameCtx.textAlign = "center"; gameCtx.fillText(`레벨: ${lbb_gameLevel}`, gameCanvas.width / 2, topUiY);
     gameCtx.textAlign = "right"; gameCtx.fillText(`적: ${lbb_enemyScore}`, gameCanvas.width - 10, topUiY);
 
+    // Reset alignments for other potential drawing
     gameCtx.textAlign = "left"; gameCtx.textBaseline = 'alphabetic';
 }
 
 
 function lbb_letterBlockBattleGameOver(playerWins, reason = "battle") {
     lbb_isGameActive = false;
-    lbb_gamePausedForOverlay = true;
+    lbb_gamePausedForOverlay = true; // Pause game during overlay
     if (gameInputField) gameInputField.disabled = true;
     if (lbb_enemyActionIntervalId) clearInterval(lbb_enemyActionIntervalId);
     if (lbb_enemyFreezeTimeoutId) clearTimeout(lbb_enemyFreezeTimeoutId);
@@ -3223,7 +3287,7 @@ function lbb_letterBlockBattleGameOver(playerWins, reason = "battle") {
     if (lbb_enemyNoPlayableBlocksTimerId) clearTimeout(lbb_enemyNoPlayableBlocksTimerId);
     lbb_playerNoPlayableBlocksTimerId = null;
     lbb_enemyNoPlayableBlocksTimerId = null;
-    if(lbb_gameLoopId) {
+    if(lbb_gameLoopId) { // Stop the game loop explicitly
         cancelAnimationFrame(lbb_gameLoopId);
         lbb_gameLoopId = null;
     }
@@ -3235,13 +3299,13 @@ function lbb_letterBlockBattleGameOver(playerWins, reason = "battle") {
     let nextStepAction = () => {
         gameOverlayEl.classList.remove('visible');
         lbb_gamePausedForOverlay = false;
-        initLetterBlockBattleGame(true);
+        initLetterBlockBattleGame(true); // Restart current level
     };
 
     if (reason === "timeUp") {
         messageTitle = `<i class="far fa-clock"></i> 시간 종료!`;
          if (lbb_playerScore === lbb_enemyScore) {
-             playerWins = false;
+             playerWins = false; // Draw is a loss for player on timeout
          } else {
              playerWins = lbb_playerScore > lbb_enemyScore;
          }
@@ -3258,13 +3322,13 @@ function lbb_letterBlockBattleGameOver(playerWins, reason = "battle") {
                 if (gameLevelSelect) gameLevelSelect.value = lbb_gameLevel;
                 gameOverlayEl.classList.remove('visible');
                 lbb_gamePausedForOverlay = false;
-                initLetterBlockBattleGame(true);
+                initLetterBlockBattleGame(true); // Start next level
             };
         } else {
             messageTitle = `<i class="fas fa-trophy"></i> 모든 레벨 클리어!`;
             nextStepButtonText = '<i class="fas fa-redo"></i> 처음부터 다시';
              nextStepAction = () => {
-                lbb_gameLevel = 1;
+                lbb_gameLevel = 1; // Reset to level 1
                 const gameLevelSelect = document.getElementById('gameLevelSelect');
                 if (gameLevelSelect) gameLevelSelect.value = 1;
                 gameOverlayEl.classList.remove('visible');
@@ -3272,7 +3336,7 @@ function lbb_letterBlockBattleGameOver(playerWins, reason = "battle") {
                 initLetterBlockBattleGame(true);
             };
         }
-    } else {
+    } else { // Player loses or draws (draw on timeout is loss)
         messageTitle = reason === "battle" ? `<i class="fas fa-skull-crossbones"></i> 전투 패배...` : messageTitle + ` (패배...)`;
         if (lbb_playerScore === lbb_enemyScore && reason === "timeUp") {
             messageBody += "<br>시간 종료 시 동점은 패배로 처리됩니다.";
@@ -3295,20 +3359,21 @@ function lbb_letterBlockBattleGameOver(playerWins, reason = "battle") {
 
 // --- 공통 게임 함수 (오버레이, 연습모드 복귀 등) ---
 function showGameOverlayMessage(type, score = 0, level = 1) {
-    let currentPauseStateUpdate = () => {};
+    let currentPauseStateUpdate = () => {}; // Function to update pause state after overlay closes
     if (currentGameType === 'rainfall') {
         rainfall_gamePausedForOverlay = true;
         currentPauseStateUpdate = () => { rainfall_gamePausedForOverlay = false; };
     } else if (currentGameType === 'letterBlockBattle') {
-        if (type !== "levelUp") {
+        // LBB game over handles its own overlay, so this is mainly for rainfall's level up
+        if (type !== "levelUp") { // LBB specific game over is handled by lbb_letterBlockBattleGameOver
              lbb_gamePausedForOverlay = true;
              currentPauseStateUpdate = () => { lbb_gamePausedForOverlay = false; };
-        } else return;
-    } else { return; }
+        } else return; // LBB doesn't have explicit "level up" overlay like rainfall
+    } else { return; } // Not a known game type
 
     let content = '';
     switch(type) {
-        case "gameOver":
+        case "gameOver": // Primarily for Rainfall
             content = `
                 <h2><i class="fas fa-skull-crossbones"></i> 게임 오버 (소나기)</h2>
                 <p>최종 점수: ${score}<br>달성 레벨: ${level}</p>
@@ -3316,23 +3381,23 @@ function showGameOverlayMessage(type, score = 0, level = 1) {
                 <button id="returnToPracticeOverlayBtn" class="game-button" style="background: var(--text-secondary); border-color: var(--text-secondary);"><i class="fas fa-keyboard"></i> 타자연습 가기</button>
             `;
             break;
-        case "levelUp":
+        case "levelUp": // For Rainfall
             gameOverlayEl.innerHTML = `<h2>레벨 ${level} 달성!</h2>`;
             gameOverlayEl.classList.add('visible');
             setTimeout(() => {
                 gameOverlayEl.classList.remove('visible');
-                currentPauseStateUpdate();
+                currentPauseStateUpdate(); // Unpause the game
                  if (currentGameType === 'rainfall' && rainfall_isGameActive) {
-                    rainfall_levelStartTime = Date.now();
+                    rainfall_levelStartTime = Date.now(); // Reset level timer
                     rainfall_usedWordsInLevel.clear();
-                    if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId);
+                    if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId); // Reset word gen for new (sub)level params
                     startRainfallWordGeneration();
                 }
             }, 1500);
-            return;
+            return; // Early exit for levelUp as it's timed
     }
 
-    if (type !== "levelUp") {
+    if (type !== "levelUp") { // For "gameOver" or other messages that require button interaction
         gameOverlayEl.innerHTML = content;
         gameOverlayEl.classList.add('visible');
     }
@@ -3344,8 +3409,9 @@ function showGameOverlayMessage(type, score = 0, level = 1) {
                 gameOverlayEl.classList.remove('visible');
                 if (currentGameType === 'rainfall') {
                     rainfall_gamePausedForOverlay = false;
-                    initRainfallGame(true);
+                    initRainfallGame(true); // Restart rainfall game
                 }
+                // Add other game types if they use this "gameOver" type
             });
         }
         const returnToPracticeBtn = document.getElementById('returnToPracticeOverlayBtn');
@@ -3367,6 +3433,7 @@ function returnToPracticeMode(resetSessionStats = true) {
     lbb_finalBattleAnimation.isActive = false;
 
 
+    // Clear all game-specific intervals and timeouts
     if (rainfall_gameLoopId) cancelAnimationFrame(rainfall_gameLoopId);
     if (lbb_gameLoopId) cancelAnimationFrame(lbb_gameLoopId);
     if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId);
@@ -3383,12 +3450,14 @@ function returnToPracticeMode(resetSessionStats = true) {
     if(lbbTimerBarContainerEl) lbbTimerBarContainerEl.style.display = 'none';
 
 
+    // Hide game UI elements
     if (gameOverlayEl) gameOverlayEl.classList.remove('visible');
     if (gameStartMessageEl) gameStartMessageEl.style.display = 'none';
     if(itemEffectPopupEl) itemEffectPopupEl.classList.remove('visible');
 
     document.body.classList.remove('game-mode-active');
 
+    // Restore sound/theme selectors to original positions
     if (mainControlsEl && originalSoundParent && originalThemeParent && soundSettingsEl && themeSettingsEl) {
         const gameInternalControlsBar = document.getElementById('gameInternalControlsBar');
         if (gameInternalControlsBar && soundSettingsEl.parentNode !== originalSoundParent) {
@@ -3397,17 +3466,19 @@ function returnToPracticeMode(resetSessionStats = true) {
         if (gameInternalControlsBar && themeSettingsEl.parentNode !== originalThemeParent) {
             originalThemeParent.insertBefore(themeSettingsEl, originalThemeNextSibling);
         }
+        // Remove game-specific sound toggle button if it exists
         if (gameToggleSoundBtn && gameToggleSoundBtn.parentNode && gameInternalControlsBar && gameInternalControlsBar.contains(gameToggleSoundBtn)) {
              if (gameToggleSoundBtn.parentNode) gameToggleSoundBtn.parentNode.removeChild(gameToggleSoundBtn);
             gameToggleSoundBtn = null;
         }
     }
-    if (gameInputField) {
+    if (gameInputField) { // Remove game input field listeners
         gameInputField.removeEventListener('keydown', handleKeyDownEvent);
         gameInputField.removeEventListener('input', handleInputEvent);
     }
 
 
+    // Determine last practice mode or default to 'kor'
     let lastPracticeMode = 'kor';
     const activePracticeButton = document.querySelector('.practice-mode-controls button.active[data-mode]');
     if(activePracticeButton && activePracticeButton.id !== 'gameModeBtn'){
@@ -3423,4 +3494,3 @@ function returnToPracticeMode(resetSessionStats = true) {
 </script>
 </body>
 </html>
-```
