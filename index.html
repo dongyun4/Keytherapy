@@ -107,17 +107,15 @@
       --shadow-button: 0 5px 12px rgba(0,0,0,0.28);
       --shadow-button-hover: 0 7px 15px rgba(0,0,0,0.32);
 
-      /* ▼▼▼ 예문 텍스트 스타일 ▼▼▼ */
       --font-size-typing: 1.15rem;
       --typing-letter-spacing: 0.85px;
       --typing-word-spacing: 1.9px;
       --font-size-typing-mobile: 1.05rem;
       --typing-letter-spacing-mobile: 0.5px;
       --typing-word-spacing-mobile: 1.5px;
-      
-      /* ▼▼▼ 입력창 텍스트 스타일 (독립적으로 제어) ▼▼▼ */
-      --font-size-input: 1.13rem; /* 예문보다 약간 작게 설정 */
-      --letter-spacing-input: 0.4px; /* 예문보다 약간 좁게 설정 */
+
+      --font-size-input: 1.13rem;
+      --letter-spacing-input: 0.4px;
       --font-size-input-mobile: 1.03rem;
       --letter-spacing-input-mobile: 0.4px;
 
@@ -138,8 +136,8 @@
       --current-lbb-player-highlight-border: var(--lbb-player-highlight-border-dark);
 
       --lbb-player-block-bg-dark: #42403c;
-      --lbb-player-block-bg-light: #fffacd; /* LemonChiffon for light theme player block */
-      --lbb-player-block-bg-pink: #ffe8f0;   /* LightPink for pink theme player block */
+      --lbb-player-block-bg-light: #fffacd;
+      --lbb-player-block-bg-pink: #ffe8f0;
       --current-lbb-player-block-bg: var(--lbb-player-block-bg-dark);
 
       --gb-player-health-color: #4CAF50;
@@ -270,6 +268,33 @@
         padding-top: 3vh;
     }
 
+    /* ▼▼▼ 집중 모드 CSS 추가 ▼▼▼ */
+    body.focus-mode-active {
+        overflow: hidden;
+    }
+    body.focus-mode-active .main-content-wrapper {
+        padding: 0;
+        align-items: stretch;
+    }
+    body.focus-mode-active .main-content {
+        max-width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+    }
+    body.focus-mode-active .hero-section,
+    body.focus-mode-active .controls-and-stats-wrapper,
+    body.focus-mode-active .footer {
+        display: none !important;
+    }
+    body.focus-mode-active #freestyle-area-container {
+        height: 100%;
+        border-radius: 0;
+    }
+    /* ▲▲▲ 집중 모드 CSS 추가 ▲▲▲ */
+
+
     .main-content {
       max-width: 1000px;
       width: 100%; background-color: var(--bg-container);
@@ -280,6 +305,7 @@
     }
     .light-theme .main-content { border-color: rgba(var(--accent-rgb), 0.18); }
     .pink-theme .main-content { border-color: rgba(var(--accent-rgb), 0.25); }
+
     body.game-mode-active .hero-section,
     body.game-mode-active .controls-and-stats-wrapper .practice-mode-controls,
     body.game-mode-active .controls-and-stats-wrapper .feature-toggles,
@@ -287,10 +313,21 @@
     body.game-mode-active .controls-and-stats-wrapper #stats,
     body.game-mode-active .progress-bar-container,
     body.game-mode-active .typing-area-container,
+    body.game-mode-active #freestyle-area-container,
     body.game-mode-active #result,
     body.game-mode-active .footer {
         display: none !important;
     }
+    body.freestyle-mode-active .typing-area-container,
+    body.freestyle-mode-active .progress-bar-container,
+    body.freestyle-mode-active #game-area-container,
+    body.freestyle-mode-active #keyboard-guide.visible {
+        display: none !important;
+    }
+    #freestyle-area-container { display: none; }
+    body.freestyle-mode-active #freestyle-area-container { display: flex; }
+
+
     body.game-mode-active .controls-and-stats-wrapper { padding-bottom: 0; }
     body.game-mode-active .settings-container { margin-bottom: 0; }
     body.game-mode-active .main-controls { justify-content: center; gap: 15px; }
@@ -351,12 +388,11 @@
     .controls-and-stats-wrapper { padding: 25px 25px 15px; }
     .settings-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 18px; }
 
-    /* ▼▼▼ 컨트롤 영역 스타일 블록 전체를 아래 코드로 교체 ▼▼▼ */
     .main-controls {
         display: flex;
-        flex-direction: column; /* 자식 요소들을 세로로 쌓음 (핵심) */
-        align-items: center;    /* 모든 줄을 가운데 정렬 */
-        gap: 15px;              /* 각 줄(행) 사이의 간격 */
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
     }
 
     .control-button-group { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -393,7 +429,18 @@
     }
     .light-theme .control-button-group button.active:hover, .pink-theme .control-button-group button.active:hover { background: var(--accent-active); border-color: var(--accent-active); }
 
-    /* 1, 2번째 줄 버튼 그룹 스타일 */
+    .control-button-group button.disabled,
+    .selection-controls .disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+        background: transparent !important;
+        color: var(--text-secondary) !important;
+        border-color: var(--input-border) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
     .practice-mode-controls,
     .feature-toggles {
         width: 100%;
@@ -402,22 +449,21 @@
     .practice-mode-controls button { min-width: 100px; }
     .feature-toggles button { border-radius: 20px; min-width: 120px; }
 
-    /* 3번째 줄 선택창 그룹 스타일 */
     .selection-controls {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 15px; /* 선택창들 사이의 간격 */
+        gap: 15px;
         width: 100%;
     }
 
-    .language-settings, .sound-settings, .theme-settings { 
-        display: flex; 
-        align-items: center; 
-        gap: 8px; 
+    .language-settings, .sound-settings, .theme-settings {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
     .select-label { font-size: 0.9em; color: var(--text-secondary); font-weight: 400; }
-    
+
     #languageSelect, #soundPackSelect, #themeSelect,
     #gameInternalControlsBar .game-control-select {
         background-color: var(--input-bg); color: var(--input-text);
@@ -516,7 +562,7 @@
         margin: 1px auto;
         font-family: var(--font-typing);
         font-size: var(--font-size-typing);
-        font-weight: 400; 
+        font-weight: 400;
         line-height: var(--line-height-typing);
         letter-spacing: var(--typing-letter-spacing);
         word-spacing: var(--typing-word-spacing);
@@ -574,13 +620,13 @@
     .light-theme .typing-line.current-to-type strong, .pink-theme .typing-line.current-to-type strong { color: var(--accent-darker); }
     .light-theme .typing-line.current-to-type .untyped-char, .pink-theme .typing-line.current-to-type .untyped-char { color: var(--text-secondary); opacity: 0.85; }
 
-    #typing-input-field-container { 
+    #typing-input-field-container {
         width: 100%;
         max-width: 700px;
         margin: 2px auto 0 auto;
         position: relative;
     }
-    
+
     #typing-input-field {
         position: absolute;
         top: 0;
@@ -597,7 +643,7 @@
         margin: 0;
         background: transparent;
     }
-    
+
     .fake-input-field {
         background-color: var(--input-bg);
         color: var(--input-text);
@@ -609,12 +655,11 @@
         box-shadow: var(--shadow-inset);
         cursor: text;
         white-space: pre-wrap;
-        
-        /* ▼▼▼ 독립적인 입력창 스타일 적용 ▼▼▼ */
+
         font-family: var(--font-typing);
         font-size: var(--font-size-input);
         letter-spacing: var(--letter-spacing-input);
-        word-spacing: var(--typing-word-spacing); /* 단어 간격은 예문과 동일하게 유지 */
+        word-spacing: var(--typing-word-spacing);
         line-height: var(--line-height-typing);
         font-weight: 400;
         box-sizing: border-box;
@@ -627,22 +672,22 @@
     }
     .light-theme #typing-input-field:focus + .fake-input-field { box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.15); }
     .pink-theme #typing-input-field:focus + .fake-input-field { box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.2); }
-    
+
     .fake-input-field .placeholder {
         color: var(--text-secondary);
         opacity: 0.5;
     }
-    
+
     #cursor {
         display: inline-block;
         width: 1px;
-        height: calc(var(--font-size-input) * 1.2); /* 입력창 폰트 크기에 맞춰 커서 높이 조정 */
+        height: calc(var(--font-size-input) * 1.2);
         background-color: var(--accent-primary);
         animation: blink 1s step-end infinite;
         vertical-align: middle;
         margin-left: -1px;
     }
-    
+
     @keyframes blink {
       from, to { background-color: transparent; }
       50% { background-color: var(--accent-primary); }
@@ -931,9 +976,7 @@
     @media (max-width: 768px) {
       .hero-title { font-size: 2.2em; }
       .hero-tagline { font-size: 0.9em; max-width: 90%;}
-      /* [삭제] 3줄 레이아웃을 위해 이 규칙 삭제
-      .main-controls { flex-direction: column; align-items: stretch; }
-      */
+
       body:not(.game-mode-active) .practice-mode-controls,
       body:not(.game-mode-active) .feature-toggles,
       body:not(.game-mode-active) .language-settings,
@@ -945,11 +988,11 @@
       #soundPackSelect, #themeSelect { min-width: 0; width: auto; flex-grow: 1; max-width: 180px; }
       .controls-and-stats-wrapper { padding: 20px 15px 10px; }
       .typing-area-container { padding: 15px 15px 20px; min-height: 280px; }
-      
-      .typing-line { 
-          font-size: var(--font-size-typing-mobile); 
-          letter-spacing: var(--typing-letter-spacing-mobile); 
-          word-spacing: var(--typing-word-spacing-mobile); 
+
+      .typing-line {
+          font-size: var(--font-size-typing-mobile);
+          letter-spacing: var(--typing-letter-spacing-mobile);
+          word-spacing: var(--typing-word-spacing-mobile);
       }
       .fake-input-field {
           font-size: var(--font-size-input-mobile);
@@ -988,8 +1031,8 @@
       #languageSelect,
       #gameInternalControlsBar .game-control-select,
       #soundPackSelect, #themeSelect { font-size: 0.85em; padding: 8px 10px; }
-      .typing-line { 
-          font-size: calc(var(--font-size-typing-mobile) * 0.95); 
+      .typing-line {
+          font-size: calc(var(--font-size-typing-mobile) * 0.95);
       }
       .fake-input-field {
           font-size: calc(var(--font-size-input-mobile) * 0.95);
@@ -1049,10 +1092,9 @@
   text-shadow: 0 1px 3px rgba(100,50,60,0.12);
 }
 
-/* --- 자리 연습 키보드 가이드 스타일 --- */
 #keyboard-guide {
-    display: none; /* 기본적으로 숨김 */
-    margin-bottom: 25px; /* 예문과 간격 */
+    display: none;
+    margin-bottom: 25px;
     padding: 15px;
     background-color: var(--bg-main);
     border-radius: var(--border-radius-small);
@@ -1068,7 +1110,7 @@
     display: block;
 }
 .keyboard-row {
-    display: flex; /* wrapper를 중앙정렬하기 위함 */
+    display: flex;
     justify-content: center;
     margin-bottom: 8px;
 }
@@ -1077,8 +1119,8 @@
 }
 
 .keys-wrapper {
-    display: flex; /* 키들을 정렬하기 위함 */
-    width: fit-content; /* 내용물에 맞게 너비 조절 */
+    display: flex;
+    width: fit-content;
 }
 
 
@@ -1087,12 +1129,11 @@
 }
 
 .row-2 .keys-wrapper {
-    transform: translateX(5px); /* Q키 너비의 절반만큼 이동 */
+    transform: translateX(5px);
 }
 
-/* 3번째 줄(ZXCV...)을 오른쪽으로 이동 */
 .row-3 .keys-wrapper {
-    transform: translateX(-25px); /* Q키 너비의 1.5배만큼 이동 */
+    transform: translateX(-25px);
 }
 
 .keyboard-key {
@@ -1141,15 +1182,14 @@
 .keyboard-key[data-key="enter"] { width: 55px; }
 .keyboard-key[data-key="space"] { width: 332px; }
 
-/* [수정] 각 테마별 홈 로우 키 배경색 가시성 향상 */
 .keyboard-key.home-row-base {
-    background-color: rgba(var(--accent-rgb), 0.18); /* 다크(기본) 테마 */
+    background-color: rgba(var(--accent-rgb), 0.18);
 }
 .light-theme .keyboard-key.home-row-base {
-    background-color: rgba(var(--accent-rgb), 0.15); /* 아이보리 테마 */
+    background-color: rgba(var(--accent-rgb), 0.15);
 }
 .pink-theme .keyboard-key.home-row-base {
-    background-color: rgba(var(--accent-rgb), 0.12); /* 핑크 테마는 미세 조정 */
+    background-color: rgba(var(--accent-rgb), 0.12);
 }
 
 
@@ -1166,7 +1206,6 @@
     opacity: 1;
 }
 
-/* [수정] 테마별 하이라이트 키 스타일이 올바르게 적용되도록 명시적으로 지정 (우선순위 문제 해결) */
 .light-theme .keyboard-key.highlight-key,
 .pink-theme .keyboard-key.highlight-key {
     background-color: var(--accent-primary);
@@ -1199,9 +1238,219 @@
     .keyboard-key[data-key="enter"] { width: 48px; }
     .keyboard-key[data-key="space"] { width: 184px; }
 }
+
+/* ▼▼▼ 글쓰기 모드 개선 CSS ▼▼▼ */
+#freestyle-area-container {
+    padding: 20px 25px 28px;
+    background-color: var(--bg-typing-area);
+    border-top: 1px solid rgba(var(--accent-primary-rgb), 0.1);
+    flex-grow: 1;
+    display: none; /* <--- 이렇게 'none'으로 변경해주세요. */
+    flex-direction: column;
+    border-radius: 0 0 var(--border-radius-main) var(--border-radius-main);
+    min-height: 400px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    position: relative;
+}
+
+#freestyle-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+    position: relative;
+    align-items: center;
+}
+.freestyle-tool-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background-color: var(--input-border);
+    margin: 0 4px;
+}
+
+.freestyle-tool-btn {
+    background-color: var(--input-bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius-small);
+    padding: 8px 12px;
+    font-family: var(--font-ui);
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.freestyle-tool-btn:hover {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    border-color: var(--accent-secondary);
+}
+.freestyle-tool-btn i {
+    margin-right: 6px;
+    width: 14px;
+    text-align: center;
+}
+#focusModeBtn { margin-left: auto; } /* 집중 모드 버튼을 오른쪽으로 */
+
+#emoji-picker {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translateY(5px);
+    background-color: var(--bg-container);
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius-small);
+    box-shadow: var(--shadow-soft);
+    padding: 10px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    z-index: 10;
+}
+#emoji-picker.visible {
+    display: grid;
+}
+#emoji-picker span {
+    font-size: 1.4em;
+    cursor: pointer;
+    text-align: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+#emoji-picker span:hover {
+    background-color: var(--bg-main);
+}
+
+
+#freestyle-input-area {
+    width: 100%;
+    flex-grow: 1;
+    min-height: 300px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius-small);
+    padding: 15px;
+    font-family: var(--font-typing);
+    font-size: var(--font-size-input);
+    line-height: var(--line-height-typing);
+    resize: vertical;
+    box-shadow: var(--shadow-inset);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+#freestyle-input-area:focus {
+    outline: none;
+    border-color: var(--accent-active);
+    box-shadow: var(--input-focus-shadow), var(--shadow-inset);
+}
+#freestyle-input-area::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+#freestyle-input-area:focus::placeholder {
+    opacity: 0.3;
+}
+
+#freestyle-stats-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 5px;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+}
+
+.freestyle-download-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+}
+#freestyle-filename-input {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius-small);
+    padding: 10px 12px;
+    font-family: var(--font-ui);
+    font-size: 0.9em;
+    outline: none;
+    box-shadow: var(--shadow-inset);
+    transition: all 0.2s ease;
+    width: 200px;
+}
+#freestyle-filename-input:focus {
+    border-color: var(--accent-active);
+    box-shadow: var(--input-focus-shadow), var(--shadow-inset);
+}
+#download-freestyle-btn {
+    padding: 10px 20px;
+    font-size: 0.9em;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    border: 1.5px solid var(--accent-primary);
+    background: var(--accent-primary);
+    color: var(--button-text-on-accent);
+    box-shadow: var(--shadow-button);
+    transition: all 0.2s ease;
+}
+#download-freestyle-btn:hover {
+    background: var(--accent-active);
+    border-color: var(--accent-active);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-button-hover);
+}
+#download-freestyle-btn i {
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    #freestyle-area-container {
+        padding: 15px;
+        min-height: 350px;
+    }
+    #freestyle-input-area {
+        min-height: 250px;
+    }
+}
+@media (max-width: 480px) {
+    .freestyle-download-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #freestyle-filename-input, #download-freestyle-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    #freestyle-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .freestyle-tool-group {
+        justify-content: space-around;
+    }
+    #focusModeBtn { margin-left: 0; }
+}
+/* ▲▲▲ 글쓰기 모드 개선 CSS ▲▲▲ */
 </style>
 </head>
-<body>
+<body class=""> <!-- body에 active 클래스 제거 -->
   <div class="main-content-wrapper"> <div class="main-content">
     <div class="hero-section">
         <a href="https://www.youtube.com/@KeyTherapy" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;">
@@ -1211,24 +1460,21 @@
     </div>
   <div class="controls-and-stats-wrapper">
     <div class="settings-container">
-        <!-- ▼▼▼ .main-controls 블록 전체를 아래 코드로 교체 ▼▼▼ -->
         <div class="main-controls">
-            <!-- 1번째 줄: 주 메뉴 버튼 -->
             <div class="practice-mode-controls control-button-group">
                 <button data-practice-type="short"><i class="fas fa-language"></i> 단문 연습</button>
                 <button data-practice-type="long"><i class="fas fa-align-left"></i> 장문 연습</button>
+                <button data-practice-type="freestyle"><i class="fas fa-pencil-alt"></i> 글쓰기</button>
                 <button id="gameModeBtn"><i class="fas fa-gamepad"></i> 게임하기</button>
             </div>
-        
-            <!-- 2번째 줄: 기능 토글 버튼 -->
+
             <div class="feature-toggles control-button-group">
                 <button id="toggleSoundBtn"><i class="fas fa-volume-mute"></i> 타건음 OFF</button>
                 <button id="toggleHighlightBtn" class="active"><i class="fas fa-highlighter"></i> 오타체크 ON</button>
                 <button id="toggleStatsBtn" class="active"><i class="fas fa-chart-line"></i> 측정 ON</button>
                 <button id="toggleKeyboardGuideBtn"><i class="far fa-keyboard"></i> 자리연습 OFF</button>
             </div>
-        
-            <!-- 3번째 줄: 설정 선택창 그룹 (요청하신 순서로 배치) -->
+
             <div class="selection-controls">
                 <div class="sound-settings" id="soundSettingsElement">
                     <label for="soundPackSelect" class="select-label" id="soundPackLabel">타건음:</label>
@@ -1275,6 +1521,37 @@
     </div>
     <div id="upcoming-lines-area"> </div>
 </div>
+<!-- ▼▼▼ 글쓰기 모드 컨테이너 (개선됨) ▼▼▼ -->
+<div id="freestyle-area-container">
+    <div id="freestyle-toolbar">
+        <div class="freestyle-tool-group">
+            <button id="insertDateBtn" class="freestyle-tool-btn" title="오늘 날짜 삽입"><i class="fas fa-calendar-alt"></i></button>
+            <button id="insertTimeBtn" class="freestyle-tool-btn" title="현재 시간 삽입"><i class="fas fa-clock"></i></button>
+            <button id="emojiBtn" class="freestyle-tool-btn" title="이모티콘"><i class="far fa-smile"></i></button>
+             <div id="emoji-picker">
+                <span>😊</span><span>😂</span><span>😍</span><span>🤔</span><span>👍</span><span>❤️</span>
+                <span>🎉</span><span>✨</span><span>🔥</span><span>😭</span><span>🙏</span><span>⭐</span>
+            </div>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="freestyle-tool-group">
+            <button id="formatBoldBtn" class="freestyle-tool-btn" title="굵게"><i class="fas fa-bold"></i></button>
+            <button id="formatItalicBtn" class="freestyle-tool-btn" title="기울임꼴"><i class="fas fa-italic"></i></button>
+            <button id="insertHrBtn" class="freestyle-tool-btn" title="구분선"><i class="fas fa-minus"></i></button>
+        </div>
+        <button id="focusModeBtn" class="freestyle-tool-btn" title="집중 모드 (ESC로 해제)"><i class="fas fa-expand"></i></button>
+    </div>
+    <textarea id="freestyle-input-area" placeholder="오늘 하루는 어땠나요? 당신의 이야기를 자유롭게 기록해보세요..."></textarea>
+    <div id="freestyle-stats-bar">
+        <span id="charCount">0자</span>
+        <span id="wordCount">0단어</span>
+    </div>
+    <div class="freestyle-download-controls">
+        <input type="text" id="freestyle-filename-input" placeholder="파일 이름 (선택사항)">
+        <button id="download-freestyle-btn"><i class="fas fa-download"></i> 텍스트 파일로 저장</button>
+    </div>
+</div>
+<!-- ▲▲▲ 글쓰기 모드 컨테이너 (개선됨) ▲▲▲ -->
 <div id="game-area-container">
 </div>
 <div id="result"></div>
@@ -1288,7 +1565,7 @@ let currentMode = '';
 let currentGameType = '';
 let linesToPractice = [];
 let currentDisplayLineIndex = 0;
-let disassembledLine = []; // 분해된 현재 줄 저장
+let disassembledLine = [];
 
 const MAX_VISIBLE_UPCOMING_LINES = 5;
 
@@ -1309,7 +1586,14 @@ let highlightEnabled = true;
 let statsVisible = true;
 let keyboardGuideEnabled = false;
 
-// [수정] languageSelectEl 변수 추가
+// ▼▼▼ 글쓰기 모드 관련 전역 변수 추가 ▼▼▼
+let freestyleStatsInterval = null;
+let freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl;
+let freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker;
+let formatBoldBtn, formatItalicBtn, insertHrBtn, focusModeBtn;
+let charCountEl, wordCountEl;
+// ▲▲▲ 글쓰기 모드 관련 전역 변수 추가 ▲▲▲
+
 let languageSelectEl, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl;
 let progressBarContainerEl, progressBarEl;
 let gameAreaContainerEl, gameCanvas, gameCtx, gameInputField, gameOverlayEl, gameStartMessageEl, itemEffectPopupEl;
@@ -1501,7 +1785,7 @@ const gameWordsKor = [
     "수학", "역사", "지리", "사회", "경제", "정치", "법률", "윤리", "철학", "종교", "언어", "문학", "교육", "심리", "의학", "공학", "기술", "정보", "통신", "우주인", "방울뱀", "사막여우",
     "가로등", "가위질", "가정교사", "가족사진", "가지각색", "갈림길", "갈림돌", "감사패", "감정표현", "강강술래", "개발자", "거북선", "건강검진", "건널목", "검정고시", "결혼기념", "경기장", "경찰관", "경호원", "계란후라이", "고속도로", "고인돌", "골목대장", "공기놀이", "공중전화", "공휴일", "과일가게", "과학상자", "관광버스", "광화문", "구급상자", "국회의원", "군고구마", "그림일기", "극장", "기념품", "기상캐스터", "기차여행", "긴급상황", "김장독", "까마귀", "까치밥", "꽃다발", "꿀벌", "꿈나라", "끝말잇기", "나무늘보", "나비넥타이", "낙하산", "낚시꾼", "난센스퀴즈", "날개", "남대문", "낭떠러지", "내비게이션", "냉장고", "네잎클로버", "노랫소리", "노트북", "놀이공원", "농구공", "눈사람", "다리미", "다람쥐", "다이아몬드", "단풍잎", "달리기", "닭꼬치", "담벼락", "당근", "대통령", "대한민국", "도서관", "독수리", "돈가스", "돌고래", "동물원", "두부", "두통약", "드라이기", "등산화", "디지털카메라", "라면", "라디오", "로봇", "리모컨", "마라톤", "마법사", "만두", "만리장성"
 ].map(word => word.trim());
-const gameWordsEng = [ // 이 변수는 이제 게임에서 사용되지 않습니다.
+const gameWordsEng = [
     "hello", "world", "galaxy", "planet", "comet", "orbit", "nebula", "quasar", "pulsar", "meteor", "asteroid", "gravity", "energy", "force", "speed", "light", "sound", "echo", "pulse", "wave", "quantum", "field", "charge",
     "nature", "animal", "plant", "flower", "river", "ocean", "beach", "coast", "forest", "jungle", "desert", "mountain", "valley", "canyon", "island", "volcano", "glacier", "meadow", "prairie", "savanna", "swamp", "marsh", "reef",
     "summer", "winter", "spring", "autumn", "season", "weather", "climate", "cloud", "storm", "breeze", "hurricane", "typhoon", "tornado", "rainbow", "sunrise", "sunset", "twilight", "day", "night", "morning", "evening", "midnight", "noon",
@@ -1537,7 +1821,6 @@ function updateDropdown(level) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // [수정] languageSelectEl 초기화 추가
   languageSelectEl = document.getElementById('languageSelect');
   toggleSoundBtn = document.getElementById('toggleSoundBtn');
   toggleHighlightBtn = document.getElementById('toggleHighlightBtn');
@@ -1557,12 +1840,31 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleKeyboardGuideBtn = document.getElementById('toggleKeyboardGuideBtn');
   keyboardGuideEl = document.getElementById('keyboard-guide');
 
+  // ▼▼▼ 글쓰기 모드 요소 초기화 ▼▼▼
+  freestyleAreaContainerEl = document.getElementById('freestyle-area-container');
+  freestyleInputAreaEl = document.getElementById('freestyle-input-area');
+  downloadFreestyleBtnEl = document.getElementById('download-freestyle-btn');
+  freestyleFilenameInputEl = document.getElementById('freestyle-filename-input');
+  freestyleToolbarEl = document.getElementById('freestyle-toolbar');
+  insertDateBtn = document.getElementById('insertDateBtn');
+  insertTimeBtn = document.getElementById('insertTimeBtn');
+  emojiBtn = document.getElementById('emojiBtn');
+  emojiPicker = document.getElementById('emoji-picker');
+  formatBoldBtn = document.getElementById('formatBoldBtn');
+  formatItalicBtn = document.getElementById('formatItalicBtn');
+  insertHrBtn = document.getElementById('insertHrBtn');
+  focusModeBtn = document.getElementById('focusModeBtn');
+  charCountEl = document.getElementById('charCount');
+  wordCountEl = document.getElementById('wordCount');
+  // ▲▲▲ 글쓰기 모드 요소 초기화 ▲▲▲
+
   soundSettingsEl = document.getElementById('soundSettingsElement');
   themeSettingsEl = document.getElementById('themeSettingsElement');
   mainControlsEl = document.querySelector('.main-controls');
 
-  if (![languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl].every(el => el)) {
-      console.error("하나 이상의 필수 HTML 요소를 찾을 수 없습니다.");
+  const allElements = [languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl, freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl, freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker, formatBoldBtn, formatItalicBtn, insertHrBtn, focusModeBtn, charCountEl, wordCountEl];
+  if (!allElements.every(el => el)) {
+      console.error("하나 이상의 필수 HTML 요소를 찾을 수 없습니다. 누락된 요소를 확인해주세요.");
       if (resultEl) resultEl.textContent = "페이지 로딩 오류.";
       return;
   }
@@ -1584,32 +1886,33 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeAudioPool();
   buildKeyboard();
 
-  // [수정] 새 UI 구조에 맞는 이벤트 리스너 설정
-  // 1. 단문/장문 버튼 클릭 시
   document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(button => {
     button.addEventListener('click', function() {
-      const lang = languageSelectEl.value;
       const type = this.dataset.practiceType;
-      const mode = (type === 'long') ? `${lang}Long` : lang;
-      
-      startPractice(mode, true);
+      if (type === 'freestyle') {
+          startFreestyleMode();
+      } else {
+          const lang = languageSelectEl.value;
+          const mode = (type === 'long') ? `${lang}Long` : lang;
+          startPractice(mode, true);
+      }
     });
   });
 
-  // 2. 게임하기 버튼 클릭 시
   if (gameModeBtnEl) {
     gameModeBtnEl.addEventListener('click', () => activateGameMode('rainfall'));
   }
 
-  // 3. 언어 선택 변경 시
   languageSelectEl.addEventListener('change', () => {
-    // 현재 활성화된 연습 타입(단문/장문)을 가져옴
-    const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
-    const type = activePracticeBtn ? activePracticeBtn.dataset.practiceType : 'short'; // 기본값은 단문
-    const lang = languageSelectEl.value;
-    const mode = (type === 'long') ? `${lang}Long` : lang;
-
-    startPractice(mode, true);
+    if (currentMode !== 'freestyle') {
+      const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
+      const type = activePracticeBtn ? activePracticeBtn.dataset.practiceType : 'short';
+      if(type !== 'freestyle'){
+          const lang = languageSelectEl.value;
+          const mode = (type === 'long') ? `${lang}Long` : lang;
+          startPractice(mode, true);
+      }
+    }
   });
 
   toggleSoundBtn.classList.toggle('active', soundEnabled);
@@ -1626,31 +1929,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   typingInputField.addEventListener('input', handleInputEvent);
-  
+
   if (fakeInputField && typingInputField) {
       fakeInputField.addEventListener('click', () => typingInputField.focus());
   }
 
-  // [수정] 한/영 입력 문제 해결을 위한 클릭-투-포커스 로직
   document.body.addEventListener('click', function(e) {
-    // 클릭한 대상이 버튼, 링크, 셀렉트 박스 등 상호작용 가능한 요소가 아닐 때만 실행
-    const isInteractiveElement = e.target.closest('button, a, select, input');
-    
+    if (emojiPicker.classList.contains('visible') && !emojiPicker.contains(e.target) && !emojiBtn.contains(e.target)) {
+        emojiPicker.classList.remove('visible');
+    }
+
+    const isInteractiveElement = e.target.closest('button, a, select, input, textarea, #emoji-picker span');
+
     if (!isInteractiveElement) {
       if (document.body.classList.contains('game-mode-active')) {
-        // 게임 모드일 경우
-        if (gameInputField && !gameInputField.disabled) {
-          gameInputField.focus();
-        }
+        if (gameInputField && !gameInputField.disabled) gameInputField.focus();
+      } else if (document.body.classList.contains('freestyle-mode-active')) {
+        if (freestyleInputAreaEl) freestyleInputAreaEl.focus();
       } else {
-        // 연습 모드일 경우
-        if (typingInputField && !typingInputField.disabled) {
-          typingInputField.focus();
-        }
+        if (typingInputField && !typingInputField.disabled) typingInputField.focus();
       }
     }
   });
-
 
   toggleSoundBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
@@ -1697,7 +1997,7 @@ document.addEventListener('DOMContentLoaded', () => {
     keyboardGuideEnabled = !keyboardGuideEnabled;
     toggleKeyboardGuideBtn.classList.toggle('active', keyboardGuideEnabled);
     toggleKeyboardGuideBtn.innerHTML = keyboardGuideEnabled ? '<i class="fas fa-keyboard"></i> 자리연습 ON' : '<i class="far fa-keyboard"></i> 자리연습 OFF';
-    
+
     if (keyboardGuideEl) {
         keyboardGuideEl.classList.toggle('visible', keyboardGuideEnabled);
     }
@@ -1710,92 +2010,99 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // [수정] 페이지 첫 로딩 시 '한글 단문'으로 시작
+  // ▼▼▼ 글쓰기 모드 이벤트 리스너 추가 ▼▼▼
+  freestyleInputAreaEl.addEventListener('input', () => {
+      playTypingSound();
+      if (!startTime) {
+          startTime = Date.now();
+      }
+      updateFreestyleStats();
+  });
+  freestyleInputAreaEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' || e.key === 'Enter' || e.key === ' ') {
+          playTypingSound();
+      }
+  });
+  downloadFreestyleBtnEl.addEventListener('click', handleFreestyleDownload);
+  insertDateBtn.addEventListener('click', insertDate);
+  insertTimeBtn.addEventListener('click', insertTime);
+  emojiBtn.addEventListener('click', () => {
+    emojiPicker.classList.toggle('visible');
+  });
+  emojiPicker.querySelectorAll('span').forEach(emoji => {
+    emoji.addEventListener('click', () => {
+        insertAtCursor(freestyleInputAreaEl, emoji.textContent);
+        emojiPicker.classList.remove('visible');
+        freestyleInputAreaEl.focus();
+    });
+  });
+  formatBoldBtn.addEventListener('click', () => wrapSelectionWithTag(freestyleInputAreaEl, '**'));
+  formatItalicBtn.addEventListener('click', () => wrapSelectionWithTag(freestyleInputAreaEl, '*'));
+  insertHrBtn.addEventListener('click', () => insertAtCursor(freestyleInputAreaEl, '\n\n---\n\n'));
+  focusModeBtn.addEventListener('click', toggleFocusMode);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('focus-mode-active')) {
+        toggleFocusMode();
+    }
+  });
+  // ▲▲▲ 글쓰기 모드 이벤트 리스너 추가 ▲▲▲
+
   startPractice('kor', true);
 });
 
-function applyTheme(theme) {
-    document.body.classList.remove('light-theme', 'pink-theme');
-    if (theme === 'light') document.body.classList.add('light-theme');
-    else if (theme === 'pink') document.body.classList.add('pink-theme');
-    
-    if (gameCanvas && currentGameType) {
-        requestAnimationFrame(() => {
-            if (currentGameType === 'rainfall') drawRainfallGame();
-            else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
-            else if (currentGameType === 'giantBattle') drawGiantBattleGame();
-        });
-    }
+function cleanupActiveModes() {
+    document.body.classList.remove('game-mode-active', 'freestyle-mode-active', 'focus-mode-active');
+
+    if (rainfall_gameLoopId) cancelAnimationFrame(rainfall_gameLoopId);
+    if (lbb_gameLoopId) cancelAnimationFrame(lbb_gameLoopId);
+    if (gb_gameLoopId) cancelAnimationFrame(gb_gameLoopId);
+    if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId);
+    if (lbb_enemyActionIntervalId) clearInterval(lbb_enemyActionIntervalId);
+    if (gb_enemyAttackIntervalId) clearInterval(gb_enemyAttackIntervalId);
+    if (freestyleStatsInterval) clearInterval(freestyleStatsInterval);
+
+    rainfall_isGameActive = false;
+    lbb_isGameActive = false;
+    gb_isGameActive = false;
+    freestyleStatsInterval = null;
+    startTime = null;
+
+    if(typingInputField) typingInputField.removeEventListener('keydown', handleKeyDownEvent);
+    if(gameInputField) gameInputField.removeEventListener('keydown', handleKeyDownEvent);
+
+    enablePracticeControls();
 }
 
-
-function initializeAudioPoolForPack(packKey) {
-    if (soundFiles.hasOwnProperty(packKey) && (!audioPool[packKey] || audioPool[packKey].length === 0)) {
-        audioPool[packKey] = [];
-        audioPointer[packKey] = 0;
-        for (let i = 0; i < MAX_AUDIO_OBJECTS; i++) {
-            const audio = new Audio();
-            audio.preload = 'auto';
-            audioPool[packKey].push(audio);
-        }
-    }
+function disableFreestyleControls() {
+    toggleHighlightBtn.classList.add('disabled');
+    toggleKeyboardGuideBtn.classList.add('disabled');
+    languageSelectEl.closest('.language-settings').classList.add('disabled');
 }
 
-function initializeAudioPool() {
-    for (const packKey in soundFiles) {
-        initializeAudioPoolForPack(packKey);
-    }
+function enablePracticeControls() {
+    toggleHighlightBtn.classList.remove('disabled');
+    toggleKeyboardGuideBtn.classList.remove('disabled');
+    languageSelectEl.closest('.language-settings').classList.remove('disabled');
 }
 
-// [수정] UI 상태 반영 로직 변경
 function startPractice(mode, resetSessionStats = false) {
-    if (rainfall_isGameActive || lbb_isGameActive || gb_isGameActive) returnToPracticeMode(false);
-    document.body.classList.remove('game-mode-active');
+    cleanupActiveModes();
+
     currentMode = mode;
     currentGameType = '';
 
-    // UI 상태 업데이트 로직
-    const isLong = mode.includes('Long');
-    const lang = mode.replace('Long', '');
-
-    // 단문/장문 버튼 활성화 상태 업데이트
-    document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.practiceType === (isLong ? 'long' : 'short'));
+    document.querySelectorAll('.practice-mode-controls button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.practiceType === (mode.includes('Long') ? 'long' : 'short'));
     });
-    // 언어 선택 드롭다운 상태 업데이트
-    if (languageSelectEl) {
-        languageSelectEl.value = lang;
-    }
-    // 게임하기 버튼은 비활성화
-    if (gameModeBtnEl) {
-        gameModeBtnEl.classList.remove('active');
-    }
+    if (gameModeBtnEl) gameModeBtnEl.classList.remove('active');
 
-    // --- 이하 기존 startPractice 함수의 로직은 거의 동일 ---
-    if (mainControlsEl && soundSettingsEl.parentNode !== mainControlsEl) {
-        originalSoundParent.insertBefore(soundSettingsEl, originalSoundNextSibling);
-        originalThemeParent.insertBefore(themeSettingsEl, originalThemeNextSibling);
-    }
-    
-    if (resultEl) resultEl.textContent = '새로운 문제를 불러옵니다...';
-    document.querySelector('.typing-area-container').style.display = 'flex';
-    if (document.getElementById('typing-input-field-container')) {
-        document.getElementById('typing-input-field-container').style.display = 'block';
-    }
+    if(resultEl) resultEl.textContent = '새로운 문제를 불러옵니다...';
+
     if (typingInputField) {
         typingInputField.disabled = false;
         typingInputField.value = '';
-        typingInputField.removeEventListener('keydown', handleKeyDownEvent);
         typingInputField.addEventListener('keydown', handleKeyDownEvent);
     }
-    if (gameInputField) {
-        gameInputField.removeEventListener('keydown', handleKeyDownEvent);
-        gameInputField.removeEventListener('input', handleInputEvent);
-    }
-    if (gameAreaContainerEl) gameAreaContainerEl.style.display = 'none';
-    if (gameStartMessageEl) gameStartMessageEl.style.display = 'none';
-    if (lbbTimerBarContainerEl) lbbTimerBarContainerEl.style.display = 'none';
-
 
     if (statsVisible && statsEl) statsEl.classList.remove('hidden');
 
@@ -1804,7 +2111,7 @@ function startPractice(mode, resetSessionStats = false) {
         sessionTotalValidChars = 0; sessionTotalCorrectChars = 0; sessionTotalMistypedChars = 0;
         lastArticleSpeed = 0;
     }
-    startTime = null;
+
     currentLineStartTime = null;
     currentArticleCorrectChars = 0;
 
@@ -1835,6 +2142,198 @@ function startPractice(mode, resetSessionStats = false) {
     updateKeyboardHighlight();
 
     setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
+}
+
+
+function startFreestyleMode() {
+    cleanupActiveModes();
+    document.body.classList.add('freestyle-mode-active');
+    currentMode = 'freestyle';
+
+    document.querySelectorAll('.practice-mode-controls button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.practiceType === 'freestyle');
+    });
+    if (gameModeBtnEl) gameModeBtnEl.classList.remove('active');
+
+    disableFreestyleControls();
+
+    if (toggleHighlightBtn.classList.contains('active')) toggleHighlightBtn.classList.remove('active');
+    if (toggleKeyboardGuideBtn.classList.contains('active')) toggleKeyboardGuideBtn.classList.remove('active');
+    highlightEnabled = false;
+    keyboardGuideEnabled = false;
+    if (keyboardGuideEl) keyboardGuideEl.classList.remove('visible');
+
+
+    if (resultEl) resultEl.textContent = '자유롭게 글을 작성하고 타건을 즐겨보세요.';
+
+    startTime = null;
+    overallMaxSpeed = 0;
+    overallAvgSpeedLog = [];
+    sessionTotalValidChars = 0;
+    sessionTotalCorrectChars = 0;
+    sessionTotalMistypedChars = 0;
+    lastArticleSpeed = 0;
+    updateStatsDisplay(true);
+
+    if (document.getElementById('accuracyStat')) document.getElementById('accuracyStat').innerHTML = '<span class="value">—</span>';
+    if (document.getElementById('avgSpeedStat')) document.getElementById('avgSpeedStat').innerHTML = '<span class="value">—</span>';
+    if (document.getElementById('maxSpeedStat')) document.getElementById('maxSpeedStat').innerHTML = '<span class="value">—</span>';
+
+    freestyleInputAreaEl.value = '';
+    freestyleInputAreaEl.focus();
+
+    updateFreestyleStats();
+    if(freestyleStatsInterval) clearInterval(freestyleStatsInterval);
+    freestyleStatsInterval = setInterval(updateFreestyleStats, 500);
+}
+
+function updateFreestyleStats() {
+    if (currentMode !== 'freestyle') {
+        if(freestyleStatsInterval) clearInterval(freestyleStatsInterval);
+        return;
+    };
+    const text = freestyleInputAreaEl.value;
+    const charLength = text.length;
+    const wordLength = text.trim().split(/\s+/).filter(Boolean).length;
+
+    charCountEl.textContent = `${charLength}자`;
+    wordCountEl.textContent = `${wordLength}단어`;
+
+    if (startTime) { // 시작 시간이 기록되었는지 먼저 확인
+        const elapsedMinutes = (Date.now() - startTime) / 60000; // <--- 변수를 여기서 선언합니다.
+        if (elapsedMinutes > 0) {
+            const speed = Math.round((charLength / elapsedMinutes) * KOR_SPEED_FACTOR);
+            if (document.getElementById('speedStat')) {
+                document.getElementById('speedStat').textContent = `${speed} 타/분`;
+            }
+        }
+    }
+}
+function handleFreestyleDownload() {
+    const text = freestyleInputAreaEl.value;
+    if (text.trim() === '') {
+        alert('저장할 내용이 없습니다.');
+        return;
+    }
+
+    let filename = freestyleFilenameInputEl.value.trim();
+    if (filename === '') {
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}`;
+        filename = `keytherapy_${timestamp}`;
+    }
+
+    if (!filename.toLowerCase().endsWith('.txt')) {
+        filename += '.txt';
+    }
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function insertAtCursor(myField, myValue) {
+    if (document.selection) {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+    }
+    else if (myField.selectionStart || myField.selectionStart == '0') {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, startPos)
+            + myValue
+            + myField.value.substring(endPos, myField.value.length);
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+    }
+    updateFreestyleStats();
+    myField.focus();
+}
+
+function wrapSelectionWithTag(field, tag) {
+    const start = field.selectionStart;
+    const end = field.selectionEnd;
+    const selectedText = field.value.substring(start, end);
+    const replacement = tag + selectedText + tag;
+    
+    field.setRangeText(replacement, start, end, 'end');
+
+    if (selectedText.length === 0) {
+        field.setSelectionRange(start + tag.length, start + tag.length);
+    }
+    updateFreestyleStats();
+    field.focus();
+}
+
+function insertDate() {
+    const now = new Date();
+    const dateString = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
+    insertAtCursor(freestyleInputAreaEl, dateString + " ");
+}
+
+function insertTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? '오후' : '오전';
+    const formattedHours = (hours % 12) || 12;
+    const timeString = `${ampm} ${formattedHours}:${minutes}`;
+    insertAtCursor(freestyleInputAreaEl, timeString + " ");
+}
+
+function toggleFocusMode() {
+    document.body.classList.toggle('focus-mode-active');
+    const icon = focusModeBtn.querySelector('i');
+    if (document.body.classList.contains('focus-mode-active')) {
+        icon.classList.remove('fa-expand');
+        icon.classList.add('fa-compress');
+    } else {
+        icon.classList.remove('fa-compress');
+        icon.classList.add('fa-expand');
+    }
+    freestyleInputAreaEl.focus();
+}
+
+function applyTheme(theme) {
+    document.body.classList.remove('light-theme', 'pink-theme');
+    if (theme === 'light') document.body.classList.add('light-theme');
+    else if (theme === 'pink') document.body.classList.add('pink-theme');
+
+    if (gameCanvas && currentGameType) {
+        requestAnimationFrame(() => {
+            if (currentGameType === 'rainfall') drawRainfallGame();
+            else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
+            else if (currentGameType === 'giantBattle') drawGiantBattleGame();
+        });
+    }
+}
+
+
+function initializeAudioPoolForPack(packKey) {
+    if (soundFiles.hasOwnProperty(packKey) && (!audioPool[packKey] || audioPool[packKey].length === 0)) {
+        audioPool[packKey] = [];
+        audioPointer[packKey] = 0;
+        for (let i = 0; i < MAX_AUDIO_OBJECTS; i++) {
+            const audio = new Audio();
+            audio.preload = 'auto';
+            audioPool[packKey].push(audio);
+        }
+    }
+}
+
+function initializeAudioPool() {
+    for (const packKey in soundFiles) {
+        initializeAudioPoolForPack(packKey);
+    }
 }
 
 function splitTextIntoLines(text, mode, screenWidth) {
@@ -1923,7 +2422,7 @@ function handleInputEvent(e) {
         playTypingSound();
     }
 
-    if (currentMode !== 'game' && e.target === typingInputField) {
+    if (currentMode !== 'game' && currentMode !== 'freestyle' && e.target === typingInputField) {
         const typedValue = typingInputField.value;
         const currentLineEl = document.getElementById('current-typing-line');
         if (!currentLineEl) return;
@@ -1948,7 +2447,7 @@ function updateFakeInput(typedValue, isReset = false) {
         fakeInputField.innerHTML = `<span class="placeholder">타자 연습 시작...</span><span id="cursor"></span>`;
         return;
     }
-    
+
     if (typedValue.length === 0) {
         fakeInputField.innerHTML = `<span id="cursor"></span>`;
     } else {
@@ -2005,7 +2504,7 @@ function handleKeyDownEvent(e) {
         return;
     }
 
-    if (currentMode !== 'game' && targetInput === typingInputField) {
+    if (currentMode !== 'game' && currentMode !== 'freestyle' && targetInput === typingInputField) {
         const typedValue = typingInputField.value;
         const originalLine = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : null;
 
@@ -2225,7 +2724,9 @@ function hexToRgb(hex) {
 
 // --- GAME MODE ENTRY POINT ---
 function activateGameMode(gameType) {
-    // [수정] 인라인 스타일을 직접 조작하는 코드 제거
+    cleanupActiveModes();
+    document.body.classList.add('game-mode-active');
+
     currentMode = 'game';
     currentGameType = gameType;
 
@@ -2233,8 +2734,6 @@ function activateGameMode(gameType) {
         typingInputField.removeEventListener('keydown', handleKeyDownEvent);
     }
 
-
-    document.body.classList.add('game-mode-active');
     if (rainfall_gameLoopId) cancelAnimationFrame(rainfall_gameLoopId);
     if (lbb_gameLoopId) cancelAnimationFrame(lbb_gameLoopId);
     if (gb_gameLoopId) cancelAnimationFrame(gb_gameLoopId);
@@ -2246,7 +2745,6 @@ function activateGameMode(gameType) {
     if (lbb_playerNoPlayableBlocksTimerId) clearTimeout(lbb_playerNoPlayableBlocksTimerId);
     if (lbb_enemyNoPlayableBlocksTimerId) clearTimeout(lbb_enemyNoPlayableBlocksTimerId);
     if (lbb_relocationCountdownIntervalId) clearInterval(lbb_relocationCountdownIntervalId);
-
 
     rainfall_isGameActive = false;
     lbb_isGameActive = false;
@@ -2278,8 +2776,6 @@ function activateGameMode(gameType) {
         </div>
         <div id="item-effect-popup"></div>
         <div id="gameOverlay" class="game-overlay"></div>`;
-
-    gameAreaContainerEl.style.display = 'flex';
 
     gameStartMessageEl = document.getElementById('game-start-message');
     gameCanvas = document.getElementById('game-canvas');
@@ -2357,7 +2853,7 @@ function activateGameMode(gameType) {
     soundToggleControlItem.classList.add('game-control-item');
     soundToggleControlItem.appendChild(gameToggleSoundBtn);
     settingsRow1.appendChild(soundToggleControlItem);
-    
+
     const levelControlItem = document.createElement('div');
     levelControlItem.classList.add('game-control-item');
     const levelSelectLabel = document.createElement('label');
@@ -2408,8 +2904,6 @@ function activateGameMode(gameType) {
     });
     levelControlItem.appendChild(levelSelectLabel);
     levelControlItem.appendChild(gameLevelSelectInBar);
-    
-    // [수정] 언어 선택 UI 생성 코드 제거
 
     settingsRow2.appendChild(levelControlItem);
 
@@ -2422,7 +2916,7 @@ function activateGameMode(gameType) {
     const containerWidth = gameAreaContainerEl.querySelector('.game-ui-wrapper').clientWidth;
     gameCanvas.width = Math.min(containerWidth > 0 ? containerWidth : 600, 800);
     gameCanvas.height = Math.max(window.innerHeight * 0.55, 350);
-    
+
     if (gameType === 'letterBlockBattle') {
         gameCanvas.height = Math.max(window.innerHeight * 0.48, 300);
         const boardAreaHeight = gameCanvas.height - 50;
@@ -2430,7 +2924,7 @@ function activateGameMode(gameType) {
         const baseFontSize = LBB_BLOCK_SIZE * 0.28;
         lbb_blockTextFont = `bold ${Math.max(6, baseFontSize)}px 'Noto Sans KR', sans-serif`;
     }
-    
+
     if (gameType === 'rainfall') {
         gameStartMessageEl.innerHTML = `
              <h2><i class="fas fa-cloud-showers-heavy"></i> 소나기</h2>
@@ -2478,7 +2972,6 @@ function activateGameMode(gameType) {
     gameStartMessageEl.style.display = 'flex';
     gameInputField.placeholder = "단어 입력 후 Enter 또는 Space";
 
-    // [수정] UI 상태 반영 로직
     document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(btn => btn.classList.remove('active'));
     if (gameModeBtnEl) {
         gameModeBtnEl.classList.add('active');
@@ -2521,7 +3014,7 @@ function initRainfallGame(fromStartButton = false, level) {
     rainfall_isTimeStopped = false;
 
     if (window.rainfallTimeStopTimeoutId) clearTimeout(window.rainfallTimeStopTimeoutId);
-    
+
     rainfall_currentSubLevelIndex = 0;
 
     if(gameInputField) {
@@ -2543,13 +3036,13 @@ function startRainfallGameLoop() {
              rainfall_gameLoopId = null;
              return;
         }
-        
+
         drawRainfallGame();
-        
+
         if (rainfall_isGameActive && !rainfall_gamePausedForOverlay) {
             updateRainfallGameLogic();
         }
-        
+
         rainfall_gameLoopId = requestAnimationFrame(loop);
     }
     rainfall_gameLoopId = requestAnimationFrame(loop);
@@ -2566,7 +3059,7 @@ function updateRainfallGameLogic() {
         handleGameEnd(rainfall_gameLives > 0, 'timeUp');
         return;
     }
-    
+
     const currentMainLevelConfig = rainfall_gameMainLevelsConfig[rainfall_gameLevel - 1];
     if (!currentMainLevelConfig) {
         console.error("Rainfall: Invalid game level configuration for level " + rainfall_gameLevel);
@@ -2584,7 +3077,7 @@ function updateRainfallGameLogic() {
         const word = rainfall_wordsOnScreen[i];
         word.y += word.speed;
         if (word.y > gameCanvas.height + 20) {
-            if (rainfall_gameLives > 0 && !word.itemType) { 
+            if (rainfall_gameLives > 0 && !word.itemType) {
                 rainfall_gameLives--;
                 triggerRainfallLifeLostEffect();
             }
@@ -2599,13 +3092,13 @@ function updateRainfallGameLogic() {
 
 function drawRainfallGame() {
     if (!gameCtx || !gameCanvas) return;
-    
+
     gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-    
+
     if (gameStartMessageEl && gameStartMessageEl.style.display === 'flex') {
         return;
     }
-    
+
     const bodyClasses = document.body.classList;
     let textColor;
     if (bodyClasses.contains('light-theme')) {
@@ -2615,17 +3108,17 @@ function drawRainfallGame() {
     } else {
         textColor = '#e8e0d8';
     }
-    
+
     gameCtx.font = "bold 16px 'Poppins', sans-serif";
     gameCtx.shadowColor = 'rgba(0,0,0,0.4)';
     gameCtx.shadowBlur = 4;
     gameCtx.fillStyle = textColor;
     gameCtx.textAlign = 'left';
     gameCtx.fillText(`점수: ${rainfall_gameScore}`, 15, 30);
-    
+
     gameCtx.textAlign = 'center';
     gameCtx.fillText(`레벨: ${rainfall_gameLevel}-${rainfall_currentSubLevelIndex + 1}`, gameCanvas.width / 2, 30);
-    
+
     gameCtx.textAlign = 'right';
     gameCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--gb-enemy-health-color').trim();
     gameCtx.fillText(`생명: ${'❤️'.repeat(rainfall_gameLives)}`, gameCanvas.width - 15, 30);
@@ -2636,7 +3129,7 @@ function drawRainfallGame() {
         const elapsedTime = Date.now() - rainfall_levelStartTime;
         const progress = 1 - (elapsedTime / RAINFALL_LEVEL_DURATION_MS);
         if(lbbTimerBarEl) lbbTimerBarEl.style.width = `${Math.max(0, progress) * 100}%`;
-        
+
         const remainingTimeSec = Math.ceil(Math.max(0, RAINFALL_LEVEL_DURATION_MS - elapsedTime) / 1000);
         const minutes = Math.floor(remainingTimeSec / 60);
         const seconds = remainingTimeSec % 60;
@@ -2645,11 +3138,11 @@ function drawRainfallGame() {
 
     gameCtx.font = RAINFALL_GAME_FONT;
     gameCtx.textAlign = 'center';
-    
+
     for (const word of rainfall_wordsOnScreen) {
         gameCtx.shadowColor = 'rgba(0,0,0,0.4)';
         gameCtx.shadowBlur = 4;
-        
+
         if (word.itemType) {
             gameCtx.fillStyle = word.color;
             gameCtx.shadowColor = word.color;
@@ -2677,10 +3170,10 @@ function startRainfallWordGeneration() {
     const levelConfig = levelData.subLevels[rainfall_currentSubLevelIndex];
 
     if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId);
-    
+
     function generateWord() {
         if (!rainfall_isGameActive || rainfall_gamePausedForOverlay || !gameCanvas) return;
-        
+
         let newWordText;
         let isItem = Math.random() < RAINFALL_ITEM_SPAWN_PROBABILITY;
         let itemDetails = null;
@@ -2690,7 +3183,6 @@ function startRainfallWordGeneration() {
             itemDetails = getRandom(itemTypes);
             newWordText = itemDetails.text;
         } else {
-            // [수정] 한글 단어 풀로 고정
             const wordPool = gameWordsKor.filter(w => w.length <= 4);
             const filteredPool = wordPool.filter(w => w.length >= levelConfig.wordMinLen && w.length <= levelConfig.wordMaxLen && !rainfall_usedWordsInLevel.has(w));
             newWordText = getRandom(filteredPool.length > 5 ? filteredPool : wordPool.filter(w => w.length >= levelConfig.wordMinLen && w.length <= levelConfig.wordMaxLen));
@@ -2716,7 +3208,7 @@ function startRainfallWordGeneration() {
             duration: isItem ? itemDetails.duration : 0
         });
     }
-    
+
     generateWord();
     rainfall_wordGenerationIntervalId = setInterval(generateWord, levelConfig.genRate);
 }
@@ -2730,16 +3222,15 @@ function handleRainfallGameInputSubmit() {
     let wordFound = false;
     for (let i = rainfall_wordsOnScreen.length - 1; i >= 0; i--) {
         const word = rainfall_wordsOnScreen[i];
-        // [수정] 한글로 고정하여 비교 로직 단순화
         const wordToMatch = word.text;
-        
+
         if (typedWord === wordToMatch) {
             if (word.itemType) {
                 activateRainfallItemEffect(word.itemType, word.duration);
             } else {
                 rainfall_gameScore += word.text.length * (word.isFast ? 2 : 1);
             }
-            
+
             rainfall_wordsOnScreen.splice(i, 1);
             wordFound = true;
             break;
@@ -2810,31 +3301,31 @@ function initLetterBlockBattleGame(fromStartButtonOrNextLevel = false, level) {
     lbb_gamePausedForOverlay = false;
     lbb_gamePausedForEffect = false;
     lbb_isRelocating = false;
-    
+
     lbb_enemyMoveDelay = lbb_levelDelays[lbb_gameLevel - 1];
-    
+
     lbb_playerScore = 0;
     lbb_enemyScore = 0;
-    
+
     generateLBBGameBoard();
     lbb_playerPos = { r: 0, c: 0 };
     lbb_enemyPos = { r: LBB_BOARD_ROWS - 1, c: LBB_BOARD_COLS - 1 };
     lbb_enemyOriginalStartPos = { ...lbb_enemyPos };
-    
+
     if(lbb_gameBoard[lbb_playerPos.r] && lbb_gameBoard[lbb_playerPos.r][lbb_playerPos.c]) {
         lbb_gameBoard[lbb_playerPos.r][lbb_playerPos.c].broken = true;
     }
     if(lbb_gameBoard[lbb_enemyPos.r] && lbb_gameBoard[lbb_enemyPos.r][lbb_enemyPos.c]) {
         lbb_gameBoard[lbb_enemyPos.r][lbb_enemyPos.c].broken = true;
     }
-    
+
     if (gameInputField) {
         gameInputField.disabled = false;
         gameInputField.value = '';
         gameInputField.placeholder = "단어 입력 후 Enter 또는 Space";
         setTimeout(() => { if(gameInputField) gameInputField.focus(); }, 100);
     }
-    
+
     lbb_gameStartTime = Date.now();
     lbb_enemyActionIntervalId = setInterval(lbb_enemyAIAction, lbb_enemyMoveDelay);
     startLBBGameLoop();
@@ -2879,20 +3370,20 @@ function updateLBBGameLogic() {
     lbb_blockBreakParticles.forEach(p => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.1; 
+        p.vy += 0.1;
         p.alpha -= 0.02;
     });
 }
 
 function drawLetterBlockBattleGame() {
     if (!gameCtx || !gameCanvas) return;
-    
+
     gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-    
+
     if (gameStartMessageEl && gameStartMessageEl.style.display === 'flex') {
         return;
     }
-    
+
     const boardWidth = LBB_BOARD_COLS * LBB_BLOCK_SIZE;
     const boardHeight = LBB_BOARD_ROWS * LBB_BLOCK_SIZE;
     const boardX = (gameCanvas.width - boardWidth) / 2;
@@ -2924,12 +3415,12 @@ function drawLetterBlockBattleGame() {
     }
 
     const borderColor = getComputedStyle(document.documentElement).getPropertyValue(LBB_BLOCK_BORDER_COLOR_VAR).trim();
-    
+
     for (let r = 0; r < LBB_BOARD_ROWS; r++) {
         for (let c = 0; c < LBB_BOARD_COLS; c++) {
             const block = lbb_gameBoard[r] ? lbb_gameBoard[r][c] : null;
             if (!block) continue;
-            
+
             const x = boardX + c * LBB_BLOCK_SIZE;
             const y = boardY + r * LBB_BLOCK_SIZE;
 
@@ -2958,7 +3449,7 @@ function drawLetterBlockBattleGame() {
             gameCtx.strokeRect(x, y, LBB_BLOCK_SIZE, LBB_BLOCK_SIZE);
         }
     }
-    
+
     lbb_blockBreakParticles.forEach(p => {
         gameCtx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${p.alpha})`;
         gameCtx.fillRect(boardX + p.x, boardY + p.y, 3, 3);
@@ -2978,7 +3469,7 @@ function drawLetterBlockBattleGame() {
             gameCtx.lineWidth = 1;
         }
     }
-    
+
     if (lbb_swapEffect.active) {
         drawCharacter(lbb_swapEffect.animPlayerPos, playerColor, true);
         drawCharacter(lbb_swapEffect.animEnemyPos, enemyColor, false);
@@ -2989,7 +3480,7 @@ function drawLetterBlockBattleGame() {
         drawCharacter(lbb_playerPos, playerColor, true);
         drawCharacter(lbb_enemyPos, enemyColor, false);
     }
-    
+
     gameCtx.font = "bold 18px 'Poppins', sans-serif";
     gameCtx.shadowColor = 'rgba(0,0,0,0.4)';
     gameCtx.shadowBlur = 4;
@@ -3002,7 +3493,7 @@ function drawLetterBlockBattleGame() {
     gameCtx.textAlign = 'center';
     gameCtx.fillStyle = textColor;
     gameCtx.fillText(`레벨: ${lbb_gameLevel}`, gameCanvas.width / 2, 30);
-    
+
     if (lbb_relocationCountdown > 0) {
         gameCtx.font = "bold 16px 'Poppins', sans-serif";
         gameCtx.fillStyle = 'orange';
@@ -3027,7 +3518,6 @@ function drawLetterBlockBattleGame() {
 
 function generateLBBGameBoard() {
     lbb_gameBoard = [];
-    // [수정] 한글 단어 풀로 고정
     const wordPoolSource = gameWordsKor;
     const wordPool = wordPoolSource.filter(word => word.length >= 2 && word.length <= 3);
 
@@ -3044,7 +3534,7 @@ function generateLBBGameBoard() {
                 else effectType = LBB_BLOCK_EFFECT_TYPES.YELLOW;
             }
             lbb_gameBoard[r][c] = {
-                word: getRandom(wordPool.length > 0 ? wordPool : wordPoolSource), // 한글 단어 풀 사용
+                word: getRandom(wordPool.length > 0 ? wordPool : wordPoolSource),
                 broken: false,
                 effect: effectType
             };
@@ -3054,7 +3544,7 @@ function generateLBBGameBoard() {
 
 function getSurroundingLBBBlocks(pos, checkBroken = true) {
     const blocks = [];
-    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]; 
+    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
     for (const [dr, dc] of directions) {
         const r = pos.r + dr;
@@ -3076,8 +3566,7 @@ function handleLetterBlockBattleInputSubmit() {
     if (!typedWord) return;
 
     const surroundingBlocks = getSurroundingLBBBlocks(lbb_playerPos);
-    
-    // [수정] 한글로 고정하여 비교 로직 단순화
+
     const matchedBlock = surroundingBlocks.find(block => {
         if (!block) return false;
         return block.word === typedWord;
@@ -3107,7 +3596,7 @@ function lbb_playerMoveAndBreak(targetBlock) {
 
 function lbb_enemyAIAction() {
     if (!lbb_isGameActive || lbb_gamePausedForOverlay || lbb_gamePausedForEffect || lbb_isEnemyFrozen || lbb_isRelocating || lbb_finalBattleAnimation.isActive) return;
-    
+
     const surroundingBlocks = getSurroundingLBBBlocks(lbb_enemyPos);
     if(surroundingBlocks.length > 0) {
         if (lbb_enemyNoPlayableBlocksTimerId) {
@@ -3137,7 +3626,7 @@ function lbb_enemyAIAction() {
 function lbb_applyEffect(effect, pos, isPlayer, duration, icon = '') {
     lbb_gamePausedForEffect = true;
     let popupText = '';
-    
+
     switch (effect) {
         case 'freezeEnemy':
             if (isPlayer) {
@@ -3157,31 +3646,31 @@ function lbb_applyEffect(effect, pos, isPlayer, duration, icon = '') {
             popupText = `위치 변경! ${icon}`;
             break;
     }
-    
+
     if (popupText) {
         showGamePopup(popupText, 1500);
     }
 
-    setTimeout(() => { 
-        if(effect !== 'swapPositions') lbb_gamePausedForEffect = false; 
+    setTimeout(() => {
+        if(effect !== 'swapPositions') lbb_gamePausedForEffect = false;
     }, 500);
 }
 
 function updateLBBSwapAnimation() {
     if (!lbb_swapEffect.active) return;
-    
+
     lbb_swapEffect.step++;
     const progress = lbb_swapEffect.step / lbb_swapEffect.totalSteps;
 
     const playerTarget = lbb_swapEffect.enemyOld;
     const enemyTarget = lbb_swapEffect.playerOld;
-    
+
     lbb_swapEffect.animPlayerPos.r = lbb_swapEffect.playerOld.r + (playerTarget.r - lbb_swapEffect.playerOld.r) * progress;
     lbb_swapEffect.animPlayerPos.c = lbb_swapEffect.playerOld.c + (playerTarget.c - lbb_swapEffect.playerOld.c) * progress;
-    
+
     lbb_swapEffect.animEnemyPos.r = lbb_swapEffect.enemyOld.r + (enemyTarget.r - lbb_swapEffect.enemyOld.r) * progress;
     lbb_swapEffect.animEnemyPos.c = lbb_swapEffect.enemyOld.c + (enemyTarget.c - lbb_swapEffect.enemyOld.c) * progress;
-    
+
     if (lbb_swapEffect.step >= lbb_swapEffect.totalSteps) {
         lbb_swapEffect.active = false;
         lbb_playerPos = { ...playerTarget };
@@ -3220,9 +3709,9 @@ function findPath(start, end) {
         if (current.r === end.r && current.c === end.c) {
             return path;
         }
-        
+
         const neighbors = getSurroundingLBBBlocks(current, false).filter(b => b.broken);
-        
+
         for (const neighbor of neighbors) {
             const posKey = `${neighbor.r},${neighbor.c}`;
             if (!visited.has(posKey)) {
@@ -3249,18 +3738,18 @@ function lbb_triggerFinalBattleAnimation(pathToMeet) {
 
 function updateLBBFinalBattleAnimation() {
     if (!lbb_finalBattleAnimation.isActive) return;
-    
+
     lbb_finalBattleAnimation.step++;
     const progress = lbb_finalBattleAnimation.step / lbb_finalBattleAnimation.totalSteps;
-    
+
     const meetingR = lbb_finalBattleAnimation.meetingPoint.r;
     const meetingC = lbb_finalBattleAnimation.meetingPoint.c;
-    
+
     lbb_finalBattleAnimation.playerAnimPos.r = lbb_finalBattleAnimation.playerStartPos.r + (meetingR - lbb_finalBattleAnimation.playerStartPos.r) * progress;
     lbb_finalBattleAnimation.playerAnimPos.c = lbb_finalBattleAnimation.playerStartPos.c + (meetingC - lbb_finalBattleAnimation.playerStartPos.c) * progress;
     lbb_finalBattleAnimation.enemyAnimPos.r = lbb_finalBattleAnimation.enemyStartPos.r + (meetingR - lbb_finalBattleAnimation.enemyStartPos.r) * progress;
     lbb_finalBattleAnimation.enemyAnimPos.c = lbb_finalBattleAnimation.enemyStartPos.c + (meetingC - lbb_finalBattleAnimation.enemyStartPos.c) * progress;
-    
+
     if (lbb_finalBattleAnimation.step >= lbb_finalBattleAnimation.totalSteps) {
         lbb_finalBattleAnimation.isActive = false;
         handleGameEnd(lbb_playerScore > lbb_enemyScore, "battle");
@@ -3313,7 +3802,7 @@ function lbb_initiateRelocation(isPlayerRelocation) {
 function lbb_performRelocation(isPlayerRelocation) {
     const opponentPos = isPlayerRelocation ? lbb_enemyPos : lbb_playerPos;
     const newPos = findValidLbbRelocationSpot(opponentPos, LBB_BOARD_ROWS, LBB_BOARD_COLS, LBB_MIN_RELOCATION_DISTANCE_FROM_OPPONENT);
-    
+
     if(newPos) {
         if(isPlayerRelocation) {
             lbb_playerPos = newPos;
@@ -3366,7 +3855,6 @@ function initGiantBattleGame(fromStartButtonOrNextLevel = false, level) {
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
     gb_enemyHealth = currentLevelConfig.enemyHealth;
 
-    // [수정] 언어 선택 로직 제거
     gb_preferredGameLanguage = 'kor';
 
     gb_spawnPlayerAttackWord();
@@ -3377,7 +3865,7 @@ function initGiantBattleGame(fromStartButtonOrNextLevel = false, level) {
       gameInputField.placeholder = "단어 입력 후 Enter 또는 Space";
       setTimeout(() => { if(gameInputField) gameInputField.focus(); }, 100);
     }
-    
+
     gb_enemyAttackIntervalId = setInterval(gb_spawnEnemyAttack, currentLevelConfig.attackInterval);
 
     startGiantBattleGameLoop();
@@ -3449,13 +3937,13 @@ function updateGiantBattleGameLogic() {
 
 function drawGiantBattleGame() {
     if (!gameCtx || !gameCanvas) return;
-    
+
     gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-    
+
     if (gameStartMessageEl && gameStartMessageEl.style.display === 'flex') {
         return;
     }
-    
+
     const bodyClasses = document.body.classList;
     let mainTextColor, accentColor, specialAttackColor;
     if (bodyClasses.contains('light-theme')) {
@@ -3466,31 +3954,31 @@ function drawGiantBattleGame() {
         mainTextColor = '#4F333D';
         accentColor = '#E85D75';
         specialAttackColor = '#E85D75';
-    } else { 
+    } else {
         mainTextColor = '#e8e0d8';
         accentColor = '#d4af7a';
         specialAttackColor = '#d4af7a';
     }
-    
+
     function drawHealthBar(x, y, width, height, currentHealth, maxHealth, colorVar, label = "", textAlign = 'left') {
         const healthColor = getComputedStyle(document.documentElement).getPropertyValue(colorVar).trim();
         const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--gb-health-bar-bg-color').trim();
-        
+
         gameCtx.fillStyle = bgColor;
         gameCtx.fillRect(x, y, width, height);
-        
+
         const healthPercentage = Math.max(0, currentHealth) / maxHealth;
         const currentHealthWidth = width * healthPercentage;
-        
+
         const gradient = gameCtx.createLinearGradient(x, y, x, y + height);
         gradient.addColorStop(0, healthColor);
         gradient.addColorStop(1, hexToDarker(healthColor, 0.3));
         gameCtx.fillStyle = gradient;
         gameCtx.fillRect(x, y, currentHealthWidth, height);
-        
+
         gameCtx.fillStyle = 'rgba(255,255,255,0.2)';
         gameCtx.fillRect(x, y, currentHealthWidth, height / 2);
-        
+
         if (label) {
             gameCtx.fillStyle = mainTextColor;
             gameCtx.font = "bold 12px 'Poppins', sans-serif";
@@ -3502,7 +3990,7 @@ function drawGiantBattleGame() {
             gameCtx.shadowBlur = 0;
         }
     }
-    
+
     function hexToDarker(hex, percent) {
       let { r, g, b } = hexToRgb(hex);
       r = parseInt(r * (1 - percent));
@@ -3514,16 +4002,16 @@ function drawGiantBattleGame() {
     const topUiY = 30;
     const uiMargin = 15;
     const healthBarHeight = 18;
-    
+
     const enemyHealthBarWidth = gameCanvas.width * 0.3;
     drawHealthBar(gameCanvas.width - enemyHealthBarWidth - uiMargin, topUiY, enemyHealthBarWidth, healthBarHeight, gb_enemyHealth, gb_levelConfigs[gb_currentLevel - 1].enemyHealth, '--gb-enemy-health-color', "적 HP", 'right');
 
-    const playerAreaBottomMargin = 50; 
+    const playerAreaBottomMargin = 50;
     const playerHpBarWidth = gameCanvas.width * 0.3;
     const playerHpBarX = gameCanvas.width - playerHpBarWidth - uiMargin;
     const playerHpBarY = gameCanvas.height - playerAreaBottomMargin - healthBarHeight;
     drawHealthBar(playerHpBarX, playerHpBarY, playerHpBarWidth, healthBarHeight, gb_playerHealth, GB_MAX_PLAYER_HEALTH, '--gb-player-health-color', "플레이어 HP", 'right');
-    
+
     gameCtx.shadowColor = 'rgba(0,0,0,0.4)';
     gameCtx.shadowBlur = 4;
     gameCtx.fillStyle = mainTextColor;
@@ -3539,19 +4027,19 @@ function drawGiantBattleGame() {
         gameCtx.font = "bold 14px 'Poppins', sans-serif";
         gameCtx.fillText(`${minutes}:${seconds.toString().padStart(2, '0')}`, gameCanvas.width / 2, topUiY + 20);
     }
-    
+
     const attackWordBoxHeight = 40;
-    const attackWordBoxWidth = gameCanvas.width * 0.3; 
+    const attackWordBoxWidth = gameCanvas.width * 0.3;
     const attackWordBoxX = (gameCanvas.width - attackWordBoxWidth) / 2;
-    const attackWordBoxY = gameCanvas.height - attackWordBoxHeight - 20; 
-    
+    const attackWordBoxY = gameCanvas.height - attackWordBoxHeight - 20;
+
     gameCtx.strokeStyle = accentColor;
     gameCtx.lineWidth = 2;
     gameCtx.beginPath();
     gameCtx.roundRect(attackWordBoxX, attackWordBoxY, attackWordBoxWidth, attackWordBoxHeight, 8);
     gameCtx.stroke();
     gameCtx.lineWidth = 1;
-    
+
     gameCtx.font = "bold 18px 'Poppins', sans-serif";
     gameCtx.fillStyle = accentColor;
     gameCtx.textAlign = "center";
@@ -3559,7 +4047,7 @@ function drawGiantBattleGame() {
     gameCtx.shadowColor = 'rgba(0,0,0,0.2)';
     gameCtx.shadowBlur = 2;
     gameCtx.fillText(gb_playerAttackWord, attackWordBoxX + attackWordBoxWidth / 2, attackWordBoxY + attackWordBoxHeight / 2);
-    
+
     gameCtx.font = "bold 24px 'Poppins', sans-serif";
     gameCtx.shadowColor = 'rgba(0,0,0,0.7)';
     gameCtx.shadowBlur = 5;
@@ -3584,7 +4072,6 @@ function drawGiantBattleGame() {
 
 function gb_spawnPlayerAttackWord() {
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
-    // [수정] 한글 단어 풀로 고정
     const wordPool = gameWordsKor;
     const minLen = Math.max(3, currentLevelConfig.wordMinLen);
     const filteredWordPool = wordPool.filter(w => w.length >= minLen && w.length <= 4);
@@ -3592,7 +4079,6 @@ function gb_spawnPlayerAttackWord() {
 }
 
 function gb_spawnDefenseWord(currentLevelConfig) {
-    // [수정] 한글 단어 풀로 고정
     const wordPool = gameWordsKor;
     const minLen = Math.max(3, currentLevelConfig.wordMinLen);
     const defenseWordPool = wordPool.filter(w => w.length >= minLen && w.length <= 4);
@@ -3603,7 +4089,6 @@ function gb_spawnDefenseWord(currentLevelConfig) {
 function gb_spawnEnemyAttack() {
     if (!gb_isGameActive || gb_gamePausedForOverlay || !gameCanvas) return;
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
-    // [수정] 한글 단어 풀로 고정
     const wordPool = gameWordsKor;
 
     let word = "";
@@ -3640,7 +4125,6 @@ function handleGiantBattleInputSubmit() {
     const typedWordFull = gameInputField.value.trim();
     if (typedWordFull === "") return;
 
-    // [수정] 한글로 고정하여 비교 로직 단순화
     const typedWord = typedWordFull;
 
     const playerAttackWordToMatch = gb_playerAttackWord;
@@ -3695,7 +4179,6 @@ function gb_playerDefend(rock) {
 
 // --- 공통 게임 함수 (오버레이, 연습모드 복귀 등) ---
 function handleGameEnd(playerWins, reason = "") {
-    // 1. 모든 활성 게임 루프 및 인터벌 중지
     rainfall_isGameActive = false; lbb_isGameActive = false; gb_isGameActive = false;
     rainfall_gamePausedForOverlay = true; lbb_gamePausedForOverlay = true; gb_gamePausedForOverlay = true;
     if (gameInputField) gameInputField.disabled = true;
@@ -3707,7 +4190,6 @@ function handleGameEnd(playerWins, reason = "") {
     if (lbb_enemyActionIntervalId) { clearInterval(lbb_enemyActionIntervalId); lbb_enemyActionIntervalId = null; }
     if (gb_enemyAttackIntervalId) { clearInterval(gb_enemyAttackIntervalId); gb_enemyAttackIntervalId = null; }
 
-    // 2. 현재 게임의 설정과 상태를 가져옴
     let gameConfig, currentLevel, score;
     const gameLevelSelectEl = document.getElementById('gameLevelSelectInBar');
 
@@ -3724,24 +4206,21 @@ function handleGameEnd(playerWins, reason = "") {
         currentLevel = gb_currentLevel;
         score = Math.round(gb_playerHealth);
     } else {
-        return; 
+        return;
     }
-    
+
     const selectedLevelInDropdown = gameLevelSelectEl ? parseInt(gameLevelSelectEl.value) : currentLevel;
 
-
-    // 3. 게임 중 레벨 변경 시 즉시 재시작
     if (reason === 'level_change') {
         showCountdownThenStart(gameConfig.initFunc, [true, selectedLevelInDropdown]);
         return;
     }
-    
-    // 4. 레벨 클리어 후 자동 진행 처리
+
     if (playerWins && currentLevel < gameConfig.maxLevel) {
         const nextLevel = currentLevel + 1;
         const title = `<i class="fas fa-crown"></i> 레벨 ${currentLevel} 클리어!`;
         const body = `잠시 후 다음 레벨(${nextLevel})을 시작합니다...`;
-        
+
         gameOverlayEl.innerHTML = `<h2>${title}</h2><p>${body}</p>`;
         gameOverlayEl.classList.add('visible');
 
@@ -3754,10 +4233,9 @@ function handleGameEnd(playerWins, reason = "") {
         return;
     }
 
-    // 5. 최종 승리 또는 패배 처리 (버튼 표시)
     let title, body, nextStepButtonText, nextStepAction;
 
-    if (playerWins) { // 최종 승리
+    if (playerWins) {
         title = `<i class="fas fa-trophy"></i> 모든 레벨 클리어!`;
         if (currentGameType === 'letterBlockBattle') {
             body = `플레이어 점수: ${lbb_playerScore}<br>적 점수: ${lbb_enemyScore}`;
@@ -3773,14 +4251,14 @@ function handleGameEnd(playerWins, reason = "") {
             updateDropdown(1);
             showCountdownThenStart(gameConfig.initFunc, [true, 1]);
         };
-    } else { // 패배
+    } else {
         title = `<i class="fas fa-skull-crossbones"></i> 게임 오버`;
         if (reason === 'timeUp' && ( (currentGameType === 'letterBlockBattle' && lbb_playerScore > lbb_enemyScore) || (currentGameType === 'giantBattle' && gb_playerHealth > gb_enemyHealth) )) {
              title = `<i class="far fa-clock"></i> 시간 종료! (판정승)`;
         } else if (reason === 'timeUp') {
             title = `<i class="far fa-clock"></i> 시간 종료!`;
         }
-        
+
         if (currentGameType === 'letterBlockBattle') {
             body = `플레이어 점수: ${lbb_playerScore}<br>적 점수: ${lbb_enemyScore}`;
         } else if (currentGameType === 'giantBattle') {
@@ -3794,7 +4272,7 @@ function handleGameEnd(playerWins, reason = "") {
             gameOverlayEl.classList.remove('visible');
             const levelToRetry = selectedLevelInDropdown;
             window[gameConfig.levelVarName] = levelToRetry;
-            updateDropdown(levelToRetry); 
+            updateDropdown(levelToRetry);
             showCountdownThenStart(gameConfig.initFunc, [true, levelToRetry]);
         };
     }
@@ -3815,7 +4293,7 @@ function showCountdownThenStart(startGameFunction, args = [true, 1]) {
     let count = 3;
     const countdown = () => {
         const drawFunc = window[`draw${currentGameType.charAt(0).toUpperCase() + currentGameType.slice(1)}Game`];
-        
+
         if (drawFunc) drawFunc();
 
         if (count > 0) {
@@ -3849,35 +4327,8 @@ function showCountdownThenStart(startGameFunction, args = [true, 1]) {
 }
 
 
-// [수정] 마지막 연습 모드 복원 로직 변경
 function returnToPracticeMode(resetSessionStats = true) {
-    currentMode = '';
-    currentGameType = '';
-    
-    // [수정] 인라인 스타일을 직접 조작하는 코드 제거
-    // 클래스 토글링으로 상태를 관리하므로, 돌아올 때 이 코드는 불필요합니다.
-    // updateKeyboardDisplay가 올바르게 상태를 설정해줍니다.
-
-    rainfall_isGameActive = false;
-    lbb_isGameActive = false;
-    gb_isGameActive = false;
-
-    if (rainfall_gameLoopId) cancelAnimationFrame(rainfall_gameLoopId);
-    if (lbb_gameLoopId) cancelAnimationFrame(lbb_gameLoopId);
-    if (gb_gameLoopId) cancelAnimationFrame(gb_gameLoopId);
-    if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId);
-    if (lbb_enemyActionIntervalId) clearInterval(lbb_enemyActionIntervalId);
-    if (gb_enemyAttackIntervalId) clearInterval(gb_enemyAttackIntervalId);
-
-    rainfall_gameLoopId = null; rainfall_wordGenerationIntervalId = null;
-    lbb_gameLoopId = null; lbb_enemyActionIntervalId = null; lbb_gameStartTime = null;
-    gb_gameLoopId = null; gb_enemyAttackIntervalId = null; gb_gameStartTime = null;
-
-    if (gameOverlayEl) gameOverlayEl.classList.remove('visible');
-    if (gameStartMessageEl) gameStartMessageEl.style.display = 'none';
-    if(itemEffectPopupEl) itemEffectPopupEl.classList.remove('visible');
-
-    document.body.classList.remove('game-mode-active');
+    cleanupActiveModes();
 
     const gameInternalControlsBar = document.getElementById('gameInternalControlsBar');
     if (mainControlsEl && originalSoundParent && originalThemeParent && soundSettingsEl && themeSettingsEl && gameInternalControlsBar) {
@@ -3893,26 +4344,20 @@ function returnToPracticeMode(resetSessionStats = true) {
         gameToggleSoundBtn = null;
     }
 
-    if (gameInputField) {
-        gameInputField.removeEventListener('keydown', handleKeyDownEvent);
-        gameInputField.removeEventListener('input', handleInputEvent);
-    }
-    
-    // 마지막 연습 모드 복원 로직
-    let lastPracticeMode = 'kor'; // 기본값
+    let lastPracticeMode = 'kor';
     const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
     if (activePracticeBtn && languageSelectEl) {
         const type = activePracticeBtn.dataset.practiceType;
         const lang = languageSelectEl.value;
-        lastPracticeMode = (type === 'long') ? `${lang}Long` : lang;
+        if(type !== 'freestyle' && type !== 'game'){
+            lastPracticeMode = (type === 'long') ? `${lang}Long` : lang;
+        }
     }
-    
+
     updateKeyboardDisplay();
     updateKeyboardHighlight();
     startPractice(lastPracticeMode, resetSessionStats);
 }
-
-// --- 자리 연습 기능 관련 함수 ---
 const charToKeyMap = {
     'ㅂ': 'q', 'ㅈ': 'w', 'ㄷ': 'e', 'ㄱ': 'r', 'ㅅ': 't', 'ㅛ': 'y', 'ㅕ': 'u', 'ㅑ': 'i', 'ㅐ': 'o', 'ㅔ': 'p',
     'ㅁ': 'a', 'ㄴ': 's', 'ㅇ': 'd', 'ㄹ': 'f', 'ㅎ': 'g', 'ㅗ': 'h', 'ㅓ': 'j', 'ㅏ': 'k', 'ㅣ': 'l',
@@ -3940,7 +4385,6 @@ const Hangul = (() => {
                 const result = [CHO[cho]];
                 const jungJamo = JUNG[jung];
                 
-                // 복합 모음 분해
                 switch(jungJamo) {
                     case 'ㅘ': result.push('ㅗ', 'ㅏ'); break;
                     case 'ㅙ': result.push('ㅗ', 'ㅐ'); break;
@@ -3954,7 +4398,6 @@ const Hangul = (() => {
                 
                 if (jong > 0) {
                     const jongJamo = JONG[jong];
-                    // 복합 받침 분해
                     switch(jongJamo) {
                         case 'ㄳ': result.push('ㄱ', 'ㅅ'); break;
                         case 'ㄵ': result.push('ㄴ', 'ㅈ'); break;
@@ -3972,7 +4415,7 @@ const Hangul = (() => {
                 }
                 return result;
             }
-            return [char]; // 한글이 아닌 문자는 그대로 반환
+            return [char];
         }).flat();
     };
     return { disassemble };
@@ -4062,7 +4505,7 @@ function clearKeyboardHighlight() {
 }
 
 function updateKeyboardHighlight() {
-    if (!keyboardGuideEnabled || !keyboardGuideEl || currentMode === 'game') {
+    if (!keyboardGuideEnabled || !keyboardGuideEl || currentMode === 'game' || currentMode === 'freestyle') {
         clearKeyboardHighlight();
         return;
     }
