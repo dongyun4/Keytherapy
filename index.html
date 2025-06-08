@@ -283,6 +283,7 @@
     body.game-mode-active .hero-section,
     body.game-mode-active .controls-and-stats-wrapper .practice-mode-controls,
     body.game-mode-active .controls-and-stats-wrapper .feature-toggles,
+    body.game-mode-active .controls-and-stats-wrapper .selection-controls,
     body.game-mode-active .controls-and-stats-wrapper #stats,
     body.game-mode-active .progress-bar-container,
     body.game-mode-active .typing-area-container,
@@ -349,7 +350,15 @@
     .pink-theme .hero-tagline { color: var(--text-secondary); text-shadow: 0 1px 2px rgba(100,50,60,0.1); }
     .controls-and-stats-wrapper { padding: 25px 25px 15px; }
     .settings-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 18px; }
-    .main-controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+
+    /* ▼▼▼ 컨트롤 영역 스타일 블록 전체를 아래 코드로 교체 ▼▼▼ */
+    .main-controls {
+        display: flex;
+        flex-direction: column; /* 자식 요소들을 세로로 쌓음 (핵심) */
+        align-items: center;    /* 모든 줄을 가운데 정렬 */
+        gap: 15px;              /* 각 줄(행) 사이의 간격 */
+    }
+
     .control-button-group { display: flex; flex-wrap: wrap; gap: 10px; }
     .control-button-group button {
       padding: 10px 15px; font-size: 0.9em; border-radius: var(--border-radius-small);
@@ -383,14 +392,33 @@
         border-color: var(--accent-primary); box-shadow: var(--shadow-button), inset 0 1px 1px rgba(0,0,0,0.03);
     }
     .light-theme .control-button-group button.active:hover, .pink-theme .control-button-group button.active:hover { background: var(--accent-active); border-color: var(--accent-active); }
-    .practice-mode-controls { composes: control-button-group; flex-basis: 100%; order: 1; }
-    .practice-mode-controls button { min-width: 100px; }
-    .feature-toggles { composes: control-button-group; gap: 10px; justify-content: flex-start; order: 2; flex-grow: 1; }
-    .feature-toggles button { border-radius: 20px; min-width: 120px; }
-    .sound-settings, .theme-settings { display: flex; align-items: center; gap: 8px; order: 3; flex-shrink: 0; }
-    .select-label { font-size: 0.9em; color: var(--text-secondary); font-weight: 400; }
 
-    #soundPackSelect, #themeSelect,
+    /* 1, 2번째 줄 버튼 그룹 스타일 */
+    .practice-mode-controls,
+    .feature-toggles {
+        width: 100%;
+        justify-content: center;
+    }
+    .practice-mode-controls button { min-width: 100px; }
+    .feature-toggles button { border-radius: 20px; min-width: 120px; }
+
+    /* 3번째 줄 선택창 그룹 스타일 */
+    .selection-controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px; /* 선택창들 사이의 간격 */
+        width: 100%;
+    }
+
+    .language-settings, .sound-settings, .theme-settings { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+    }
+    .select-label { font-size: 0.9em; color: var(--text-secondary); font-weight: 400; }
+    
+    #languageSelect, #soundPackSelect, #themeSelect,
     #gameInternalControlsBar .game-control-select {
         background-color: var(--input-bg); color: var(--input-text);
         border: 1px solid var(--input-border); border-radius: var(--border-radius-small);
@@ -399,7 +427,7 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease, border-radius 0.3s ease;
         box-shadow: var(--shadow-inset);
     }
-    #soundPackSelect:focus, #themeSelect:focus,
+    #languageSelect:focus, #soundPackSelect:focus, #themeSelect:focus,
     #gameInternalControlsBar .game-control-select:focus {
          border-color: var(--accent-active); box-shadow: var(--input-focus-shadow), var(--shadow-inset);
     }
@@ -903,12 +931,16 @@
     @media (max-width: 768px) {
       .hero-title { font-size: 2.2em; }
       .hero-tagline { font-size: 0.9em; max-width: 90%;}
+      /* [삭제] 3줄 레이아웃을 위해 이 규칙 삭제
       .main-controls { flex-direction: column; align-items: stretch; }
+      */
       body:not(.game-mode-active) .practice-mode-controls,
       body:not(.game-mode-active) .feature-toggles,
+      body:not(.game-mode-active) .language-settings,
       body:not(.game-mode-active) .sound-settings,
       body:not(.game-mode-active) .theme-settings { width: 100%; justify-content: center; }
       .feature-toggles button { min-width: 100px; }
+      #languageSelect,
       #gameInternalControlsBar .game-control-select,
       #soundPackSelect, #themeSelect { min-width: 0; width: auto; flex-grow: 1; max-width: 180px; }
       .controls-and-stats-wrapper { padding: 20px 15px 10px; }
@@ -940,7 +972,7 @@
       .game-control-row { flex-wrap: wrap; justify-content: space-evenly; }
       .game-control-item, #gameToggleSoundBtn { flex-basis: auto; min-width: 150px; margin-bottom: 5px;}
       #gameToggleSoundBtn { flex-basis: auto; min-width: 130px; }
-      .sound-settings, .theme-settings { flex-grow: 0; }
+      .language-settings, .sound-settings, .theme-settings { flex-grow: 0; }
       #returnToPracticeBtnGame { flex-basis: 100%; margin-top: 10px; }
       #game-canvas { height: Math.max(window.innerHeight * 0.48, 300px); margin-bottom: 5px;}
        #lbb-timer-bar-container { height: 8px; margin: 5px auto 8px; }
@@ -953,6 +985,7 @@
       .control-button-group button { font-size: 0.85em; padding: 8px 12px; }
       .feature-toggles button { min-width: 90px; }
       .select-label { font-size: 0.85em; }
+      #languageSelect,
       #gameInternalControlsBar .game-control-select,
       #soundPackSelect, #themeSelect { font-size: 0.85em; padding: 8px 10px; }
       .typing-line { 
@@ -1017,7 +1050,6 @@
 }
 
 /* --- 자리 연습 키보드 가이드 스타일 --- */
-/* --- 자리 연습 키보드 가이드 스타일 --- */
 #keyboard-guide {
     display: none; /* 기본적으로 숨김 */
     margin-bottom: 25px; /* 예문과 간격 */
@@ -1044,24 +1076,23 @@
     margin-bottom: 0;
 }
 
-/* ▼▼▼ [최종 수정] 키들을 감싸는 wrapper 스타일 ▼▼▼ */
 .keys-wrapper {
     display: flex; /* 키들을 정렬하기 위함 */
     width: fit-content; /* 내용물에 맞게 너비 조절 */
 }
 
-/* ▼▼▼ [최종 수정] 엇갈림을 위한 spacer(가상 요소) 추가 ▼▼▼ */
-.row-2 .keys-wrapper::before,
-.row-3 .keys-wrapper::before {
-    content: '';
-    display: block;
-    flex-shrink: 0;
+
+.row-1 .keys-wrapper {
+    transform: translateX(-29px);
 }
-.row-2 .keys-wrapper::before {
-    width: 65px; /* (키 너비 50 + 좌우여백 8) / 2 */
+
+.row-2 .keys-wrapper {
+    transform: translateX(5px); /* Q키 너비의 절반만큼 이동 */
 }
-.row-3 .keys-wrapper::before {
-    width: 5px; /* 키 너비 50 + 좌우여백 8 */
+
+/* 3번째 줄(ZXCV...)을 오른쪽으로 이동 */
+.row-3 .keys-wrapper {
+    transform: translateX(-25px); /* Q키 너비의 1.5배만큼 이동 */
 }
 
 .keyboard-key {
@@ -1106,15 +1137,22 @@
 #keyboard-guide.lang-kor .key-kor .key-main-char { font-size: 1.2em; }
 #keyboard-guide.lang-eng .key-eng .key-main-char { font-size: 1.2em; }
 
-/* ▼▼▼ [최종 수정] 특수키 너비 설정 ▼▼▼ */
 .keyboard-key[data-key="shift"] { width: 87px; }
 .keyboard-key[data-key="enter"] { width: 55px; }
 .keyboard-key[data-key="space"] { width: 332px; }
 
-
+/* [수정] 각 테마별 홈 로우 키 배경색 가시성 향상 */
 .keyboard-key.home-row-base {
-    background-color: rgba(var(--accent-rgb), 0.08);
+    background-color: rgba(var(--accent-rgb), 0.18); /* 다크(기본) 테마 */
 }
+.light-theme .keyboard-key.home-row-base {
+    background-color: rgba(var(--accent-rgb), 0.15); /* 아이보리 테마 */
+}
+.pink-theme .keyboard-key.home-row-base {
+    background-color: rgba(var(--accent-rgb), 0.12); /* 핑크 테마는 미세 조정 */
+}
+
+
 .keyboard-key.highlight-key {
     background-color: var(--accent-primary);
     color: var(--button-text-on-accent);
@@ -1127,8 +1165,14 @@
     font-weight: 700;
     opacity: 1;
 }
-.light-theme #keyboard-key.highlight-key,
-.pink-theme #keyboard-key.highlight-key,
+
+/* [수정] 테마별 하이라이트 키 스타일이 올바르게 적용되도록 명시적으로 지정 (우선순위 문제 해결) */
+.light-theme .keyboard-key.highlight-key,
+.pink-theme .keyboard-key.highlight-key {
+    background-color: var(--accent-primary);
+    color: var(--button-text-on-accent);
+    border-color: var(--accent-active);
+}
 .light-theme .keyboard-key.highlight-key *,
 .pink-theme .keyboard-key.highlight-key * {
     color: var(--button-text-on-accent);
@@ -1137,8 +1181,9 @@
 @media (max-width: 820px) {
     #keyboard-guide { padding: 10px; }
     .keyboard-key { width: 42px; height: 42px; font-size: 0.8em; }
-    .row-2 .keys-wrapper::before { width: 25px; }
-    .row-3 .keys-wrapper::before { width: 50px; }
+    .row-1 .keys-wrapper { transform: translateX(-25px); }
+    .row-2 .keys-wrapper::before { width: 5px; }
+    .row-3 .keys-wrapper::before { width: 10px; }
     .keyboard-key[data-key="shift"] { width: 73px; }
     .keyboard-key[data-key="enter"] { width: 73px; }
     .keyboard-key[data-key="space"] { width: 278px; }
@@ -1147,8 +1192,9 @@
 @media (max-width: 480px) {
     #keyboard-guide { padding: 5px; }
     .keyboard-key { width: 28px; height: 35px; font-size: 0.7em; margin: 0 2px; border-radius: 4px;}
-    .row-2 .keys-wrapper::before { width: 16px; }
-    .row-3 .keys-wrapper::before { width: 32px; }
+    .row-1 .keys-wrapper { transform: translateX(-16px); }
+    .row-2 .keys-wrapper::before { width: 5px; }
+    .row-3 .keys-wrapper::before { width: 10px; }
     .keyboard-key[data-key="shift"] { width: 48px; }
     .keyboard-key[data-key="enter"] { width: 48px; }
     .keyboard-key[data-key="space"] { width: 184px; }
@@ -1165,35 +1211,48 @@
     </div>
   <div class="controls-and-stats-wrapper">
     <div class="settings-container">
+        <!-- ▼▼▼ .main-controls 블록 전체를 아래 코드로 교체 ▼▼▼ -->
         <div class="main-controls">
+            <!-- 1번째 줄: 주 메뉴 버튼 -->
             <div class="practice-mode-controls control-button-group">
-                <button data-mode="kor"><i class="fas fa-language"></i>한글 단문</button>
-                <button data-mode="korLong"><i class="fas fa-align-left"></i>한글 장문</button>
-                <button data-mode="eng"><i class="fas fa-font"></i>영어 단문</button>
-                <button data-mode="engLong"><i class="fas fa-stream"></i>영어 장문</button>
-                <button id="gameModeBtn"><i class="fas fa-gamepad"></i>게임하기</button>
+                <button data-practice-type="short"><i class="fas fa-language"></i> 단문 연습</button>
+                <button data-practice-type="long"><i class="fas fa-align-left"></i> 장문 연습</button>
+                <button id="gameModeBtn"><i class="fas fa-gamepad"></i> 게임하기</button>
             </div>
+        
+            <!-- 2번째 줄: 기능 토글 버튼 -->
             <div class="feature-toggles control-button-group">
                 <button id="toggleSoundBtn"><i class="fas fa-volume-mute"></i> 타건음 OFF</button>
                 <button id="toggleHighlightBtn" class="active"><i class="fas fa-highlighter"></i> 오타체크 ON</button>
                 <button id="toggleStatsBtn" class="active"><i class="fas fa-chart-line"></i> 측정 ON</button>
                 <button id="toggleKeyboardGuideBtn"><i class="far fa-keyboard"></i> 자리연습 OFF</button>
             </div>
-            <div class="sound-settings" id="soundSettingsElement">
-                <label for="soundPackSelect" class="select-label" id="soundPackLabel">타건음:</label>
-                <select id="soundPackSelect">
-                    <option value="crunchy">서걱서걱</option>
-                    <option value="pebbles">조약돌</option>
-                    <option value="thocky">도각도각</option>
-                </select>
-            </div>
-            <div class="theme-settings" id="themeSettingsElement">
-                <label for="themeSelect" class="select-label" id="themeSelectLabel">테마:</label>
-                <select id="themeSelect">
-                    <option value="dark">다크</option>
-                    <option value="light">아이보리</option>
-                    <option value="pink">핑크</option>
-                </select>
+        
+            <!-- 3번째 줄: 설정 선택창 그룹 (요청하신 순서로 배치) -->
+            <div class="selection-controls">
+                <div class="sound-settings" id="soundSettingsElement">
+                    <label for="soundPackSelect" class="select-label" id="soundPackLabel">타건음:</label>
+                    <select id="soundPackSelect">
+                        <option value="crunchy">서걱서걱</option>
+                        <option value="pebbles">조약돌</option>
+                        <option value="thocky">도각도각</option>
+                    </select>
+                </div>
+                <div class="language-settings">
+                    <label for="languageSelect" class="select-label">언어:</label>
+                    <select id="languageSelect">
+                        <option value="kor">한글</option>
+                        <option value="eng">영어</option>
+                    </select>
+                </div>
+                <div class="theme-settings" id="themeSettingsElement">
+                    <label for="themeSelect" class="select-label" id="themeSelectLabel">테마:</label>
+                    <select id="themeSelect">
+                        <option value="dark">다크</option>
+                        <option value="light">아이보리</option>
+                        <option value="pink">핑크</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -1250,7 +1309,8 @@ let highlightEnabled = true;
 let statsVisible = true;
 let keyboardGuideEnabled = false;
 
-let soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl;
+// [수정] languageSelectEl 변수 추가
+let languageSelectEl, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl;
 let progressBarContainerEl, progressBarEl;
 let gameAreaContainerEl, gameCanvas, gameCtx, gameInputField, gameOverlayEl, gameStartMessageEl, itemEffectPopupEl;
 let gameToggleSoundBtn;
@@ -1288,7 +1348,7 @@ let rainfall_gameLoopId = null;
 let rainfall_wordGenerationIntervalId = null;
 const RAINFALL_INITIAL_LIVES = 5;
 const RAINFALL_GAME_FONT = "24px 'Noto Sans KR', sans-serif";
-let rainfall_preferredGameLanguage = 'kor';
+let rainfall_preferredGameLanguage = 'kor'; // 기본값 한글, 변경되지 않음
 let rainfall_gamePausedForOverlay = false;
 let rainfall_levelStartTime = null;
 const RAINFALL_LEVEL_DURATION_MS = 120 * 1000;
@@ -1333,6 +1393,7 @@ const rainfall_gameMainLevelsConfig = [
 // === LETTER BLOCK BATTLE GAME MODE VARIABLES ===
 let lbb_isGameActive = false;
 let lbb_gameLevel = 1;
+let lbb_preferredGameLanguage = 'kor'; // 기본값 한글, 변경되지 않음
 const LBB_MAX_LEVEL = 10;
 let lbb_playerPos = { r: 0, c: 0 };
 let lbb_enemyPos = { r: 0, c: 0 };
@@ -1381,7 +1442,6 @@ const LBB_ITEM_SPAWN_PROBABILITY = 0.20;
 let lbb_isEnemyFrozen = false;
 let lbb_enemyFreezeTimeoutId = null;
 let lbb_enemyOriginalStartPos = { r: LBB_BOARD_ROWS - 1, c: LBB_BOARD_COLS - 1};
-
 // === TYPING BATTLE GAME MODE VARIABLES ===
 let gb_isGameActive = false;
 let gb_gameLoopId = null;
@@ -1395,7 +1455,7 @@ let gb_enemyAttacks = [];
 let gb_enemyAttackIntervalId = null;
 const GB_PLAYER_ATTACK_DAMAGE = 18;
 const GB_ENEMY_ATTACK_DAMAGE = 12;
-let gb_preferredGameLanguage = 'kor';
+let gb_preferredGameLanguage = 'kor'; // 기본값 한글, 변경되지 않음
 let gb_gamePausedForOverlay = false;
 const GB_SPECIAL_ATTACK_CHANCE = 0.18;
 let gb_gameStartTime = null;
@@ -1441,7 +1501,7 @@ const gameWordsKor = [
     "수학", "역사", "지리", "사회", "경제", "정치", "법률", "윤리", "철학", "종교", "언어", "문학", "교육", "심리", "의학", "공학", "기술", "정보", "통신", "우주인", "방울뱀", "사막여우",
     "가로등", "가위질", "가정교사", "가족사진", "가지각색", "갈림길", "갈림돌", "감사패", "감정표현", "강강술래", "개발자", "거북선", "건강검진", "건널목", "검정고시", "결혼기념", "경기장", "경찰관", "경호원", "계란후라이", "고속도로", "고인돌", "골목대장", "공기놀이", "공중전화", "공휴일", "과일가게", "과학상자", "관광버스", "광화문", "구급상자", "국회의원", "군고구마", "그림일기", "극장", "기념품", "기상캐스터", "기차여행", "긴급상황", "김장독", "까마귀", "까치밥", "꽃다발", "꿀벌", "꿈나라", "끝말잇기", "나무늘보", "나비넥타이", "낙하산", "낚시꾼", "난센스퀴즈", "날개", "남대문", "낭떠러지", "내비게이션", "냉장고", "네잎클로버", "노랫소리", "노트북", "놀이공원", "농구공", "눈사람", "다리미", "다람쥐", "다이아몬드", "단풍잎", "달리기", "닭꼬치", "담벼락", "당근", "대통령", "대한민국", "도서관", "독수리", "돈가스", "돌고래", "동물원", "두부", "두통약", "드라이기", "등산화", "디지털카메라", "라면", "라디오", "로봇", "리모컨", "마라톤", "마법사", "만두", "만리장성"
 ].map(word => word.trim());
-const gameWordsEng = [
+const gameWordsEng = [ // 이 변수는 이제 게임에서 사용되지 않습니다.
     "hello", "world", "galaxy", "planet", "comet", "orbit", "nebula", "quasar", "pulsar", "meteor", "asteroid", "gravity", "energy", "force", "speed", "light", "sound", "echo", "pulse", "wave", "quantum", "field", "charge",
     "nature", "animal", "plant", "flower", "river", "ocean", "beach", "coast", "forest", "jungle", "desert", "mountain", "valley", "canyon", "island", "volcano", "glacier", "meadow", "prairie", "savanna", "swamp", "marsh", "reef",
     "summer", "winter", "spring", "autumn", "season", "weather", "climate", "cloud", "storm", "breeze", "hurricane", "typhoon", "tornado", "rainbow", "sunrise", "sunset", "twilight", "day", "night", "morning", "evening", "midnight", "noon",
@@ -1477,6 +1537,8 @@ function updateDropdown(level) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // [수정] languageSelectEl 초기화 추가
+  languageSelectEl = document.getElementById('languageSelect');
   toggleSoundBtn = document.getElementById('toggleSoundBtn');
   toggleHighlightBtn = document.getElementById('toggleHighlightBtn');
   lineDisplayArea = document.getElementById('line-display-area');
@@ -1499,7 +1561,7 @@ document.addEventListener('DOMContentLoaded', () => {
   themeSettingsEl = document.getElementById('themeSettingsElement');
   mainControlsEl = document.querySelector('.main-controls');
 
-  if (![lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl].every(el => el)) {
+  if (![languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl].every(el => el)) {
       console.error("하나 이상의 필수 HTML 요소를 찾을 수 없습니다.");
       if (resultEl) resultEl.textContent = "페이지 로딩 오류.";
       return;
@@ -1522,17 +1584,33 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeAudioPool();
   buildKeyboard();
 
-  document.querySelectorAll('.practice-mode-controls button[data-mode]').forEach(button => {
+  // [수정] 새 UI 구조에 맞는 이벤트 리스너 설정
+  // 1. 단문/장문 버튼 클릭 시
+  document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(button => {
     button.addEventListener('click', function() {
-      if (this.id !== 'gameModeBtn') {
-        startPractice(this.dataset.mode, true);
-      }
+      const lang = languageSelectEl.value;
+      const type = this.dataset.practiceType;
+      const mode = (type === 'long') ? `${lang}Long` : lang;
+      
+      startPractice(mode, true);
     });
   });
 
+  // 2. 게임하기 버튼 클릭 시
   if (gameModeBtnEl) {
     gameModeBtnEl.addEventListener('click', () => activateGameMode('rainfall'));
   }
+
+  // 3. 언어 선택 변경 시
+  languageSelectEl.addEventListener('change', () => {
+    // 현재 활성화된 연습 타입(단문/장문)을 가져옴
+    const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
+    const type = activePracticeBtn ? activePracticeBtn.dataset.practiceType : 'short'; // 기본값은 단문
+    const lang = languageSelectEl.value;
+    const mode = (type === 'long') ? `${lang}Long` : lang;
+
+    startPractice(mode, true);
+  });
 
   toggleSoundBtn.classList.toggle('active', soundEnabled);
   toggleSoundBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> 타건음 ON' : '<i class="fas fa-volume-mute"></i> 타건음 OFF';
@@ -1553,19 +1631,23 @@ document.addEventListener('DOMContentLoaded', () => {
       fakeInputField.addEventListener('click', () => typingInputField.focus());
   }
 
-
-  document.addEventListener('keydown', (e) => {
-    const activeInput = document.activeElement;
-    const isTypingFocusable = (currentMode !== '' || currentGameType !== '');
-    const isNotInputFocused = (activeInput.tagName !== 'INPUT' && activeInput.tagName !== 'SELECT' && activeInput.tagName !== 'TEXTAREA');
-    const isFocusKey = (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1 && e.key !== ' ');
-
-    if (isTypingFocusable && isNotInputFocused && isFocusKey) {
-        if (currentMode === 'game' && gameInputField && !gameInputField.disabled) {
-            gameInputField.focus();
-        } else if (currentMode !== 'game' && typingInputField && !typingInputField.disabled) {
-            typingInputField.focus();
+  // [수정] 한/영 입력 문제 해결을 위한 클릭-투-포커스 로직
+  document.body.addEventListener('click', function(e) {
+    // 클릭한 대상이 버튼, 링크, 셀렉트 박스 등 상호작용 가능한 요소가 아닐 때만 실행
+    const isInteractiveElement = e.target.closest('button, a, select, input');
+    
+    if (!isInteractiveElement) {
+      if (document.body.classList.contains('game-mode-active')) {
+        // 게임 모드일 경우
+        if (gameInputField && !gameInputField.disabled) {
+          gameInputField.focus();
         }
+      } else {
+        // 연습 모드일 경우
+        if (typingInputField && !typingInputField.disabled) {
+          typingInputField.focus();
+        }
+      }
     }
   });
 
@@ -1628,6 +1710,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // [수정] 페이지 첫 로딩 시 '한글 단문'으로 시작
   startPractice('kor', true);
 });
 
@@ -1664,18 +1747,36 @@ function initializeAudioPool() {
     }
 }
 
+// [수정] UI 상태 반영 로직 변경
 function startPractice(mode, resetSessionStats = false) {
     if (rainfall_isGameActive || lbb_isGameActive || gb_isGameActive) returnToPracticeMode(false);
     document.body.classList.remove('game-mode-active');
     currentMode = mode;
     currentGameType = '';
 
+    // UI 상태 업데이트 로직
+    const isLong = mode.includes('Long');
+    const lang = mode.replace('Long', '');
+
+    // 단문/장문 버튼 활성화 상태 업데이트
+    document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.practiceType === (isLong ? 'long' : 'short'));
+    });
+    // 언어 선택 드롭다운 상태 업데이트
+    if (languageSelectEl) {
+        languageSelectEl.value = lang;
+    }
+    // 게임하기 버튼은 비활성화
+    if (gameModeBtnEl) {
+        gameModeBtnEl.classList.remove('active');
+    }
+
+    // --- 이하 기존 startPractice 함수의 로직은 거의 동일 ---
     if (mainControlsEl && soundSettingsEl.parentNode !== mainControlsEl) {
         originalSoundParent.insertBefore(soundSettingsEl, originalSoundNextSibling);
         originalThemeParent.insertBefore(themeSettingsEl, originalThemeNextSibling);
     }
-
-
+    
     if (resultEl) resultEl.textContent = '새로운 문제를 불러옵니다...';
     document.querySelector('.typing-area-container').style.display = 'flex';
     if (document.getElementById('typing-input-field-container')) {
@@ -1694,16 +1795,6 @@ function startPractice(mode, resetSessionStats = false) {
     if (gameAreaContainerEl) gameAreaContainerEl.style.display = 'none';
     if (gameStartMessageEl) gameStartMessageEl.style.display = 'none';
     if (lbbTimerBarContainerEl) lbbTimerBarContainerEl.style.display = 'none';
-
-
-    document.querySelectorAll('.practice-mode-controls button').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.mode === mode) btn.classList.add('active');
-    });
-    if (gameModeBtnEl) {
-        gameModeBtnEl.innerHTML = '<i class="fas fa-gamepad"></i>게임하기';
-        gameModeBtnEl.classList.remove('active');
-    }
 
 
     if (statsVisible && statsEl) statsEl.classList.remove('hidden');
@@ -2134,7 +2225,7 @@ function hexToRgb(hex) {
 
 // --- GAME MODE ENTRY POINT ---
 function activateGameMode(gameType) {
-    if (keyboardGuideEl) keyboardGuideEl.style.display = 'none';
+    // [수정] 인라인 스타일을 직접 조작하는 코드 제거
     currentMode = 'game';
     currentGameType = gameType;
 
@@ -2318,41 +2409,9 @@ function activateGameMode(gameType) {
     levelControlItem.appendChild(levelSelectLabel);
     levelControlItem.appendChild(gameLevelSelectInBar);
     
-    const langControlItem = document.createElement('div');
-    langControlItem.classList.add('game-control-item');
-    const langSelectLabel = document.createElement('label');
-    langSelectLabel.htmlFor = 'gameLangSelectInBar';
-    langSelectLabel.classList.add('select-label');
-    langSelectLabel.textContent = '언어:';
-    const gameLangSelectInBar = document.createElement('select');
-    gameLangSelectInBar.id = 'gameLangSelectInBar';
-    gameLangSelectInBar.className = 'game-control-select';
-    
-    const korOption = document.createElement('option');
-    korOption.value = 'kor'; korOption.textContent = '한국어';
-    const engOption = document.createElement('option');
-    engOption.value = 'eng'; engOption.textContent = '영어';
-    gameLangSelectInBar.appendChild(korOption);
-    gameLangSelectInBar.appendChild(engOption);
-    
-    if (gameType === 'letterBlockBattle') {
-        gameLangSelectInBar.value = 'kor';
-        gameLangSelectInBar.disabled = true;
-    } else {
-        gameLangSelectInBar.value = (gameType === 'rainfall') ? rainfall_preferredGameLanguage : gb_preferredGameLanguage;
-        gameLangSelectInBar.disabled = false;
-    }
-    
-    gameLangSelectInBar.addEventListener('change', (e) => {
-        const newLang = e.target.value;
-        if (gameType === 'rainfall') rainfall_preferredGameLanguage = newLang;
-        else if (gameType === 'giantBattle') gb_preferredGameLanguage = newLang;
-    });
-    langControlItem.appendChild(langSelectLabel);
-    langControlItem.appendChild(gameLangSelectInBar);
+    // [수정] 언어 선택 UI 생성 코드 제거
 
     settingsRow2.appendChild(levelControlItem);
-    settingsRow2.appendChild(langControlItem);
 
     const returnBtn = document.createElement('button');
     returnBtn.id = 'returnToPracticeBtnGame';
@@ -2408,7 +2467,7 @@ function activateGameMode(gameType) {
         gameStartMessageEl.innerHTML = `
             <h2><i class="fas fa-fist-raised"></i> 타이핑 배틀</h2>
             <p>쏟아지는 단어들을 정확히 입력하여 적의 공격을 막아내고,<br>당신의 공격 단어로 적을 격파하세요! 2분 안에 승리하세요!</p>
-            <p>언어와 레벨을 선택하고 게임 시작 버튼을 누르세요.</p>
+            <p>레벨을 선택하고 게임 시작 버튼을 누르세요.</p>
             <button id="startGameBtn" class="game-button"><i class="fas fa-play"></i> 게임 시작</button>`;
         document.getElementById('startGameBtn').addEventListener('click', () => {
             const selectedLevel = parseInt(document.getElementById('gameLevelSelectInBar').value);
@@ -2419,9 +2478,9 @@ function activateGameMode(gameType) {
     gameStartMessageEl.style.display = 'flex';
     gameInputField.placeholder = "단어 입력 후 Enter 또는 Space";
 
-    document.querySelectorAll('.practice-mode-controls button').forEach(btn => btn.classList.remove('active'));
+    // [수정] UI 상태 반영 로직
+    document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(btn => btn.classList.remove('active'));
     if (gameModeBtnEl) {
-        gameModeBtnEl.innerHTML = '<i class="fas fa-gamepad"></i>게임하기';
         gameModeBtnEl.classList.add('active');
     }
 }
@@ -2631,10 +2690,11 @@ function startRainfallWordGeneration() {
             itemDetails = getRandom(itemTypes);
             newWordText = itemDetails.text;
         } else {
-            const wordPool = (rainfall_preferredGameLanguage === 'kor' ? gameWordsKor : gameWordsEng).filter(w => w.length <= 4);
+            // [수정] 한글 단어 풀로 고정
+            const wordPool = gameWordsKor.filter(w => w.length <= 4);
             const filteredPool = wordPool.filter(w => w.length >= levelConfig.wordMinLen && w.length <= levelConfig.wordMaxLen && !rainfall_usedWordsInLevel.has(w));
             newWordText = getRandom(filteredPool.length > 5 ? filteredPool : wordPool.filter(w => w.length >= levelConfig.wordMinLen && w.length <= levelConfig.wordMaxLen));
-            if (!newWordText) newWordText = rainfall_preferredGameLanguage === 'kor' ? '단어' : 'word';
+            if (!newWordText) newWordText = '단어';
         }
 
         rainfall_usedWordsInLevel.add(newWordText);
@@ -2670,7 +2730,8 @@ function handleRainfallGameInputSubmit() {
     let wordFound = false;
     for (let i = rainfall_wordsOnScreen.length - 1; i >= 0; i--) {
         const word = rainfall_wordsOnScreen[i];
-        const wordToMatch = rainfall_preferredGameLanguage === 'eng' ? word.text.toLowerCase() : word.text;
+        // [수정] 한글로 고정하여 비교 로직 단순화
+        const wordToMatch = word.text;
         
         if (typedWord === wordToMatch) {
             if (word.itemType) {
@@ -2966,6 +3027,10 @@ function drawLetterBlockBattleGame() {
 
 function generateLBBGameBoard() {
     lbb_gameBoard = [];
+    // [수정] 한글 단어 풀로 고정
+    const wordPoolSource = gameWordsKor;
+    const wordPool = wordPoolSource.filter(word => word.length >= 2 && word.length <= 3);
+
     for (let r = 0; r < LBB_BOARD_ROWS; r++) {
         lbb_gameBoard[r] = [];
         for (let c = 0; c < LBB_BOARD_COLS; c++) {
@@ -2979,7 +3044,7 @@ function generateLBBGameBoard() {
                 else effectType = LBB_BLOCK_EFFECT_TYPES.YELLOW;
             }
             lbb_gameBoard[r][c] = {
-                word: getRandom(lbb_wordPool),
+                word: getRandom(wordPool.length > 0 ? wordPool : wordPoolSource), // 한글 단어 풀 사용
                 broken: false,
                 effect: effectType
             };
@@ -3011,7 +3076,12 @@ function handleLetterBlockBattleInputSubmit() {
     if (!typedWord) return;
 
     const surroundingBlocks = getSurroundingLBBBlocks(lbb_playerPos);
-    const matchedBlock = surroundingBlocks.find(block => block && block.word === typedWord);
+    
+    // [수정] 한글로 고정하여 비교 로직 단순화
+    const matchedBlock = surroundingBlocks.find(block => {
+        if (!block) return false;
+        return block.word === typedWord;
+    });
 
     if (matchedBlock) {
         lbb_playerMoveAndBreak(matchedBlock);
@@ -3296,8 +3366,8 @@ function initGiantBattleGame(fromStartButtonOrNextLevel = false, level) {
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
     gb_enemyHealth = currentLevelConfig.enemyHealth;
 
-    const gameLangSelectInBar = document.getElementById('gameLangSelectInBar');
-    if (gameLangSelectInBar) gb_preferredGameLanguage = gameLangSelectInBar.value;
+    // [수정] 언어 선택 로직 제거
+    gb_preferredGameLanguage = 'kor';
 
     gb_spawnPlayerAttackWord();
 
@@ -3514,24 +3584,27 @@ function drawGiantBattleGame() {
 
 function gb_spawnPlayerAttackWord() {
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
-    const wordPool = gb_preferredGameLanguage === 'kor' ? gameWordsKor : gameWordsEng;
+    // [수정] 한글 단어 풀로 고정
+    const wordPool = gameWordsKor;
     const minLen = Math.max(3, currentLevelConfig.wordMinLen);
     const filteredWordPool = wordPool.filter(w => w.length >= minLen && w.length <= 4);
-    gb_playerAttackWord = getRandom(filteredWordPool.length > 0 ? filteredWordPool : wordPool.filter(w => w.length >= minLen && w.length <= 4)) || (gb_preferredGameLanguage === 'kor' ? "공격" : "attack");
+    gb_playerAttackWord = getRandom(filteredWordPool.length > 0 ? filteredWordPool : wordPool.filter(w => w.length >= minLen && w.length <= 4)) || "공격";
 }
 
 function gb_spawnDefenseWord(currentLevelConfig) {
-    const wordPool = gb_preferredGameLanguage === 'kor' ? gameWordsKor : gameWordsEng;
+    // [수정] 한글 단어 풀로 고정
+    const wordPool = gameWordsKor;
     const minLen = Math.max(3, currentLevelConfig.wordMinLen);
     const defenseWordPool = wordPool.filter(w => w.length >= minLen && w.length <= 4);
-    return getRandom(defenseWordPool.length > 0 ? defenseWordPool : wordPool.filter(w => w.length >= minLen && w.length <= 4)) || (gb_preferredGameLanguage === 'kor' ? "수비" : "guard");
+    return getRandom(defenseWordPool.length > 0 ? defenseWordPool : wordPool.filter(w => w.length >= minLen && w.length <= 4)) || "수비";
 }
 
 
 function gb_spawnEnemyAttack() {
     if (!gb_isGameActive || gb_gamePausedForOverlay || !gameCanvas) return;
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
-    const wordPool = gb_preferredGameLanguage === 'kor' ? gameWordsKor : gameWordsEng;
+    // [수정] 한글 단어 풀로 고정
+    const wordPool = gameWordsKor;
 
     let word = "";
     let isSpecialAttack = Math.random() < GB_SPECIAL_ATTACK_CHANCE;
@@ -3542,11 +3615,11 @@ function gb_spawnEnemyAttack() {
     if (isSpecialAttack) {
         const specialMinLen = 4;
         const specialWordPool = wordPool.filter(w => w.length === specialMinLen);
-        word = getRandom(specialWordPool.length > 0 ? specialWordPool : wordPool.filter(w => w.length === 4)) || (gb_preferredGameLanguage === 'kor' ? "강타" : "SMASH");
+        word = getRandom(specialWordPool.length > 0 ? specialWordPool : wordPool.filter(w => w.length === 4)) || "강타";
         originalWordForSpecial = word;
     } else {
         const defenseWordPool = wordPool.filter(w => w.length >= minLenForAttack && w.length <=4);
-        word = getRandom(defenseWordPool.length > 0 ? defenseWordPool : wordPool.filter(w => w.length >= minLenForAttack && w.length <=4)) || (gb_preferredGameLanguage === 'kor' ? "돌격" : "charge");
+        word = getRandom(defenseWordPool.length > 0 ? defenseWordPool : wordPool.filter(w => w.length >= minLenForAttack && w.length <=4)) || "돌격";
     }
 
     const startY = -20;
@@ -3567,9 +3640,10 @@ function handleGiantBattleInputSubmit() {
     const typedWordFull = gameInputField.value.trim();
     if (typedWordFull === "") return;
 
-    const typedWord = gb_preferredGameLanguage === 'eng' ? typedWordFull.toLowerCase() : typedWordFull;
+    // [수정] 한글로 고정하여 비교 로직 단순화
+    const typedWord = typedWordFull;
 
-    const playerAttackWordToMatch = gb_preferredGameLanguage === 'eng' ? gb_playerAttackWord.toLowerCase() : gb_playerAttackWord;
+    const playerAttackWordToMatch = gb_playerAttackWord;
     if (typedWord === playerAttackWordToMatch) {
         gb_playerAttack();
         if(gameInputField) gameInputField.value = "";
@@ -3579,7 +3653,7 @@ function handleGiantBattleInputSubmit() {
     const sortedEnemyAttacks = [...gb_enemyAttacks].sort((a,b) => b.y - a.y);
     for (let i = 0; i < sortedEnemyAttacks.length; i++) {
         const enemyAttack = sortedEnemyAttacks[i];
-        const enemyWordToMatch = gb_preferredGameLanguage === 'eng' ? enemyAttack.word.toLowerCase() : enemyAttack.word;
+        const enemyWordToMatch = enemyAttack.word;
 
         if (typedWord === enemyWordToMatch) {
             if (enemyAttack.isSpecial) {
@@ -3775,12 +3849,15 @@ function showCountdownThenStart(startGameFunction, args = [true, 1]) {
 }
 
 
+// [수정] 마지막 연습 모드 복원 로직 변경
 function returnToPracticeMode(resetSessionStats = true) {
     currentMode = '';
     currentGameType = '';
-    if (keyboardGuideEl && keyboardGuideEnabled) {
-        keyboardGuideEl.style.display = 'block';
-    }
+    
+    // [수정] 인라인 스타일을 직접 조작하는 코드 제거
+    // 클래스 토글링으로 상태를 관리하므로, 돌아올 때 이 코드는 불필요합니다.
+    // updateKeyboardDisplay가 올바르게 상태를 설정해줍니다.
+
     rainfall_isGameActive = false;
     lbb_isGameActive = false;
     gb_isGameActive = false;
@@ -3820,17 +3897,16 @@ function returnToPracticeMode(resetSessionStats = true) {
         gameInputField.removeEventListener('keydown', handleKeyDownEvent);
         gameInputField.removeEventListener('input', handleInputEvent);
     }
-
-    let lastPracticeMode = 'kor';
-    const activePracticeButton = document.querySelector('.practice-mode-controls button.active[data-mode]');
-    if(activePracticeButton && activePracticeButton.id !== 'gameModeBtn'){
-        lastPracticeMode = activePracticeButton.dataset.mode;
-    } else {
-        const firstPracticeBtn = document.querySelector('.practice-mode-controls button[data-mode]:not(#gameModeBtn)');
-        if (firstPracticeBtn) {
-            lastPracticeMode = firstPracticeBtn.dataset.mode;
-        }
+    
+    // 마지막 연습 모드 복원 로직
+    let lastPracticeMode = 'kor'; // 기본값
+    const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
+    if (activePracticeBtn && languageSelectEl) {
+        const type = activePracticeBtn.dataset.practiceType;
+        const lang = languageSelectEl.value;
+        lastPracticeMode = (type === 'long') ? `${lang}Long` : lang;
     }
+    
     updateKeyboardDisplay();
     updateKeyboardHighlight();
     startPractice(lastPracticeMode, resetSessionStats);
@@ -3846,7 +3922,6 @@ const charToKeyMap = {
     '{': '[', '}': ']', ':': ';', '"': "'", '<': ',', '>': '.', '?' : '/'
 };
 
-// ▼▼▼ [수정] 복잡한 한글 분해 로직 개선 ▼▼▼
 const Hangul = (() => {
     const CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
     const JUNG = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
@@ -3903,8 +3978,6 @@ const Hangul = (() => {
     return { disassemble };
 })();
 
-// ▼▼▼ [수정] 키보드 생성 로직 수정 ▼▼▼
-// ▼▼▼ [최종 수정] 키보드 생성 로직 - wrapper div 추가로 정렬 문제 해결 ▼▼▼
 function buildKeyboard() {
     keyboardGuideEl.innerHTML = '';
     const layout = [
@@ -3932,7 +4005,6 @@ function buildKeyboard() {
         const rowDiv = document.createElement('div');
         rowDiv.className = `keyboard-row row-${index + 1}`;
         
-        // 키들을 감싸는 wrapper div 추가
         const keysWrapper = document.createElement('div');
         keysWrapper.className = 'keys-wrapper';
 
@@ -3966,10 +4038,8 @@ function buildKeyboard() {
              if (['a', 's', 'd', 'f', 'j', 'k', 'l', ';'].includes(keyId)) {
                 keyDiv.classList.add('home-row-base');
             }
-            // wrapper에 키 추가
             keysWrapper.appendChild(keyDiv);
         });
-        // row에 wrapper 추가
         rowDiv.appendChild(keysWrapper);
         keyboardGuideEl.appendChild(rowDiv);
     });
