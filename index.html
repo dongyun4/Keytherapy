@@ -1628,12 +1628,10 @@
                         <option value="python">Python</option>
                     </select>
                 </div>
-                <div class="sound-settings" id="soundSettingsElement">
+                                <div class="sound-settings" id="soundSettingsElement">
                     <label for="soundPackSelect" class="select-label" id="soundPackLabel">타건음:</label>
                     <select id="soundPackSelect">
-                        <option value="crunchy">서걱서걱</option>
-                        <option value="pebbles">조약돌</option>
-                        <option value="thocky">도각도각</option>
+                        <!-- 이 부분은 JavaScript가 동적으로 채웁니다. -->
                     </select>
                 </div>
                 <div class="theme-settings" id="themeSettingsElement">
@@ -1714,7 +1712,6 @@
   </div>
 
 <script>
-// === 전역 변수 및 설정 ===
 let currentMode = '';
 let currentGameType = '';
 let linesToPractice = [];
@@ -1761,16 +1758,24 @@ let originalThemeParent, originalThemeNextSibling;
 let mainControlsEl;
 let toggleHighlightBtn, lineDisplayArea, typingInputField, resultEl, upcomingLinesArea, statsEl, fakeInputField;
 
+let soundPlayedForThisInput = false; // 중복 사운드 재생 방지 플래그
+// ▼▼▼ [최종 수정] 오디오 로직 전체 교체 ▼▼▼
+let currentSoundPack = '1'; // 기본 사운드팩
+const soundFiles = {};
+const totalSoundPacks = 13;
+const filesPerPack = 10;
 
-let currentSoundPack = 'crunchy';
-const soundFiles = {
-    pebbles: Array.from({length: 7}, (_, i) => `soundFiles/pebbles/pebble${i + 1}.wav`),
-    crunchy: Array.from({length: 11}, (_, i) => `soundFiles/crunchy/crunchy${i + 1}.wav`),
-    thocky: Array.from({length: 10}, (_, i) => `soundFiles/thocky/thocky${i + 1}.wav`)
-};
-let audioPool = {};
-const MAX_AUDIO_OBJECTS = 8;
-let audioPointer = {};
+for (let i = 1; i <= totalSoundPacks; i++) {
+    const packKey = String(i);
+    soundFiles[packKey] = [];
+    for (let j = 1; j <= filesPerPack; j++) {
+        soundFiles[packKey].push(`soundFiles/${i}/${i} (${j}).wav`);
+    }
+}
+
+let audioPool = {}; // 마스터 오디오 풀
+let soundTimer = null;
+
 
 // === RAINFALL GAME MODE VARIABLES ===
 let rainfall_isGameActive = false;
@@ -1966,7 +1971,7 @@ const sentencePool = { kor: ["따뜻한 햇살이 창가에 가득 내린다.", 
         `/** @param {string} name - The user's name. */`, `'use strict';`, `// FIXME: This logic is not efficient.`, `// REVIEW: Is this the correct approach?`,
         `const MAX_RETRIES = 3;`, `// Ensure the input is a valid number.`, `// Deprecated: Do not use this function.`, `// End of JavaScript short examples.`
     ],
-
+    
     jsLong: [
         `// Example 1: Fetching and displaying data from an API
 async function displayUsers() {
@@ -2326,6 +2331,46 @@ def setup_database(db_name: str):
     ]
 };
 
+function initializeAudioPoolForPack(packKey) {
+    if (!soundFiles[packKey] || soundFiles[packKey].length === 0) return;
+    audioPool[packKey] = [];
+    soundFiles[packKey].forEach(soundSrc => {
+        const audio = new Audio(soundSrc);
+        audio.preload = 'auto';
+        audioPool[packKey].push(audio);
+    });
+}
+
+// 모든 사운드 팩에 대해 초기화를 실행하는 함수
+function initializeAudioPool() {
+    for (const packKey in soundFiles) {
+        initializeAudioPoolForPack(packKey);
+    }
+}
+
+// ★★★★★ 드르륵 현상 해결을 위한 최종 재생 함수 ★★★★★
+function playTypingSound() {
+    // 1. 기존에 예약된 사운드 재생이 있다면 취소
+    clearTimeout(soundTimer);
+
+    // 2. 아주 짧은 시간(1ms) 후에 실제 소리 재생 로직을 딱 한 번만 실행하도록 예약
+    soundTimer = setTimeout(() => {
+        if (!soundEnabled || !currentSoundPack) return;
+
+        const masterAudioPool = audioPool[currentSoundPack];
+        if (!masterAudioPool || masterAudioPool.length === 0) {
+            initializeAudioPoolForPack(currentSoundPack);
+            return;
+        }
+
+        const masterAudio = getRandom(masterAudioPool);
+        if (!masterAudio) return;
+
+        const audioToPlay = masterAudio.cloneNode();
+        audioToPlay.play().catch(e => { /* 무시 */ });
+    }, 1); // 1ms의 지연 시간으로 여러 호출을 병합
+}
+
 function updateDropdown(level) {
     const gameLevelSelect = document.getElementById('gameLevelSelectInBar');
     if (gameLevelSelect) {
@@ -2387,6 +2432,14 @@ document.addEventListener('DOMContentLoaded', () => {
   originalThemeParent = themeSettingsEl.parentNode;
   originalThemeNextSibling = themeSettingsEl.nextSibling;
 
+  soundPackSelectEl.innerHTML = ''; // 기존 옵션 초기화
+  for (let i = 1; i <= totalSoundPacks; i++) {
+    const option = document.createElement('option');
+    option.value = String(i);
+    option.textContent = String(i);
+    soundPackSelectEl.appendChild(option);
+  }
+
   soundPackSelectEl.value = currentSoundPack;
   const savedTheme = localStorage.getItem('typingTheme') || 'dark';
   applyTheme(savedTheme);
@@ -2421,19 +2474,15 @@ document.addEventListener('DOMContentLoaded', () => {
     gameModeBtnEl.addEventListener('click', () => activateGameMode('rainfall'));
   }
 
-  // ▼▼▼ [수정] 이벤트 위임 방식으로 도움말 버튼 리스너 추가 ▼▼▼
   if (gameAreaContainerEl) {
     gameAreaContainerEl.addEventListener('click', function(e) {
-      // 클릭된 요소 또는 그 상위 요소 중에 #gameHelpBtn이 있는지 확인
       if (e.target.closest('#gameHelpBtn')) {
-        // currentGameType이 설정되어 있을 때만 도움말 표시
         if (currentGameType) {
           showHelpModal(currentGameType);
         }
       }
     });
   }
-  // ▲▲▲ [수정] 이벤트 위임 방식으로 도움말 버튼 리스너 추가 ▲▲▲
 
   const restartPractice = () => {
     const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
@@ -2462,7 +2511,11 @@ document.addEventListener('DOMContentLoaded', () => {
     statsEl.classList.add('hidden');
   }
 
-  typingInputField.addEventListener('input', handleInputEvent);
+  typingInputField.addEventListener('input', (e) => {
+    // 새로운 입력이 시작될 때마다 플래그를 리셋
+    soundPlayedForThisInput = false;
+    handleInputEvent(e);
+  });
 
   if (fakeInputField && typingInputField) {
       fakeInputField.addEventListener('click', () => typingInputField.focus());
@@ -2508,14 +2561,14 @@ document.addEventListener('DOMContentLoaded', () => {
         handleHighlightUpdate(currentLineEl, typingInputField.value, linesToPractice[currentDisplayLineIndex]);
     }
   });
+
+  // ▼▼▼ [최종 수정] 사운드팩 변경 리스너 ▼▼▼
   soundPackSelectEl.addEventListener('change', (event) => {
     currentSoundPack = event.target.value;
-    if (audioPool[currentSoundPack] && (audioPointer[currentSoundPack] === undefined || audioPointer[currentSoundPack] === null) ) {
-        audioPointer[currentSoundPack] = 0;
-    } else if (!audioPool[currentSoundPack]) {
-        initializeAudioPoolForPack(currentSoundPack);
-    }
+    // 사운드팩을 바꾸면, 해당 팩의 마스터 오디오 풀을 새로 생성합니다.
+    initializeAudioPoolForPack(currentSoundPack);
   });
+  // ▲▲▲ [최종 수정] 사운드팩 변경 리스너 완료 ▲▲▲
 
   themeSelectEl.addEventListener('change', (event) => {
     const selectedTheme = event.target.value;
@@ -2550,16 +2603,21 @@ document.addEventListener('DOMContentLoaded', () => {
   helpModalClose.addEventListener('click', hideHelpModal);
 
   freestyleInputAreaEl.addEventListener('input', () => {
-      playTypingSound();
-      if (!startTime) {
-          startTime = Date.now();
-      }
-      updateFreestyleStats();
+    // 플래그 리셋
+    soundPlayedForThisInput = false; 
+    playTypingSound();
+    if (!startTime) {
+        startTime = Date.now();
+    }
+    updateFreestyleStats();
   });
+  
   freestyleInputAreaEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace' || e.key === 'Enter' || e.key === ' ') {
-          playTypingSound();
-      }
+    // 플래그 리셋
+    soundPlayedForThisInput = false;
+    if (e.key === 'Backspace' || e.key === 'Enter' || e.key === ' ') {
+        playTypingSound();
+    }
   });
   downloadFreestyleBtnEl.addEventListener('click', handleFreestyleDownload);
   insertDateBtn.addEventListener('click', insertDate);
@@ -2872,37 +2930,16 @@ function toggleFocusMode() {
     freestyleInputAreaEl.focus();
 }
 
-function applyTheme(theme) {
-    document.body.classList.remove('light-theme', 'pink-theme');
-    if (theme === 'light') document.body.classList.add('light-theme');
-    else if (theme === 'pink') document.body.classList.add('pink-theme');
-
-    if (gameCanvas && currentGameType) {
-        requestAnimationFrame(() => {
-            if (currentGameType === 'rainfall') drawRainfallGame();
-            else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
-            else if (currentGameType === 'giantBattle') drawGiantBattleGame();
-        });
-    }
-}
-
-
-function initializeAudioPoolForPack(packKey) {
-    if (soundFiles.hasOwnProperty(packKey) && (!audioPool[packKey] || audioPool[packKey].length === 0)) {
-        audioPool[packKey] = [];
-        audioPointer[packKey] = 0;
-        for (let i = 0; i < MAX_AUDIO_OBJECTS; i++) {
-            const audio = new Audio();
-            audio.preload = 'auto';
-            audioPool[packKey].push(audio);
-        }
-    }
-}
-
-function initializeAudioPool() {
-    for (const packKey in soundFiles) {
-        initializeAudioPoolForPack(packKey);
-    }
+function hexToRgb(hex) {
+    if (!hex) return null;
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
 
 function splitTextIntoLines(text, mode, screenWidth) {
@@ -2989,16 +3026,14 @@ function renderTypingLayout() {
 }
 
 function handleInputEvent(e) {
-    if ((currentMode !== 'game' && e.target === typingInputField) || (currentMode === 'game' && e.target === gameInputField)) {
-        playTypingSound();
-    }
+    playTypingSound(); // input 이벤트 발생 시 소리 재생 요청
 
     if (currentMode !== 'game' && currentMode !== 'freestyle' && e.target === typingInputField) {
+        // ... 기존 시각적 업데이트 로직은 그대로 ...
         const typedValue = typingInputField.value;
         const currentLineEl = document.getElementById('current-typing-line');
         if (!currentLineEl) return;
         const originalLine = linesToPractice[currentDisplayLineIndex] || "";
-
         if (typedValue.length > 0) {
             if (!startTime) startTime = Date.now();
             if (originalLine && !currentLineStartTime) currentLineStartTime = Date.now();
@@ -3079,11 +3114,13 @@ function formatCodeLineForDisplay(line) {
 }
 
 function handleKeyDownEvent(e) {
-    const isModifierKey = e.ctrlKey || e.altKey || e.metaKey;
-    const targetInput = e.target;
-
     if (e.isComposing) return;
 
+    // Backspace, Enter, Space 등 input 이벤트를 발생시키지 않는 키들을 위해
+    // keydown 에서도 소리 재생을 요청합니다.
+    playTypingSound();
+
+    const targetInput = e.target;
     if (currentMode === 'game' && targetInput === gameInputField) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -3103,15 +3140,11 @@ function handleKeyDownEvent(e) {
         return;
     }
 
-    if (currentMode !== 'game' && currentMode !== 'freestyle' && targetInput === typingInputField) {
+   if (currentMode !== 'game' && currentMode !== 'freestyle' && targetInput === typingInputField) {
         const typedValue = typingInputField.value;
         const originalLine = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : null;
-
-        if (e.key === 'Backspace' || (e.key === 'Shift' && !e.repeat && !isModifierKey)) {
-            playTypingSound();
-        } else if (e.key === 'Enter') {
+        if (e.key === 'Enter') {
             e.preventDefault();
-            playTypingSound();
             if (originalLine !== null && originalLine !== undefined) {
                 processCurrentLineCompletion();
             } else if (currentDisplayLineIndex >= linesToPractice.length) {
@@ -3119,10 +3152,7 @@ function handleKeyDownEvent(e) {
             }
         } else if (e.key === ' ' && originalLine !== null && typedValue.length >= originalLine.length) {
             e.preventDefault();
-            playTypingSound();
             processCurrentLineCompletion();
-        } else if (e.key === ' ' && originalLine !== null) {
-            playTypingSound();
         }
     }
 }
@@ -3285,60 +3315,6 @@ function updateProgressBar() {
     }
 }
 
-function playTypingSound() {
-  if (!soundEnabled || !currentSoundPack || !soundFiles[currentSoundPack] || !audioPool[currentSoundPack]) return;
-
-  const soundPackSounds = soundFiles[currentSoundPack];
-  const currentAudioPoolForPack = audioPool[currentSoundPack];
-
-  if (soundPackSounds.length === 0 || currentAudioPoolForPack.length === 0) return;
-
-  const soundSrc = getRandom(soundPackSounds);
-  if (!soundSrc) return;
-
-  let foundAvailableAudio = false;
-  for (let i = 0; i < currentAudioPoolForPack.length; i++) {
-      const audioIndex = (audioPointer[currentSoundPack] + i) % currentAudioPoolForPack.length;
-      let audioToPlay = currentAudioPoolForPack[audioIndex];
-
-      if (audioToPlay && audioToPlay.paused) {
-          audioPointer[currentSoundPack] = (audioIndex + 1) % currentAudioPoolForPack.length;
-          audioToPlay.src = soundSrc;
-          const playPromise = audioToPlay.play();
-          if (playPromise !== undefined) {
-              playPromise.catch(error => { /* console.warn("Audio play failed:", error); */ });
-          }
-          foundAvailableAudio = true;
-          break;
-      }
-  }
-
-  if (!foundAvailableAudio) {
-      let audioToPlay = currentAudioPoolForPack[audioPointer[currentSoundPack]];
-      audioPointer[currentSoundPack] = (audioPointer[currentSoundPack] + 1) % currentAudioPoolForPack.length;
-      if (audioToPlay) {
-        audioToPlay.src = soundSrc;
-        const playPromise = audioToPlay.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => { /* console.warn("Fallback audio play failed:", error); */ });
-        }
-      }
-  }
-}
-
-function hexToRgb(hex) {
-    if (!hex) return null;
-    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-// --- GAME MODE ENTRY POINT ---
 function activateGameMode(gameType) {
     cleanupActiveModes();
     document.body.classList.add('game-mode-active');
@@ -3392,14 +3368,13 @@ function activateGameMode(gameType) {
         <div id="item-effect-popup"></div>
         <div id="gameOverlay" class="game-overlay"></div>`;
 
-    // ▼▼▼ [수정] 요소 탐색 방식을 document.getElementById에서 gameAreaContainerEl.querySelector로 변경 ▼▼▼
     gameStartMessageEl = gameAreaContainerEl.querySelector('#game-start-message');
     gameCanvas = gameAreaContainerEl.querySelector('#game-canvas');
     if (gameCanvas) {
         gameCtx = gameCanvas.getContext('2d');
     } else {
         console.error("activateGameMode: game-canvas 요소를 찾을 수 없습니다.");
-        return; // 중요한 요소가 없으면 함수를 중단합니다.
+        return;
     }
 
     gameInputField = gameAreaContainerEl.querySelector('#game-input-field');
@@ -3420,12 +3395,10 @@ function activateGameMode(gameType) {
     const settingsRow1 = gameAreaContainerEl.querySelector('#gameSettingsRow1');
     const settingsRow2 = gameAreaContainerEl.querySelector('#gameSettingsRow2');
     
-    // Null check를 통해 오류를 방지합니다.
     if (!gameTypeRow || !settingsRow1 || !settingsRow2) {
         console.error("게임 컨트롤 바 요소를 찾을 수 없습니다. HTML 구조를 확인하세요.");
         return;
     }
-    // ▲▲▲ [수정] 요소 탐색 방식을 document.getElementById에서 gameAreaContainerEl.querySelector로 변경 ▲▲▲
 
 
     gameTypeRow.innerHTML = '';
@@ -5329,6 +5302,20 @@ function showResultOverlay(resultData) {
         });
     }
 }
+function applyTheme(theme) {
+    document.body.classList.remove('light-theme', 'pink-theme');
+    if (theme === 'light') document.body.classList.add('light-theme');
+    else if (theme === 'pink') document.body.classList.add('pink-theme');
+
+    if (gameCanvas && currentGameType) {
+        requestAnimationFrame(() => {
+            if (currentGameType === 'rainfall') drawRainfallGame();
+            else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
+            else if (currentGameType === 'giantBattle') drawGiantBattleGame();
+        });
+    }
+}
+
 </script>
 </body>
 </html>
