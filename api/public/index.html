@@ -2627,7 +2627,8 @@ function enablePracticeControls() {
     languageSelectEl.closest('.language-settings').classList.remove('disabled');
 }
 
-function startPractice(mode, resetSessionStats = false) {
+// ▼▼▼ 이 함수로 완전히 교체하세요 ▼▼▼
+async function startPractice(mode, resetSessionStats = false) { // 1. async 키워드 추가
     cleanupActiveModes();
 
     currentMode = mode;
@@ -2665,19 +2666,29 @@ function startPractice(mode, resetSessionStats = false) {
 
     currentLineStartTime = null;
     currentArticleCorrectChars = 0;
-
     currentDisplayLineIndex = 0;
-    const poolToUse = sentencePool[currentMode];
-    let textToPractice = getRandom(poolToUse);
-    if (!textToPractice && poolToUse && poolToUse.length > 0) textToPractice = poolToUse[0];
-    if (!textToPractice) textToPractice = "예문 로딩에 실패했습니다.";
 
-    linesToPractice = splitTextIntoLines(textToPractice, currentMode, window.innerWidth);
-    disassembledLine = Hangul.disassemble(linesToPractice[currentDisplayLineIndex] || '');
-    if (linesToPractice.length === 0) {
-        linesToPractice.push(textToPractice.includes("실패") ? textToPractice : "예문 처리 중 오류가 발생했습니다.");
+    // 2. 문장을 가져오는 부분을 백엔드 API 호출로 변경
+    try {
+        // Vercel 환경에서는 이 상대 경로가 자동으로 API를 가리킵니다.
+        const response = await fetch(`/api/getSentences?lang=${mode.replace('Long', '')}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        let textToPractice = data.sentence;
+
+        linesToPractice = splitTextIntoLines(textToPractice, currentMode, window.innerWidth);
+        if (linesToPractice.length === 0) {
+            linesToPractice.push("예문 처리 중 오류가 발생했습니다.");
+        }
+    } catch (error) {
+        console.error("문장을 가져오는 데 실패했습니다:", error);
+        linesToPractice = ["서버에서 문장을 가져오는데 실패했습니다."]; // 에러 발생 시 대체 문장
     }
-
+    
+    disassembledLine = Hangul.disassemble(linesToPractice[currentDisplayLineIndex] || '');
+    
     if (currentMode.endsWith('Long') && linesToPractice.length > 1) {
         if(progressBarContainerEl) progressBarContainerEl.style.display = 'block';
     } else {
@@ -2694,6 +2705,7 @@ function startPractice(mode, resetSessionStats = false) {
 
     setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
 }
+// ▲▲▲ 여기까지 교체 완료 ▲▲▲
 
 
 function startFreestyleMode() {
