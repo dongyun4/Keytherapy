@@ -369,7 +369,7 @@
         position: relative;
     }
     .hero-section {
-      width: 100%; padding: 35px 25px;
+      width: 100%; padding: 10px 25px;
       background-image:
         linear-gradient(to bottom, rgba(var(--bg-container-rgb, 42, 40, 38), 0.2) 0%, rgba(var(--bg-container-rgb, 42, 40, 38), 0.9) 100%),
         var(--hero-image-url);
@@ -510,7 +510,7 @@
     }
     #stats {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px; margin-bottom: 18px; padding: 15px 18px;
+      gap: 10px; margin-bottom: 18px; padding: 10px 18px;
       background-color: rgba(var(--accent-rgb), 0.03);
       border-radius: var(--border-radius-small); font-size: 0.92em; color: var(--text-secondary);
       border: 1px solid rgba(var(--accent-rgb), 0.1); box-shadow: var(--shadow-inset);
@@ -523,7 +523,7 @@
     }
     .light-theme #stats { background-color: rgba(var(--accent-rgb), 0.05); border-color: rgba(var(--accent-rgb), 0.12); }
     .pink-theme #stats { background-color: rgba(var(--accent-rgb), 0.06); border-color: rgba(var(--accent-rgb), 0.15); }
-    #stats span { text-align: center; padding: 8px 5px; }
+    #stats span { text-align: center; padding: 5px 5px; }
     #stats .label {
         color: var(--text-secondary); font-weight: 500; display: block;
         margin-bottom: 6px; font-size: 0.88em; text-transform: uppercase; letter-spacing: 0.5px;
@@ -579,15 +579,16 @@
     .light-theme .typing-area-container { border-top-color: rgba(var(--accent-rgb),0.15); }
     .pink-theme .typing-area-container { border-top-color: rgba(var(--accent-rgb),0.2); }
     #practice-title-display {
-        font-family: var(--font-ui);
-        font-size: 1.1em;
-        font-weight: 500;
-        color: var(--accent-secondary);
-        text-align: center;
-        margin-bottom: 15px;
-        padding: 5px 10px;
-        min-height: 1.2em;
-    }
+    font-family: var(--font-ui);
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--accent-secondary);
+    text-align: center;
+    margin-top: 0; /* 위쪽 여백 제거 */
+    margin-bottom: 5px; /* 아래쪽 여백을 15px에서 8px로 줄임 */
+    padding: 2px 10px;  /* 상하 내부 여백을 5px에서 2px로 줄임 */
+    min-height: 1.2em;
+}
     #line-display-area {
         display: flex; flex-direction: column; align-items: center;
         margin-bottom: 0px; width: 100%;
@@ -2662,6 +2663,9 @@ function startFreestyleMode() {
         btn.classList.toggle('active', btn.dataset.practiceType === 'freestyle');
     });
     if (gameModeBtnEl) gameModeBtnEl.classList.remove('active');
+    if (longTextSelectContainerEl) {
+        longTextSelectContainerEl.classList.add('hidden');
+    }
     disableFreestyleControls();
     if (statsVisible) {
         statsVisible = false;
