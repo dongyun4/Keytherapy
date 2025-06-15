@@ -1530,42 +1530,63 @@
 }
 #shortcut-help-container {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 25px;
+    right: 25px;
     z-index: 1000;
-    font-size: 1.5em;
+    font-size: 1.6em; /* 아이콘 크기 살짝 키움 */
     color: var(--text-secondary);
     cursor: pointer;
+    transition: color 0.2s ease;
+}
+#shortcut-help-container:hover {
+    color: var(--accent-primary); /* 호버 시 아이콘 색상 변경 */
 }
 #shortcut-help-container:hover .shortcut-tooltip {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translate(-5px, -5px); /* 대각선으로 살짝 움직이는 효과 */
 }
 .shortcut-tooltip {
     position: absolute;
-    bottom: 120%;
-    right: 0;
+    bottom: 110%; /* 아이콘과의 거리 조정 */
+    right: 110%;
     background-color: var(--bg-container);
     color: var(--text-secondary);
-    padding: 12px 18px;
+    padding: 15px 20px; /* 패딩 증가 */
     border-radius: var(--border-radius-small);
     box-shadow: var(--shadow-soft);
-    font-size: 0.6em; /* 1.5em의 0.6배이므로 최종 0.9em */
-    line-height: 1.8;
-    width: 150px;
+    font-size: 0.55em; /* 아이콘 크기 대비 폰트 크기 조정 (최종 약 0.88em) */
+    line-height: 1.7;
+    width: 180px; /* 너비 증가 */
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.25s ease-out;
+    transform: translate(0, 0);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* 부드러운 전환 효과 */
     pointer-events: none;
     border: 1px solid var(--input-border);
 }
 .shortcut-tooltip strong {
     color: var(--accent-primary);
-    font-size: 1.1em;
+    font-size: 1.15em;
+    font-weight: 600;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 10px; /* 제목과 내용 간격 */
+    text-align: center;
+}
+.shortcut-tooltip p {
+    margin: 0 0 8px 0; /* 단축키 항목 간격 */
+}
+.shortcut-tooltip p:last-child {
+    margin-bottom: 0;
+}
+.shortcut-tooltip b {
+    color: var(--text-primary);
+    background-color: var(--bg-main);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--input-border);
+    margin-right: 8px;
+    font-family: var(--font-typing);
 }
 @media (max-width: 920px) {
     #keyboard-guide { max-width: 100%; }
@@ -2413,18 +2434,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 break;
             
-            case 'ArrowRight':
+            case 'ArrowRight': // 오른쪽 화살표
                 if (currentMode === 'game' && currentGameType) {
                     if (!isOverlayVisible) changeGameLevel(1);
-                } else if (currentMode !== 'freestyle') {
+                } else if (currentMode.endsWith('Long')) { // 장문 모드일 때
+                    changeLongText(1);
+                } else if (currentMode !== 'freestyle') { // 단문 모드일 때
                     startPractice(currentMode, false);
                 }
                 break;
 
-            case 'ArrowLeft':
+            case 'ArrowLeft': // 왼쪽 화살표
                 if (currentMode === 'game' && currentGameType) {
                     if (!isOverlayVisible) changeGameLevel(-1);
-                } else if (currentMode !== 'freestyle') {
+                } else if (currentMode.endsWith('Long')) { // 장문 모드일 때
+                    changeLongText(-1);
+                } else if (currentMode !== 'freestyle') { // 단문 모드일 때
                     startPractice(currentMode, false);
                 }
                 break;
@@ -4565,7 +4590,29 @@ function changeGameLevel(direction) { // direction: 1 for next, -1 for previous
         handleGameEnd(false, 'level_change'); 
     }
 }
+function changeLongText(direction) { // direction: 1 for next, -1 for previous
+    if (!currentMode.endsWith('Long') || !longTextSelectEl) return;
 
+    const options = Array.from(longTextSelectEl.options);
+    let currentIndex = longTextSelectEl.selectedIndex;
+
+    // '랜덤'(-1)이 선택되어 있다면, 실제 글의 인덱스로 변환
+    if (currentIndex <= 0) {
+        currentIndex = 1; // 0번 인덱스는 '랜덤'이므로 1부터 시작
+    }
+
+    let nextIndex = currentIndex + direction;
+
+    // 옵션 개수 내에서 순환하도록 처리 (0번 '랜덤' 제외)
+    if (nextIndex >= options.length) {
+        nextIndex = 1; // 마지막에서 다음으로 가면 처음으로
+    } else if (nextIndex < 1) {
+        nextIndex = options.length - 1; // 처음에서 이전으로 가면 마지막으로
+    }
+
+    longTextSelectEl.value = options[nextIndex].value;
+    startPractice(currentMode, false);
+}
 // ---------------------------------------------------
 // ▼▼▼▼▼ 게임 종료 처리 함수 ▼▼▼▼▼
 // ---------------------------------------------------
