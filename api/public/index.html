@@ -256,6 +256,9 @@
     body.layout-collapsed .main-content-wrapper {
         padding-top: 23vh;
     }
+    body.layout-collapsed.freestyle-mode-active .main-content-wrapper {
+    padding-top: 25px;
+    }
     body.game-mode-active .main-content-wrapper {
         align-items: center;
         padding-top: 3vh;
@@ -324,14 +327,14 @@
     #toggleLayoutBtn {
         transition: opacity 0.4s ease-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
     }
-    .main-content {
-      max-width: 1200px;
-      width: 100%; background-color: var(--bg-container);
-      border-radius: var(--border-radius-main); box-shadow: var(--shadow-soft);
-      display: flex; flex-direction: column;
-      border: 1px solid rgba(var(--accent-primary-rgb), 0.1);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, border-radius 0.3s ease, max-width 0.4s ease-in-out;
-    }
+   .main-content {
+  max-width: 1200px;
+  width: 100%; background-color: var(--bg-container);
+  border-radius: var(--border-radius-main); box-shadow: var(--shadow-soft);
+  display: flex; flex-direction: column;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, border-radius 0.3s ease, max-width 0.4s ease-in-out, flex-grow 0.4s ease-out; /* 이 부분을 추가합니다. */
+}
     .light-theme .main-content { border-color: rgba(var(--accent-rgb), 0.18); }
     .pink-theme .main-content { border-color: rgba(var(--accent-rgb), 0.25); }
     .hidden { display: none !important; }
@@ -345,7 +348,6 @@
     body.game-mode-active .footer {
         display: none !important;
     }
-    body.freestyle-mode-active .layout-toggle-container,
     body.freestyle-mode-active .typing-area-container,
     body.freestyle-mode-active .progress-bar-container,
     body.freestyle-mode-active #game-area-container,
@@ -1363,6 +1365,15 @@
     transition: background-color 0.3s ease, border-color 0.3s ease;
     position: relative;
 }
+
+body.layout-collapsed.freestyle-mode-active #freestyle-area-container {
+    margin-top: 40px;
+}
+
+body.layout-collapsed.freestyle-mode-active .main-content {
+    flex-grow: 1; /* .main-content가 부모의 공간을 채우도록 함 */
+}
+
 #freestyle-toolbar {
     display: flex;
     flex-wrap: wrap;
@@ -1453,7 +1464,7 @@
     font-synthesis: none;
     font-kerning: normal;
     text-rendering: optimizeLegibility;
-    resize: vertical;
+    resize: both;
     box-shadow: var(--shadow-inset);
     transition: all 0.2s ease;
     box-sizing: border-box;
@@ -1557,13 +1568,18 @@
     box-shadow: var(--shadow-soft);
     font-size: 0.55em; /* 아이콘 크기 대비 폰트 크기 조정 (최종 약 0.88em) */
     line-height: 1.7;
-    width: 180px; /* 너비 증가 */
+    width: 210px; /* 너비 증가 */
     opacity: 0;
     visibility: hidden;
     transform: translate(0, 0);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* 부드러운 전환 효과 */
     pointer-events: none;
     border: 1px solid var(--input-border);
+}
+.shortcut-tooltip.show-temporarily {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-5px, -5px);
 }
 .shortcut-tooltip strong {
     color: var(--accent-primary);
@@ -1712,7 +1728,6 @@
                   <button id="clearAllBtn" class="freestyle-tool-btn" title="전체 삭제"><i class="fas fa-trash-alt"></i></button>
                   <button id="insertHrBtn" class="freestyle-tool-btn" title="구분선 삽입"><i class="fas fa-minus"></i></button>
               </div>
-              <button id="focusModeBtn" class="freestyle-tool-btn" title="집중 모드 (ESC로 해제)"><i class="fas fa-expand"></i></button>
           </div>
           <textarea id="freestyle-input-area" placeholder="오늘 하루는 어땠나요? 당신의 이야기를 자유롭게 기록해보세요..."></textarea>
           <div id="freestyle-stats-bar">
@@ -1745,9 +1760,13 @@
   <div id="shortcut-help-container">
     <div class="shortcut-tooltip">
         <strong>단축키 안내</strong><br>
-        <b>Alt + ↓</b> : 다시 시작<br>
-        <b>Alt + →</b> : 다음<br>
-        <b>Alt + ←</b> : 이전<br>
+        <p><b>ESC</b> : 메뉴 숨기기/펼치기</p>
+        <p><b>Alt + ↓</b> : 다시 시작</p>
+        <p><b>Alt + →</b> : 다음</p>
+        <p><b>Alt + ←</b> : 이전</p>
+        <p><b>Alt + ,</b> : 타건음 ON/OFF</p>
+        <p><b>Alt + /</b> : 다음 타건음</p>
+        <p><b>Alt + .</b> : 이전 타건음</p>
     </div>
     <i class="fas fa-question-circle"></i>
   </div>
@@ -1782,7 +1801,7 @@ let layoutCollapsed = false;
 let freestyleStatsInterval = null;
 let freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl;
 let freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker;
-let copyAllBtn, clearAllBtn, insertHrBtn, focusModeBtn;
+let copyAllBtn, clearAllBtn, insertHrBtn;
 let charCountEl, wordCountEl;
 let longTextSelectContainerEl, longTextSelectEl, practiceTitleDisplayEl;
 
@@ -1801,6 +1820,19 @@ let originalThemeParent, originalThemeNextSibling;
 let mainControlsEl;
 let toggleHighlightBtn, lineDisplayArea, typingInputField, resultEl, upcomingLinesArea, statsEl, fakeInputField;
 let gameOverlayEl;
+
+function showShortcutTooltipTemporarily() {
+    const tooltip = document.querySelector('.shortcut-tooltip');
+    if (!tooltip) return;
+
+    // 즉시 표시
+    tooltip.classList.add('show-temporarily');
+
+    // 2초 후에 부드럽게 숨김
+    setTimeout(() => {
+        tooltip.classList.remove('show-temporarily');
+    }, 2000);
+}
 
 let soundPlayedForThisInput = false;
 let currentSoundPack = '1';
@@ -1955,7 +1987,7 @@ const gameWordsKor = [
     "시작", "중단", "계속", "종료", "확인", "취소", "저장", "삭제", "편집", "검색", "추가", "변경", "도움", "안내", "경고", "오류", "성공", "정보", "항목", "목록",
     "유리", "금속", "나무", "돌", "흙", "물", "불", "공기", "빛", "소리", "냄새", "맛", "느낌", "생각", "감각", "지능", "창의", "상상", "표현", "예술", "과학",
     "수학", "역사", "지리", "사회", "경제", "정치", "법률", "윤리", "철학", "종교", "언어", "문학", "교육", "심리", "의학", "공학", "기술", "정보", "통신", "우주인", "방울뱀", "사막여우",
-    "가로등", "가위질", "가정교사", "가족사진", "가지각색", "갈림길", "갈림돌", "감사패", "감정표현", "강강술래", "개발자", "거북선", "건강검진", "건널목", "검정고시", "결혼기념", "경기장", "경찰관", "경호원", "계란후라이", "고속도로", "고인돌", "골목대장", "공기놀이", "공중전화", "공휴일", "과일가게", "과학상자", "관광버스", "광화문", "구급상자", "국회의원", "군고구마", "그림일기", "극장", "기념품", "기상캐스터", "기차여행", "긴급상황", "김장독", "까마귀", "까치밥", "꽃다발", "꿀벌", "꿈나라", "끝말잇기", "나무늘보", "나비넥타이", "낙하산", "낚시꾼", "난센스퀴즈", "날개", "남대문", "낭떠러지", "내비게이션", "냉장고", "네잎클로버", "노랫소리", "노트북", "놀이공원", "농구공", "눈사람", "다리미", "다람쥐", "다이아몬드", "단풍잎", "달리기", "닭꼬치", "담벼락", "당근", "대통령", "대한민국", "도서관", "독수리", "돈가스", "돌고래", "동물원", "두부", "두통약", "드라이기", "등산화", "디지털카메라", "라면", "라디오", "로봇", "리모컨", "마라톤", "마법사", "만두", "만리장성"
+    "가로등", "가위질", "가정교사", "가족사진", "키테라피", "갈림길", "걸림돌", "감사패", "감정표현", "강강술래", "개발자", "거북선", "건강검진", "건널목", "검정고시", "결혼기념", "경기장", "경찰관", "경호원", "계란후라이", "고속도로", "고인돌", "골목대장", "공기놀이", "공중전화", "공휴일", "과일가게", "과학상자", "관광버스", "광화문", "구급상자", "국회의원", "군고구마", "그림일기", "극장", "기념품", "기상캐스터", "기차여행", "긴급상황", "김장독", "까마귀", "까치밥", "꽃다발", "꿀벌", "꿈나라", "끝말잇기", "나무늘보", "나비넥타이", "낙하산", "낚시꾼", "난센스퀴즈", "날개", "남대문", "낭떠러지", "내비게이션", "냉장고", "네잎클로버", "노랫소리", "노트북", "놀이공원", "농구공", "눈사람", "다리미", "다람쥐", "다이아몬드", "단풍잎", "달리기", "닭꼬치", "담벼락", "당근", "대통령", "대한민국", "도서관", "독수리", "돈가스", "돌고래", "동물원", "두부", "두통약", "드라이기", "등산화", "디지털카메라", "라면", "라디오", "로봇", "리모컨", "마라톤", "마법사", "만두", "만리장성"
 ].map(word => word.trim());
 const sentencePool = {
     kor: ["따뜻한 햇살이 창가에 가득 내린다.", "작은 행복이 모여 큰 기쁨이 된다.", "오늘 하루도 수고했어요 당신 최고.", "좋아하는 노래를 들으며 힐링해요.", "푸른 하늘을 보며 마음껏 숨 쉬세요.", "예쁜 꽃 한 송이가 미소를 선물해요.", "가끔은 모든 걸 잊고 푹 쉬어요.", "좋은 친구는 삶의 큰 보물 같아요.", "새로운 시작은 언제나 설레는 법이죠.", "오늘 저녁은 맛있는 음식을 드세요.", "고요한 밤 별들이 속삭이는 소리.", "작은 친절이 세상을 따뜻하게 해요.", "주말엔 늦잠을 자며 여유를 즐겨요.", "새로운 길을 걷는 건 멋진 도전이야.", "마음속 작은 빛을 따라 나아가세요.", "오늘 하루 감사한 일을 떠올려봐요.", "사랑하는 사람에게 마음을 전하세요.", "힘든 날엔 잠시 하늘을 올려다봐요.", "달콤한 디저트는 기분 전환에 최고죠.", "아침 공기가 상쾌하게 느껴지네요.", "밤하늘의 별들은 저마다의 이야기를 간직하고 있다.", "바람결에 실려 온 꽃 향기가 마음을 간지럽힌다.", "익숙한 골목길에서 문득 새로운 풍경을 발견한다.", "가을비 내리는 날엔 따뜻한 차 한 잔이 위로가 된다.", "오래된 책갈피에서 잊고 지냈던 추억을 만났다.", "마음의 창을 열면 세상은 더 아름답게 보인다.", "작은 연못에 비친 달 그림자가 고요히 흔들린다.", "새벽녘 풀잎에 맺힌 이슬처럼 영롱한 순간들.", "구름 한 점 없는 하늘은 끝없는 가능성을 닮았다.", "모든 끝은 새로운 시작을 의미하기도 한다.", "삶이라는 여행길에서 가장 소중한 것은 경험이다.", "마음이 가는 대로 발길이 이끄는 대로.", "한 줄기 빛이 어둠을 가르듯 희망은 절망 속에서 피어난다.", "소리 없이 내리는 눈처럼 조용한 위로가 필요한 날.", "따뜻한 눈빛 하나가 얼어붙은 마음을 녹인다.", "시간의 강물은 쉼 없이 흐르지만 추억은 그 자리에 남는다.", "나뭇잎 사이로 부서지는 햇살이 보석처럼 반짝인다.", "낯선 곳에서의 우연한 만남은 예기치 못한 선물이다.", "가끔은 길을 잃어야 새로운 길을 찾을 수 있다.", "진정한 아름다움은 꾸밈없는 자연스러움에 있다.", "오늘 걷지 않으면 내일은 뛰어야 한다.", "백지장도 맞들면 낫다.", "뜻이 있는 곳에 길이 있다.", "시작이 반이다.", "하늘은 스스로 돕는 자를 돕는다.", "인내는 쓰지만 그 열매는 달다.", "구슬이 서 말이라도 꿰어야 보배다.", "세 살 버릇 여든까지 간다.", "젊어서 고생은 사서도 한다.", "콩 심은 데 콩 나고 팥 심은 데 팥 난다.", "키읔 티읕 피읖 히읗 거센소리 연습.", "쌍기역 쌍디귿 쌍비읍 쌍시옷 쌍지읒 된소리 연습.", "맑고 높은 가을 하늘 아래 코스모스 한들한들.", "반짝이는 별빛 아래 소중한 추억을 그려본다.", "찹쌀떡 맵쌀떡 온갖 떡들이 가득하다.", "깎아지른 절벽 아래 펼쳐진 푸른 바다.", "닭볶음탕과 칡넝쿨은 최고의 궁합이다.", "읊조리는 시 한 수가 마음을 촉촉하게 적신다.", "빠른 갈색 여우가 게으른 개 위로 뛰어넘는다.",  "외계생명체 존재 여부는 아직 밝혀지지 않았다.", "안녕하세요 만나서 반갑습니다 좋은 하루 되세요.", "대한민국 서울특별시 아름다운 우리 강산 푸르게 푸르게."],
@@ -2192,7 +2224,6 @@ document.addEventListener('DOMContentLoaded', () => {
   copyAllBtn = document.getElementById('copyAllBtn');
   clearAllBtn = document.getElementById('clearAllBtn');
   insertHrBtn = document.getElementById('insertHrBtn');
-  focusModeBtn = document.getElementById('focusModeBtn');
   charCountEl = document.getElementById('charCount');
   wordCountEl = document.getElementById('wordCount');
   longTextSelectContainerEl = document.getElementById('longTextSelectContainer');
@@ -2201,7 +2232,7 @@ document.addEventListener('DOMContentLoaded', () => {
   soundSettingsEl = document.getElementById('soundSettingsElement');
   themeSettingsEl = document.getElementById('themeSettingsElement');
   mainControlsEl = document.querySelector('.main-controls');
-  const allElements = [languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, toggleLayoutBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl, freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl, freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker, copyAllBtn, clearAllBtn, insertHrBtn, focusModeBtn, charCountEl, wordCountEl, helpModal, helpModalBody, helpModalClose, longTextSelectContainerEl, longTextSelectEl, practiceTitleDisplayEl];
+  const allElements = [languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, toggleLayoutBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl, freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl, freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker, copyAllBtn, clearAllBtn, insertHrBtn, charCountEl, wordCountEl, helpModal, helpModalBody, helpModalClose, longTextSelectContainerEl, longTextSelectEl, practiceTitleDisplayEl];
   if (!allElements.every(el => el)) {
       console.error("하나 이상의 필수 HTML 요소를 찾을 수 없습니다. 누락된 요소를 확인해주세요.");
       if (resultEl) resultEl.textContent = "페이지 로딩 오류.";
@@ -2235,6 +2266,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(button => {
     button.addEventListener('click', function() {
+      showShortcutTooltipTemporarily(); 
       const type = this.dataset.practiceType;
       if (type === 'freestyle') {
           startFreestyleMode();
@@ -2382,7 +2414,6 @@ document.addEventListener('DOMContentLoaded', () => {
   copyAllBtn.addEventListener('click', copyAllFreestyleText);
   clearAllBtn.addEventListener('click', clearAllFreestyleText);
   insertHrBtn.addEventListener('click', () => insertAtCursor(freestyleInputAreaEl, '\n\n---\n\n'));
-  focusModeBtn.addEventListener('click', toggleFocusMode);
   longTextSelectEl.addEventListener('change', () => {
       const lang = languageSelectEl.value;
       const mode = lang + 'Long';
@@ -2403,20 +2434,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    if (e.key === 'Escape') {
+      if (helpModal.classList.contains('visible')) {
+          hideHelpModal();
+      } else if (!document.body.classList.contains('game-mode-active')) {
+          if (toggleLayoutBtn) {
+              toggleLayoutBtn.click();
+          }
+      }
+    }
+
     if (activeElTag === 'input' || activeElTag === 'textarea') {
       if (e.altKey) {
         if (document.activeElement.id === 'freestyle-filename-input') return;
       } else {
         return;
-      }
-    }
-
-    if (e.key === 'Escape') {
-      if (document.body.classList.contains('focus-mode-active')) {
-          toggleFocusMode();
-      }
-      if (helpModal.classList.contains('visible')) {
-          hideHelpModal();
       }
     }
 
@@ -2451,6 +2483,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     changeLongText(-1);
                 } else if (currentMode !== 'freestyle') { // 단문 모드일 때
                     startPractice(currentMode, false);
+                }
+                break;
+
+            case ',':
+                if (toggleSoundBtn) {
+                    toggleSoundBtn.click();
+                }
+                break;
+
+            case '/':
+                if (soundPackSelectEl) {
+                    let currentIndex = soundPackSelectEl.selectedIndex;
+                    let nextIndex = (currentIndex + 1) % soundPackSelectEl.options.length;
+                    soundPackSelectEl.selectedIndex = nextIndex;
+                    soundPackSelectEl.dispatchEvent(new Event('change'));
+                }
+                break;
+
+            case '.':
+                if (soundPackSelectEl) {
+                    let currentIndex = soundPackSelectEl.selectedIndex;
+                    let prevIndex = (currentIndex - 1 + soundPackSelectEl.options.length) % soundPackSelectEl.options.length;
+                    soundPackSelectEl.selectedIndex = prevIndex;
+                    soundPackSelectEl.dispatchEvent(new Event('change'));
                 }
                 break;
         }
@@ -2737,18 +2793,6 @@ function insertTime() {
     const formattedHours = (hours % 12) || 12;
     const timeString = `${ampm} ${formattedHours}:${minutes}`;
     insertAtCursor(freestyleInputAreaEl, timeString + " ");
-}
-function toggleFocusMode() {
-    document.body.classList.toggle('focus-mode-active');
-    const icon = focusModeBtn.querySelector('i');
-    if (document.body.classList.contains('focus-mode-active')) {
-        icon.classList.remove('fa-expand');
-        icon.classList.add('fa-compress');
-    } else {
-        icon.classList.remove('fa-compress');
-        icon.classList.add('fa-expand');
-    }
-    freestyleInputAreaEl.focus();
 }
 function hexToRgb(hex) {
     if (!hex) return null;
