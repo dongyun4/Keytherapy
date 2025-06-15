@@ -5,19 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <meta name="naver-site-verification" content="a8106e0cbefd36468e543556b1a32d52aa11f6a6" />
   <title>Key Therapy - 온라인 타자연습 & 게임</title>
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="data:,">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D4WLJS6CMP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-D4WLJS6CMP');
-</script>
 <style>
+.no-transition * {
+  transition: none !important;
+}
 .shake-effect {
   animation: shake 0.2s;
 }
@@ -43,8 +37,6 @@
   0%, 100% { filter: brightness(1); }
   50% { filter: brightness(1.5) saturate(1.5); }
 }
-
-
 #item-effect-popup {
     position: absolute;
     top: 40%;
@@ -75,8 +67,6 @@
     background-color: var(--accent-active);
     color: #fff;
 }
-
-
     :root {
       --bg-main: #201e1c;
       --bg-container: #2a2826;
@@ -116,14 +106,12 @@
       --shadow-inset: inset 0 2px 5px rgba(0,0,0,0.25);
       --shadow-button: 0 5px 12px rgba(0,0,0,0.28);
       --shadow-button-hover: 0 7px 15px rgba(0,0,0,0.32);
-
       --font-size-typing: 1.15rem;
       --typing-letter-spacing: 0px;
       --typing-word-spacing: 0px;
       --font-size-typing-mobile: 1.05rem;
       --typing-letter-spacing-mobile: 0px;
       --typing-word-spacing-mobile: 0px;
-
       --lbb-player-color-dark: dodgerblue;
       --lbb-enemy-color-dark: tomato;
       --current-lbb-player-color: var(--lbb-player-color-dark);
@@ -132,22 +120,18 @@
       --lbb-enemy-color-light: #D0021B;
       --lbb-player-color-pink: #E91E63;
       --lbb-enemy-color-pink: #7B1FA2;
-
       --lbb-score-color: #FFFFFF;
       --lbb-player-highlight-border-dark: yellow;
       --lbb-player-highlight-border-light: #FFC107;
       --lbb-player-highlight-border-pink: #FF80AB;
       --current-lbb-player-highlight-border: var(--lbb-player-highlight-border-dark);
-
       --lbb-player-block-bg-dark: #42403c;
       --lbb-player-block-bg-light: #fffacd;
       --lbb-player-block-bg-pink: #ffe8f0;
       --current-lbb-player-block-bg: var(--lbb-player-block-bg-dark);
-
       --gb-player-health-color: #4CAF50;
       --gb-enemy-health-color: #F44336;
       --gb-health-bar-bg-color: #777;
-
     }
     .light-theme {
       --bg-main: #fdfaf6;
@@ -261,23 +245,28 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
     .main-content-wrapper {
         display: flex;
-        justify-content: center;
-        align-items: flex-start;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
         flex-grow: 1;
         padding: 25px 15px;
         width: 100%; box-sizing: border-box;
+        transition: padding-top 0.4s ease-out;
+    }
+    body.layout-collapsed .main-content-wrapper {
+        padding-top: 23vh;
     }
     body.game-mode-active .main-content-wrapper {
-        align-items: flex-start;
+        align-items: center;
         padding-top: 3vh;
     }
-
     body.focus-mode-active {
         overflow: hidden;
     }
     body.focus-mode-active .main-content-wrapper {
         padding: 0;
         align-items: stretch;
+        justify-content: stretch;
     }
     body.focus-mode-active .main-content {
         max-width: 100%;
@@ -286,6 +275,7 @@
         border: none;
         box-shadow: none;
     }
+    body.focus-mode-active .layout-toggle-container,
     body.focus-mode-active .hero-section,
     body.focus-mode-active .controls-and-stats-wrapper,
     body.focus-mode-active .footer {
@@ -295,24 +285,64 @@
         height: 100%;
         border-radius: 0;
     }
-
+    .layout-toggle-container {
+        width: 100%;
+        max-width: 1200px;
+        position: relative;
+        z-index: 10;
+        height: 0;
+    }
+    #toggleLayoutBtn {
+      position: absolute;
+      left: 0; 
+      transform: translateX(0);
+      top: 0;
+      padding: 6px 15px;
+      font-size: 0.85em;
+      border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+      cursor: pointer;
+      font-family: var(--font-ui);
+      font-weight: 500;
+      border: 1.5px solid var(--accent-secondary);
+      border-top: none;
+      background: var(--bg-container);
+      color: var(--accent-secondary);
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    #toggleLayoutBtn:hover {
+        background: var(--accent-secondary);
+        color: var(--button-text-on-accent);
+    }
+    #toggleLayoutBtn i {
+        margin-right: 7px;
+    }
+    #result,
+    #toggleLayoutBtn {
+        transition: opacity 0.4s ease-out;
+    }
+    body.layout-collapsed #result,
+    body.layout-collapsed #toggleLayoutBtn {
+        opacity: 0.35;
+    }
+    body.layout-collapsed #result:hover,
+    body.layout-collapsed #toggleLayoutBtn:hover {
+        opacity: 1;
+    }
     .main-content {
       max-width: 1200px;
       width: 100%; background-color: var(--bg-container);
       border-radius: var(--border-radius-main); box-shadow: var(--shadow-soft);
-      display: flex; flex-direction: column; overflow: hidden;
+      display: flex; flex-direction: column;
       border: 1px solid rgba(var(--accent-primary-rgb), 0.1);
       transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, border-radius 0.3s ease, max-width 0.4s ease-in-out;
     }
     .light-theme .main-content { border-color: rgba(var(--accent-rgb), 0.18); }
     .pink-theme .main-content { border-color: rgba(var(--accent-rgb), 0.25); }
     .hidden { display: none !important; }
-
+    body.game-mode-active .layout-toggle-container,
     body.game-mode-active .hero-section,
-    body.game-mode-active .controls-and-stats-wrapper .practice-mode-controls,
-    body.game-mode-active .controls-and-stats-wrapper .feature-toggles,
-    body.game-mode-active .controls-and-stats-wrapper .selection-controls,
-    body.game-mode-active .controls-and-stats-wrapper #stats,
+    body.game-mode-active .controls-and-stats-wrapper,
     body.game-mode-active .progress-bar-container,
     body.game-mode-active .typing-area-container,
     body.game-mode-active #freestyle-area-container,
@@ -328,15 +358,7 @@
     }
     #freestyle-area-container { display: none; }
     body.freestyle-mode-active #freestyle-area-container { display: flex; }
-
-
-    body.game-mode-active .controls-and-stats-wrapper { padding-bottom: 0; }
-    body.game-mode-active .settings-container { margin-bottom: 0; }
-    body.game-mode-active .main-controls { justify-content: center; gap: 15px; }
-    body.game-mode-active .sound-settings,
-    body.game-mode-active .theme-settings { display: flex !important; margin-left: 0; }
     body.game-mode-active .main-content { max-width: 1200px; min-height: auto; }
-
     body.game-mode-active #game-area-container {
         display: flex !important;
         flex-direction: column;
@@ -357,7 +379,9 @@
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       text-align: center; position: relative; border-radius: var(--border-radius-main) var(--border-radius-main) 0 0;
       box-sizing: border-box; border-bottom: 1px solid rgba(var(--accent-primary-rgb), 0.15);
-      transition: border-radius 0.3s ease;
+      max-height: 500px;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out, padding-top 0.4s ease-out, padding-bottom 0.4s ease-out, opacity 0.3s 0.1s, border-width 0.4s, border-radius 0.3s ease, visibility 0.4s;
     }
     .light-theme .hero-section {
         background-image:
@@ -387,16 +411,28 @@
     .pink-theme .hero-title { text-shadow: 0 0 12px rgba(var(--accent-rgb),0.25), 0 1px 2px rgba(100,50,60,0.15); }
     .light-theme .hero-tagline { color: var(--text-secondary); text-shadow: 0 1px 2px rgba(0,0,0,0.08); }
     .pink-theme .hero-tagline { color: var(--text-secondary); text-shadow: 0 1px 2px rgba(100,50,60,0.1); }
-    .controls-and-stats-wrapper { padding: 25px 25px 15px; }
+    .controls-and-stats-wrapper {
+        padding: 25px 25px 15px;
+        max-height: 500px;
+        overflow: hidden;
+        transition: max-height 0.4s ease-out, padding-top 0.4s ease-out, padding-bottom 0.4s ease-out, opacity 0.3s, visibility 0.4s;
+    }
+    body.layout-collapsed .hero-section,
+    body.layout-collapsed .controls-and-stats-wrapper {
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        opacity: 0;
+        border-width: 0;
+        visibility: hidden;
+    }
     .settings-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 18px; }
-
     .main-controls {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 15px;
     }
-
     .control-button-group { display: flex; flex-wrap: wrap; gap: 10px; }
     .control-button-group button {
       padding: 10px 15px; font-size: 0.9em; border-radius: var(--border-radius-small);
@@ -430,7 +466,6 @@
         border-color: var(--accent-primary); box-shadow: var(--shadow-button), inset 0 1px 1px rgba(0,0,0,0.03);
     }
     .light-theme .control-button-group button.active:hover, .pink-theme .control-button-group button.active:hover { background: var(--accent-active); border-color: var(--accent-active); }
-
     .control-button-group button.disabled,
     .selection-controls .disabled {
         opacity: 0.4;
@@ -442,7 +477,6 @@
         box-shadow: none !important;
         transform: none !important;
     }
-
     .practice-mode-controls,
     .feature-toggles {
         width: 100%;
@@ -450,7 +484,6 @@
     }
     .practice-mode-controls button { min-width: 90px; }
     .feature-toggles button { border-radius: 20px; min-width: 120px; }
-
     .selection-controls {
         display: flex;
         flex-wrap: wrap;
@@ -458,14 +491,12 @@
         gap: 15px;
         width: 100%;
     }
-
     .language-settings, .sound-settings, .theme-settings {
         display: flex;
         align-items: center;
         gap: 8px;
     }
     .select-label { font-size: 0.9em; color: var(--text-secondary); font-weight: 400; }
-
     #languageSelect, #soundPackSelect, #themeSelect,
     #gameInternalControlsBar .game-control-select {
         background-color: var(--input-bg); color: var(--input-text);
@@ -540,8 +571,6 @@
     .light-theme #lbb-timer-text { color: var(--button-text-on-accent); }
     .pink-theme #lbb-timer-bar { background-color: var(--accent-active); }
     .pink-theme #lbb-timer-text { color: #fff; }
-
-
     .typing-area-container {
         padding: 20px 25px 28px; background-color: var(--bg-typing-area);
         border-top: 1px solid rgba(var(--accent-primary-rgb), 0.1);
@@ -556,7 +585,6 @@
         margin-bottom: 0px; width: 100%;
         min-height: calc((var(--font-size-typing) * var(--line-height-typing) + 8px) * 2);
     }
-
 .typing-line {
     width: 100%; max-width: 800px;
     padding-left: 16px;
@@ -590,7 +618,6 @@
         user-select: none;
         font-weight: bold;
     }
-
     .typing-line strong,
     .typing-line .untyped-char,
     .typing-line .highlight {
@@ -602,23 +629,19 @@
        letter-spacing: inherit;
        word-spacing: inherit;
     }
-
     .typing-line strong {
         color: var(--current-line-typed-text);
     }
-
     .typing-line .untyped-char {
         opacity: 0.7;
         color: var(--text-secondary);
     }
-
     .typing-line.passed, #upcoming-lines-area .typing-line {
         color: var(--text-secondary); opacity: 0.55; font-size: calc(var(--font-size-typing) * 0.92);
         background-color: transparent !important; border: none !important; box-shadow: none !important;
     }
     .light-theme .typing-line.passed, .light-theme #upcoming-lines-area .typing-line,
     .pink-theme .typing-line.passed, .pink-theme #upcoming-lines-area .typing-line { color: var(--text-secondary); opacity: 0.7; }
-
     .typing-line.current-to-type {
         color: var(--current-line-text); background-color: var(--current-line-bg);
         border: 1px solid var(--current-line-border);
@@ -627,14 +650,12 @@
     }
     .light-theme .typing-line.current-to-type strong, .pink-theme .typing-line.current-to-type strong { color: var(--accent-darker); }
     .light-theme .typing-line.current-to-type .untyped-char, .pink-theme .typing-line.current-to-type .untyped-char { color: var(--text-secondary); opacity: 0.85; }
-
     #typing-input-field-container {
         width: 100%;
         max-width: 800px;
         margin: 2px auto 0 auto;
         position: relative;
     }
-
     #typing-input-field {
         position: absolute;
         top: 0;
@@ -651,7 +672,6 @@
         margin: 0;
         background: transparent;
     }
-
    .fake-input-field {
         background-color: var(--input-bg);
         color: var(--input-text);
@@ -664,8 +684,6 @@
         cursor: text;
         white-space: pre-wrap;
         box-sizing: border-box;
-        
-        /* ▼▼▼ [핵심 수정] 예문(.typing-line)과 폰트 속성 완벽하게 동기화 ▼▼▼ */
         font-family: var(--font-typing);
         font-size: var(--font-size-typing);
         letter-spacing: var(--typing-letter-spacing);
@@ -676,7 +694,6 @@
         font-kerning: normal;
         text-rendering: optimizeLegibility;
     }
-
     #typing-input-field:focus + .fake-input-field {
         border-color: var(--accent-active);
         box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.25);
@@ -684,27 +701,23 @@
     }
     .light-theme #typing-input-field:focus + .fake-input-field { box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.15); }
     .pink-theme #typing-input-field:focus + .fake-input-field { box-shadow: var(--input-focus-shadow), var(--shadow-inset), 0 0 0 2px rgba(var(--accent-rgb), 0.2); }
-
     .fake-input-field .placeholder {
         color: var(--text-secondary);
         opacity: 0.5;
     }
-
     #cursor {
         display: inline-block;
         width: 1px;
         height: calc(var(--font-size-typing) * 1.2);
         background-color: var(--accent-primary);
         animation: blink 1s step-end infinite;
-        vertical-align: text-bottom; /* 커서 정렬 개선 */
+        vertical-align: text-bottom;
         margin-left: -1px;
     }
-
     @keyframes blink {
       from, to { background-color: transparent; }
       50% { background-color: var(--accent-primary); }
     }
-
     .highlight {
         font-weight: 400 !important;
         color: var(--highlight-error) !important;
@@ -785,8 +798,6 @@
     #game-start-message .item-info div { margin-bottom: 4px; }
     #game-start-message .item-info span { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 3px; vertical-align: middle; border: 1px solid rgba(0,0,0,0.2); }
     #game-start-message .item-info .item-icon { font-size: 1em; vertical-align: middle; margin-right: 4px; display: inline-block; width: 12px; text-align: center;}
-
-
     #game-canvas {
         border: 1px solid var(--input-border);
         border-radius: var(--border-radius-small);
@@ -842,26 +853,24 @@
     .game-control-item .select-label { margin-right: 5px; white-space: nowrap;}
     .game-control-item .game-control-select,
     #gameToggleSoundBtn { flex-grow: 1; }
-
-#returnToPracticeBtnGame {
-  padding: 12px 24px;
-  border-radius: 999px;
-  font-family: var(--font-ui);
-  font-weight: 600;
-  font-size: 0.95em;
-  color: var(--accent-primary);
-  border: 2px solid rgba(var(--accent-rgb), 0.4);
-  background-color: transparent;
-  transition: all 0.25s ease;
-  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
-}
-
-#returnToPracticeBtnGame:hover {
-  background-color: var(--accent-primary);
-  color: var(--button-text-on-accent);
-  border-color: var(--accent-active);
-  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.25);
-}
+    #returnToPracticeBtnGame {
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 0.95em;
+      color: var(--accent-primary);
+      border: 2px solid rgba(var(--accent-rgb), 0.4);
+      background-color: transparent;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
+    }
+    #returnToPracticeBtnGame:hover {
+      background-color: var(--accent-primary);
+      color: var(--button-text-on-accent);
+      border-color: var(--accent-active);
+      box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.25);
+    }
     .game-type-button {
         padding: 8px 12px;
         font-size: 0.9em;
@@ -899,33 +908,29 @@
     .game-type-button i {
         margin-right: 6px;
     }
-
-
-#gameToggleSoundBtn {
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-family: var(--font-ui);
-  font-weight: 500;
-  font-size: 0.9em;
-  border: 1.5px solid var(--accent-secondary);
-  background-color: transparent;
-  color: var(--accent-secondary);
-  transition: all 0.25s ease;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  box-shadow: var(--shadow-button);
-}
-
-#gameToggleSoundBtn.active {
-  background-color: var(--accent-primary);
-  color: var(--button-text-on-accent);
-  border-color: var(--accent-primary);
-  font-weight: 600;
-}
-
+    #gameToggleSoundBtn {
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-family: var(--font-ui);
+      font-weight: 500;
+      font-size: 0.9em;
+      border: 1.5px solid var(--accent-secondary);
+      background-color: transparent;
+      color: var(--accent-secondary);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: var(--shadow-button);
+    }
+    #gameToggleSoundBtn.active {
+      background-color: var(--accent-primary);
+      color: var(--button-text-on-accent);
+      border-color: var(--accent-primary);
+      font-weight: 600;
+    }
     #gameToggleSoundBtn i { margin-right: 5px;}
     .game-overlay {
         position: absolute;
@@ -943,17 +948,20 @@
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0s 0.3s;
-        backdrop-filter: blur(3px);
-        -webkit-backdrop-filter: blur(3px);
+    }
+    .light-theme .game-overlay { background-color: rgba(var(--bg-container-rgb, 255, 255, 255), 0.92); }
+    .pink-theme .game-overlay { background-color: rgba(var(--bg-container-rgb, 255, 245, 248), 0.95); }
+    @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+        .game-overlay {
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
     }
     .game-overlay.visible {
         opacity: 1;
         visibility: visible;
         transition: opacity 0.3s ease, visibility 0s 0s;
     }
-    .light-theme .game-overlay { background-color: rgba(var(--bg-container-rgb, 255, 255, 255), 0.92); }
-    .pink-theme .game-overlay { background-color: rgba(var(--bg-container-rgb, 255, 245, 248), 0.95); }
-    
     .result-card {
         background-color: var(--bg-container);
         padding: 25px 35px;
@@ -994,9 +1002,7 @@
         justify-content: center;
         gap: 10px;
     }
-
     .light-theme .result-card h2, .pink-theme .result-card h2 { color: var(--accent-darker); }
-    
     .game-button {
         padding: 12px 25px; font-size: 1em;
         border-radius: var(--border-radius-small); cursor: pointer;
@@ -1029,8 +1035,6 @@
     .light-theme .game-button:hover, .pink-theme .game-button:hover {
       background: var(--accent-active); border-color: var(--accent-active);
     }
-    
-    /* ▼▼▼ [수정] 게임 도움말 버튼 CSS 추가 ▼▼▼ */
     #gameHelpBtn {
         position: absolute;
         top: 15px;
@@ -1056,21 +1060,22 @@
     .light-theme #gameHelpBtn {
         background-color: rgba(var(--bg-main-rgb, 253, 250, 246), 0.8);
     }
-    /* ▲▲▲ [수정] 게임 도움말 버튼 CSS 추가 ▲▲▲ */
-
-    /* ▼▼▼ [수정] 도움말 모달 CSS 수정 및 추가 ▼▼▼ */
     #helpModal {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0,0,0,0.6);
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 1000;
         opacity: 0; visibility: hidden;
         transition: opacity 0.3s, visibility 0s 0.3s;
+    }
+    @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+        #helpModal {
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
     }
     #helpModal.visible {
         opacity: 1; visibility: visible;
@@ -1116,25 +1121,20 @@
         font-size: 0.9em; margin-top: 15px;
     }
     .help-modal-content .item-info div { margin-bottom: 5px; }
-    /* ▲▲▲ [수정] 도움말 모달 CSS 수정 및 추가 ▲▲▲ */
-
-
+    
     @media (max-width: 768px) {
       .hero-title { font-size: 2.2em; }
       .hero-tagline { font-size: 0.9em; max-width: 90%;}
-
       body:not(.game-mode-active) .practice-mode-controls,
       body:not(.game-mode-active) .feature-toggles,
       body:not(.game-mode-active) .language-settings,
       body:not(.game-mode-active) .sound-settings,
       body:not(.game-mode-active) .theme-settings { width: 100%; justify-content: center; }
-      .feature-toggles button { min-width: 100px; }
       #languageSelect,
       #gameInternalControlsBar .game-control-select,
       #soundPackSelect, #themeSelect { min-width: 0; width: auto; flex-grow: 1; max-width: 180px; }
       .controls-and-stats-wrapper { padding: 20px 15px 10px; }
       .typing-area-container { padding: 15px 15px 20px; min-height: 280px; }
-
       .typing-line,
       .fake-input-field {
           font-size: var(--font-size-typing-mobile);
@@ -1142,7 +1142,6 @@
           word-spacing: var(--typing-word-spacing-mobile);
       }
       #cursor { height: calc(var(--font-size-typing-mobile) * 1.2); }
-
       #stats { grid-template-columns: repeat(2, 1fr); font-size: 0.88em; }
       #stats .value { font-size: 1.1em; }
       .game-ui-wrapper { padding: 10px 10px 5px; }
@@ -1161,24 +1160,19 @@
       #returnToPracticeBtnGame { flex-basis: 100%; margin-top: 10px; }
       #game-canvas { height: Math.max(window.innerHeight * 0.48, 300px); margin-bottom: 5px;}
        #lbb-timer-bar-container { height: 8px; margin: 5px auto 8px; }
-
-
     }
      @media (max-width: 480px) {
       .hero-title { font-size: 1.9em; }
       .hero-tagline { font-size: 0.85em; }
       .control-button-group button { font-size: 0.85em; padding: 8px 12px; }
-      .feature-toggles button { min-width: 90px; }
       .select-label { font-size: 0.85em; }
       #languageSelect,
       #gameInternalControlsBar .game-control-select,
       #soundPackSelect, #themeSelect { font-size: 0.85em; padding: 8px 10px; }
-      
       .typing-line,
       .fake-input-field {
           font-size: calc(var(--font-size-typing-mobile) * 0.95);
       }
-
       #stats { padding: 10px 12px; }
       #stats span { padding: 6px 4px;}
       #stats .label { font-size: 0.8em; margin-bottom: 4px; }
@@ -1198,7 +1192,6 @@
       #lbb-timer-bar-container { height: 6px; margin: 3px auto 5px; }
       #lbb-timer-text {font-size: 0.6em;}
      }
-
 .hero-section a {
   display: inline-block;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -1206,33 +1199,27 @@
   border-radius: var(--border-radius-small);
   padding: 18px;
 }
-
 .hero-section a:hover {
   transform: scale(1.03);
 }
-
 .hero-section a:hover .hero-title {
   color: var(--accent-active);
   text-shadow: 0 0 18px rgba(var(--accent-primary-rgb), 0.45), 0 2px 5px rgba(0,0,0,0.6);
 }
-
 .hero-section a:hover .hero-tagline {
   color: var(--text-primary);
   text-shadow: 0 1px 3px rgba(0,0,0,0.35);
 }
-
 .light-theme .hero-section a:hover .hero-title,
 .pink-theme .hero-section a:hover .hero-title {
   color: var(--accent-primary);
   text-shadow: 0 0 15px rgba(var(--accent-rgb),0.3), 0 1px 3px rgba(0,0,0,0.15);
 }
-
 .light-theme .hero-section a:hover .hero-tagline,
 .pink-theme .hero-section a:hover .hero-tagline {
   color: var(--text-secondary);
   text-shadow: 0 1px 3px rgba(100,50,60,0.12);
 }
-
 #keyboard-guide {
     display: none;
     margin-bottom: 25px;
@@ -1258,16 +1245,13 @@
 .keyboard-row:last-child {
     margin-bottom: 0;
 }
-
 .keys-wrapper {
     display: flex;
     width: fit-content;
 }
-
 .row-1 .keys-wrapper, .row-2 .keys-wrapper, .row-3 .keys-wrapper, .row-4 .keys-wrapper {
     transform: translateX(0);
 }
-
 .keyboard-key {
     font-family: var(--font-ui);
     font-weight: 500;
@@ -1291,7 +1275,6 @@
     flex-shrink: 0;
     min-width: 50px;
 }
-
 .keyboard-key .key-main-char {
     font-weight: 500;
     font-size: 1.1em;
@@ -1306,7 +1289,6 @@
     align-self: flex-start;
     padding-left: 2px;
 }
-
 #keyboard-guide.lang-kor .key-eng,
 #keyboard-guide.lang-eng .key-kor,
 #keyboard-guide.lang-js .key-kor,
@@ -1319,8 +1301,6 @@
 #keyboard-guide.lang-python .key-eng .key-main-char { 
     font-size: 1.2em; 
 }
-
-
 .keyboard-key.home-row-base {
     background-color: rgba(var(--accent-rgb), 0.18);
 }
@@ -1330,8 +1310,6 @@
 .pink-theme .keyboard-key.home-row-base {
     background-color: rgba(var(--accent-rgb), 0.12);
 }
-
-
 .keyboard-key.highlight-key {
     background-color: var(--accent-primary);
     color: var(--button-text-on-accent);
@@ -1344,7 +1322,6 @@
     font-weight: 700;
     opacity: 1;
 }
-
 .light-theme .keyboard-key.highlight-key,
 .pink-theme .keyboard-key.highlight-key {
     background-color: var(--accent-primary);
@@ -1355,7 +1332,6 @@
 .pink-theme .keyboard-key.highlight-key * {
     color: var(--button-text-on-accent);
 }
-
 .keyboard-key.special-key {
     font-size: 0.8em;
     font-weight: 400;
@@ -1368,7 +1344,6 @@
 .key-width-2-25x { min-width: 125px; }
 .key-width-2-5x { min-width: 135px; }
 .key-width-space { min-width: 332px; flex-grow: 1; }
-
 @media (max-width: 920px) {
     #keyboard-guide { max-width: 100%; }
     .keyboard-key { min-width: 42px; margin: 0 3px;}
@@ -1388,7 +1363,6 @@
     .key-width-2-5x { min-width: 74px; }
     .key-width-space { min-width: 184px; }
 }
-
 #freestyle-area-container {
     padding: 20px 25px 28px;
     background-color: var(--bg-typing-area);
@@ -1401,7 +1375,6 @@
     transition: background-color 0.3s ease, border-color 0.3s ease;
     position: relative;
 }
-
 #freestyle-toolbar {
     display: flex;
     flex-wrap: wrap;
@@ -1421,7 +1394,6 @@
     background-color: var(--input-border);
     margin: 0 4px;
 }
-
 .freestyle-tool-btn {
     background-color: var(--input-bg);
     color: var(--text-secondary);
@@ -1447,7 +1419,6 @@
     text-align: center;
 }
 #focusModeBtn { margin-left: auto; }
-
 #emoji-picker {
     display: none;
     position: absolute;
@@ -1477,8 +1448,6 @@
 #emoji-picker span:hover {
     background-color: var(--bg-main);
 }
-
-
 #freestyle-input-area {
     width: 100%;
     flex-grow: 1;
@@ -1514,7 +1483,6 @@
 #freestyle-input-area:focus::placeholder {
     opacity: 0.3;
 }
-
 #freestyle-stats-bar {
     display: flex;
     justify-content: flex-end;
@@ -1525,7 +1493,6 @@
     color: var(--text-secondary);
     font-family: var(--font-ui);
 }
-
 .freestyle-download-controls {
     display: flex;
     justify-content: flex-end;
@@ -1573,7 +1540,6 @@
 #download-freestyle-btn i {
     margin-right: 8px;
 }
-
 @media (max-width: 768px) {
     #freestyle-area-container {
         padding: 15px;
@@ -1604,110 +1570,110 @@
 </style>
 </head>
 <body class="">
-  <div class="main-content-wrapper"> <div class="main-content">
-    <div class="hero-section">
-        <a href="https://www.youtube.com/@KeyTherapy" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;">
-            <h1 class="hero-title">Key Therapy</h1>
-            <p class="hero-tagline">깊은 수면과 집중을 위한<br>🎧키보드 타건 ASMR🎧</p>
-        </a>
+  <div class="main-content-wrapper">
+    <div class="layout-toggle-container">
+        <button id="toggleLayoutBtn"><i class="fas fa-chevron-up"></i> 메뉴 숨기기</button>
     </div>
-  <div class="controls-and-stats-wrapper">
-    <div class="settings-container">
-        <div class="main-controls">
-            <div class="practice-mode-controls control-button-group">
-                <button data-practice-type="short"><i class="fas fa-language"></i> 단문 연습</button>
-                <button data-practice-type="long"><i class="fas fa-align-left"></i> 장문 연습</button>
-                <button data-practice-type="freestyle"><i class="fas fa-pencil-alt"></i> 글쓰기</button>
-                <button id="gameModeBtn"><i class="fas fa-gamepad"></i> 게임하기</button>
-            </div>
-
-            <div class="feature-toggles control-button-group">
-                <button id="toggleSoundBtn"><i class="fas fa-volume-mute"></i> 타건음 OFF</button>
-                <button id="toggleHighlightBtn" class="active"><i class="fas fa-highlighter"></i> 오타체크 ON</button>
-                <button id="toggleStatsBtn" class="active"><i class="fas fa-chart-line"></i> 측정 ON</button>
-                <button id="toggleKeyboardGuideBtn"><i class="far fa-keyboard"></i> 자리연습 OFF</button>
-            </div>
-
-            <div class="selection-controls">
-                <div class="language-settings">
-                    <label for="languageSelect" class="select-label" id="languageSelectLabel">언어:</label>
-                    <select id="languageSelect">
-                        <option value="kor">한글</option>
-                        <option value="eng">영어</option>
-                        <option value="js">JavaScript</option>
-                        <option value="python">Python</option>
-                    </select>
+    <div class="main-content">
+      <div class="hero-section">
+          <a href="https://www.youtube.com/@KeyTherapy" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;">
+              <h1 class="hero-title">Key Therapy</h1>
+              <p class="hero-tagline">깊은 수면과 집중을 위한<br>🎧키보드 타건 ASMR🎧</p>
+          </a>
+      </div>
+      <div class="controls-and-stats-wrapper">
+        <div class="settings-container">
+            <div class="main-controls">
+                <div class="practice-mode-controls control-button-group">
+                    <button data-practice-type="short"><i class="fas fa-language"></i> 단문 연습</button>
+                    <button data-practice-type="long"><i class="fas fa-align-left"></i> 장문 연습</button>
+                    <button data-practice-type="freestyle"><i class="fas fa-pencil-alt"></i> 글쓰기</button>
+                    <button id="gameModeBtn"><i class="fas fa-gamepad"></i> 게임하기</button>
                 </div>
-                                <div class="sound-settings" id="soundSettingsElement">
-                    <label for="soundPackSelect" class="select-label" id="soundPackLabel">타건음:</label>
-                    <select id="soundPackSelect">
-                        <!-- 이 부분은 JavaScript가 동적으로 채웁니다. -->
-                    </select>
+                <div class="feature-toggles control-button-group">
+                    <button id="toggleSoundBtn"><i class="fas fa-volume-mute"></i> 타건음 OFF</button>
+                    <button id="toggleHighlightBtn" class="active"><i class="fas fa-highlighter"></i> 오타체크 ON</button>
+                    <button id="toggleStatsBtn" class="active"><i class="fas fa-chart-line"></i> 측정 ON</button>
+                    <button id="toggleKeyboardGuideBtn"><i class="far fa-keyboard"></i> 자리연습 OFF</button>
                 </div>
-                <div class="theme-settings" id="themeSettingsElement">
-                    <label for="themeSelect" class="select-label" id="themeSelectLabel">테마:</label>
-                    <select id="themeSelect">
-                        <option value="dark">다크</option>
-                        <option value="light">아이보리</option>
-                        <option value="pink">핑크</option>
-                    </select>
+                <div class="selection-controls">
+                    <div class="language-settings">
+                        <label for="languageSelect" class="select-label" id="languageSelectLabel">언어:</label>
+                        <select id="languageSelect">
+                            <option value="kor">한글</option>
+                            <option value="eng">영어</option>
+                            <option value="js">JavaScript</option>
+                            <option value="python">Python</option>
+                        </select>
+                    </div>
+                    <div class="sound-settings" id="soundSettingsElement">
+                        <label for="soundPackSelect" class="select-label" id="soundPackLabel">타건음:</label>
+                        <select id="soundPackSelect"></select>
+                    </div>
+                    <div class="theme-settings" id="themeSettingsElement">
+                        <label for="themeSelect" class="select-label" id="themeSelectLabel">테마:</label>
+                        <select id="themeSelect">
+                            <option value="dark">다크</option>
+                            <option value="light">아이보리</option>
+                            <option value="pink">핑크</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="stats">
-        <span><span class="label">속도:</span> <span id="speedStat" class="value">0 타/분</span></span>
-        <span><span class="label">정확도:</span> <span id="accuracyStat" class="value">0%</span></span>
-        <span><span class="label">평균:</span> <span id="avgSpeedStat" class="value">0 타/분</span></span>
-        <span><span class="label">최고:</span> <span id="maxSpeedStat" class="value">0 타/분</span></span>
-    </div>
-</div>
-<div class="progress-bar-container">
-    <div class="progress-bar"></div>
-</div>
-<div class="typing-area-container">
-    <div id="keyboard-guide"></div>
-    <div id="line-display-area"> </div>
-    <div id="typing-input-field-container">
-        <input type="text" id="typing-input-field" autocomplete="off" autocapitalize="off" spellcheck="false" >
-        <div class="fake-input-field" id="fake-input-field" aria-hidden="true"></div>
-    </div>
-    <div id="upcoming-lines-area"> </div>
-</div>
-<div id="freestyle-area-container">
-    <div id="freestyle-toolbar">
-        <div class="freestyle-tool-group">
-            <button id="insertDateBtn" class="freestyle-tool-btn" title="오늘 날짜 삽입"><i class="fas fa-calendar-alt"></i></button>
-            <button id="insertTimeBtn" class="freestyle-tool-btn" title="현재 시간 삽입"><i class="fas fa-clock"></i></button>
-            <button id="emojiBtn" class="freestyle-tool-btn" title="이모티콘"><i class="far fa-smile"></i></button>
-             <div id="emoji-picker">
-                <span>😊</span><span>😂</span><span>😍</span><span>🤔</span><span>👍</span><span>❤️</span>
-                <span>🎉</span><span>✨</span><span>🔥</span><span>😭</span><span>🙏</span><span>⭐</span>
-            </div>
+        <div id="stats">
+            <span><span class="label">속도:</span> <span id="speedStat" class="value">0 타/분</span></span>
+            <span><span class="label">정확도:</span> <span id="accuracyStat" class="value">0%</span></span>
+            <span><span class="label">평균:</span> <span id="avgSpeedStat" class="value">0 타/분</span></span>
+            <span><span class="label">최고:</span> <span id="maxSpeedStat" class="value">0 타/분</span></span>
         </div>
-        <div class="toolbar-divider"></div>
-        <div class="freestyle-tool-group">
-            <button id="copyAllBtn" class="freestyle-tool-btn" title="전체 내용 복사"><i class="far fa-copy"></i></button>
-            <button id="clearAllBtn" class="freestyle-tool-btn" title="전체 삭제"><i class="fas fa-trash-alt"></i></button>
-            <button id="insertHrBtn" class="freestyle-tool-btn" title="구분선 삽입"><i class="fas fa-minus"></i></button>
-        </div>
-        <button id="focusModeBtn" class="freestyle-tool-btn" title="집중 모드 (ESC로 해제)"><i class="fas fa-expand"></i></button>
+      </div>
+      <div class="progress-bar-container">
+          <div class="progress-bar"></div>
+      </div>
+      <div class="typing-area-container">
+          <div id="keyboard-guide"></div>
+          <div id="line-display-area"> </div>
+          <div id="typing-input-field-container">
+              <input type="text" id="typing-input-field" autocomplete="off" autocapitalize="off" spellcheck="false" >
+              <div class="fake-input-field" id="fake-input-field" aria-hidden="true"></div>
+          </div>
+          <div id="upcoming-lines-area"> </div>
+      </div>
+      <div id="freestyle-area-container">
+          <div id="freestyle-toolbar">
+              <div class="freestyle-tool-group">
+                  <button id="insertDateBtn" class="freestyle-tool-btn" title="오늘 날짜 삽입"><i class="fas fa-calendar-alt"></i></button>
+                  <button id="insertTimeBtn" class="freestyle-tool-btn" title="현재 시간 삽입"><i class="fas fa-clock"></i></button>
+                  <button id="emojiBtn" class="freestyle-tool-btn" title="이모티콘"><i class="far fa-smile"></i></button>
+                   <div id="emoji-picker">
+                      <span>😊</span><span>😂</span><span>😍</span><span>🤔</span><span>👍</span><span>❤️</span>
+                      <span>🎉</span><span>✨</span><span>🔥</span><span>😭</span><span>🙏</span><span>⭐</span>
+                  </div>
+              </div>
+              <div class="toolbar-divider"></div>
+              <div class="freestyle-tool-group">
+                  <button id="copyAllBtn" class="freestyle-tool-btn" title="전체 내용 복사"><i class="far fa-copy"></i></button>
+                  <button id="clearAllBtn" class="freestyle-tool-btn" title="전체 삭제"><i class="fas fa-trash-alt"></i></button>
+                  <button id="insertHrBtn" class="freestyle-tool-btn" title="구분선 삽입"><i class="fas fa-minus"></i></button>
+              </div>
+              <button id="focusModeBtn" class="freestyle-tool-btn" title="집중 모드 (ESC로 해제)"><i class="fas fa-expand"></i></button>
+          </div>
+          <textarea id="freestyle-input-area" placeholder="오늘 하루는 어땠나요? 당신의 이야기를 자유롭게 기록해보세요..."></textarea>
+          <div id="freestyle-stats-bar">
+              <span id="charCount">0자</span>
+              <span id="wordCount">0단어</span>
+          </div>
+          <div class="freestyle-download-controls">
+              <input type="text" id="freestyle-filename-input" placeholder="파일 이름 (선택사항)">
+              <button id="download-freestyle-btn"><i class="fas fa-download"></i> 텍스트 파일로 저장</button>
+          </div>
+      </div>
+      <div id="game-area-container">
+      </div>
+      <div id="result"></div>
     </div>
-    <textarea id="freestyle-input-area" placeholder="오늘 하루는 어땠나요? 당신의 이야기를 자유롭게 기록해보세요..."></textarea>
-    <div id="freestyle-stats-bar">
-        <span id="charCount">0자</span>
-        <span id="wordCount">0단어</span>
-    </div>
-    <div class="freestyle-download-controls">
-        <input type="text" id="freestyle-filename-input" placeholder="파일 이름 (선택사항)">
-        <button id="download-freestyle-btn"><i class="fas fa-download"></i> 텍스트 파일로 저장</button>
-    </div>
-</div>
-<div id="game-area-container">
-</div>
-<div id="result"></div>
-</div>
-</div>
+  </div>
   <div class="footer"> <p>© 2024 Key Therapy. All rights reserved. <br> Designed for focused typing practice and relaxation.</p> </div>
 
   <div id="helpModal">
@@ -1746,6 +1712,7 @@ let soundEnabled = false;
 let highlightEnabled = true;
 let statsVisible = true;
 let keyboardGuideEnabled = false;
+let layoutCollapsed = false;
 
 let freestyleStatsInterval = null;
 let freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl;
@@ -1753,7 +1720,7 @@ let freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker;
 let copyAllBtn, clearAllBtn, insertHrBtn, focusModeBtn;
 let charCountEl, wordCountEl;
 
-let languageSelectEl, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl;
+let languageSelectEl, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, toggleLayoutBtn;
 let languageSelectLabelEl;
 let progressBarContainerEl, progressBarEl;
 let gameAreaContainerEl, gameCanvas, gameCtx, gameInputField, gameOverlayEl, gameStartMessageEl, itemEffectPopupEl;
@@ -1768,9 +1735,8 @@ let originalThemeParent, originalThemeNextSibling;
 let mainControlsEl;
 let toggleHighlightBtn, lineDisplayArea, typingInputField, resultEl, upcomingLinesArea, statsEl, fakeInputField;
 
-let soundPlayedForThisInput = false; // 중복 사운드 재생 방지 플래그
-// ▼▼▼ [최종 수정] 오디오 로직 전체 교체 ▼▼▼
-let currentSoundPack = '1'; // 기본 사운드팩
+let soundPlayedForThisInput = false;
+let currentSoundPack = '1';
 const soundFiles = {};
 const totalSoundPacks = 13;
 const filesPerPack = 10;
@@ -1783,11 +1749,9 @@ for (let i = 1; i <= totalSoundPacks; i++) {
     }
 }
 
-let audioPool = {}; // 마스터 오디오 풀
+let audioPool = {};
 let soundTimer = null;
 
-
-// === RAINFALL GAME MODE VARIABLES ===
 let rainfall_isGameActive = false;
 let rainfall_gameLevel = 1;
 let rainfall_currentSubLevelIndex = 0;
@@ -1829,8 +1793,6 @@ const rainfall_gameMainLevelsConfig = [
     { subLevels: [ { fallSpeed: 1.85, genRate: 1300, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.28, fastWordMultiplier: 3.3 }, { fallSpeed: 1.95, genRate: 1200, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.29, fastWordMultiplier: 3.4 }, { fallSpeed: 2.05, genRate: 1100, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.31, fastWordMultiplier: 3.5 } ] },
     { subLevels: [ { fallSpeed: 2.20, genRate: 1000, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.32, fastWordMultiplier: 3.6 }, { fallSpeed: 2.35, genRate: 900, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.34, fastWordMultiplier: 3.7 }, { fallSpeed: 2.50, genRate: 800, wordMinLen: 3, wordMaxLen: 4, fastWordChance: 0.36, fastWordMultiplier: 3.8 } ] }
 ];
-
-// === LETTER BLOCK BATTLE GAME MODE VARIABLES ===
 let lbb_isGameActive = false;
 let lbb_gameLevel = 1;
 const LBB_MAX_LEVEL = 10;
@@ -1847,28 +1809,22 @@ let lbb_blockTextFont = "bold 14px 'Noto Sans KR', sans-serif";
 let lbb_enemyActionIntervalId = null;
 const lbb_levelDelays = [3000, 2700, 2400, 2100, 1800, 1500, 1200, 900, 650, 450];
 let lbb_enemyMoveDelay = lbb_levelDelays[0];
-
 let lbb_gamePausedForOverlay = false;
 let lbb_gamePausedForEffect = false;
 let lbb_isRelocating = false;
 let lbb_swapEffect = { active: false, step: 0, totalSteps: 40, playerOld: null, enemyOld: null, animPlayerPos: null, animEnemyPos: null, effectDuration: 800 };
 let lbb_gameLoopId = null;
 let lbb_finalBattleAnimation = { isActive: false, step: 0, totalSteps: 50, playerStartPos: null, enemyStartPos: null, meetingPoint: null, playerAnimPos: null, enemyAnimPos: null };
-
 let lbb_gameStartTime = null;
 const LBB_GAME_DURATION_MS = 120000;
-
 const LBB_BLOCK_BORDER_COLOR_VAR = '--input-border';
 const LBB_BROKEN_BLOCK_COLOR_VAR = '--bg-typing-area';
-
 let lbb_playerNoPlayableBlocksTimerId = null;
 let lbb_enemyNoPlayableBlocksTimerId = null;
 const LBB_NO_PLAYABLE_RELOCATE_DELAY = 5000;
 let lbb_relocationCountdown = 0;
 let lbb_relocationCountdownIntervalId = null;
 const LBB_MIN_RELOCATION_DISTANCE_FROM_OPPONENT = 5;
-
-
 const LBB_BLOCK_EFFECT_TYPES = {
     YELLOW: { type: 'yellow', color: 'gold', score: 2, effect: null, icon: '⭐' },
     RED: { type: 'red', color: 'tomato', score: 3, effect: null, icon: '🔥' },
@@ -1877,11 +1833,9 @@ const LBB_BLOCK_EFFECT_TYPES = {
     NORMAL: { type: 'normal', color: null, score: 1, effect: null, icon: null }
 };
 const LBB_ITEM_SPAWN_PROBABILITY = 0.20;
-
 let lbb_isEnemyFrozen = false;
 let lbb_enemyFreezeTimeoutId = null;
 let lbb_enemyOriginalStartPos = { r: LBB_BOARD_ROWS - 1, c: LBB_BOARD_COLS - 1};
-// === TYPING BATTLE GAME MODE VARIABLES ===
 let gb_isGameActive = false;
 let gb_gameLoopId = null;
 let gb_currentLevel = 1;
@@ -1900,8 +1854,6 @@ let gb_gameStartTime = null;
 const GB_GAME_DURATION_MS = 120000;
 let gb_enemyHitEffectTimer = 0;
 const GB_ENEMY_HIT_EFFECT_DURATION = 200;
-
-
 const gb_levelConfigs = [
     { level: 1,  enemyHealth: 50,  attackInterval: 5500, attackSpeed: 0.7, wordMinLen: 2, wordMaxLen: 3 },
     { level: 2,  enemyHealth: 70,  attackInterval: 5000, attackSpeed: 0.8, wordMinLen: 2, wordMaxLen: 3 },
@@ -1914,8 +1866,6 @@ const gb_levelConfigs = [
     { level: 9,  enemyHealth: 360, attackInterval: 2000, attackSpeed: 2.0, wordMinLen: 3, wordMaxLen: 4 },
     { level: 10, enemyHealth: 420, attackInterval: 1800, attackSpeed: 2.3, wordMinLen: 3, wordMaxLen: 4 }
 ];
-// --- END TYPING BATTLE ---
-
 const gameWordsKor = [
     "안녕", "하늘", "바다", "구름", "사랑", "행복", "미소", "바람", "햇살", "나무", "꽃잎", "별빛", "마음", "시간", "친구", "소망", "기억", "이유", "결심", "순간", "여름", "가을", "겨울", "봄날",
     "이야기", "노래", "꿈속", "추억", "선물", "감사", "희망", "용기", "믿음", "약속", "미래", "현실", "세계", "우주", "자연", "동물", "식물", "인형", "장난감", "그림",
@@ -1939,12 +1889,6 @@ const gameWordsKor = [
     "수학", "역사", "지리", "사회", "경제", "정치", "법률", "윤리", "철학", "종교", "언어", "문학", "교육", "심리", "의학", "공학", "기술", "정보", "통신", "우주인", "방울뱀", "사막여우",
     "가로등", "가위질", "가정교사", "가족사진", "가지각색", "갈림길", "갈림돌", "감사패", "감정표현", "강강술래", "개발자", "거북선", "건강검진", "건널목", "검정고시", "결혼기념", "경기장", "경찰관", "경호원", "계란후라이", "고속도로", "고인돌", "골목대장", "공기놀이", "공중전화", "공휴일", "과일가게", "과학상자", "관광버스", "광화문", "구급상자", "국회의원", "군고구마", "그림일기", "극장", "기념품", "기상캐스터", "기차여행", "긴급상황", "김장독", "까마귀", "까치밥", "꽃다발", "꿀벌", "꿈나라", "끝말잇기", "나무늘보", "나비넥타이", "낙하산", "낚시꾼", "난센스퀴즈", "날개", "남대문", "낭떠러지", "내비게이션", "냉장고", "네잎클로버", "노랫소리", "노트북", "놀이공원", "농구공", "눈사람", "다리미", "다람쥐", "다이아몬드", "단풍잎", "달리기", "닭꼬치", "담벼락", "당근", "대통령", "대한민국", "도서관", "독수리", "돈가스", "돌고래", "동물원", "두부", "두통약", "드라이기", "등산화", "디지털카메라", "라면", "라디오", "로봇", "리모컨", "마라톤", "마법사", "만두", "만리장성"
 ].map(word => word.trim());
-
-function getRandom(arr) {
-  if (!arr || arr.length === 0) return null;
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
 const sentencePool = { kor: ["따뜻한 햇살이 창가에 가득 내린다.", "작은 행복이 모여 큰 기쁨이 된다.", "오늘 하루도 수고했어요 당신 최고.", "좋아하는 노래를 들으며 힐링해요.", "푸른 하늘을 보며 마음껏 숨 쉬세요.", "예쁜 꽃 한 송이가 미소를 선물해요.", "가끔은 모든 걸 잊고 푹 쉬어요.", "좋은 친구는 삶의 큰 보물 같아요.", "새로운 시작은 언제나 설레는 법이죠.", "오늘 저녁은 맛있는 음식을 드세요.", "고요한 밤 별들이 속삭이는 소리.", "작은 친절이 세상을 따뜻하게 해요.", "주말엔 늦잠을 자며 여유를 즐겨요.", "새로운 길을 걷는 건 멋진 도전이야.", "마음속 작은 빛을 따라 나아가세요.", "오늘 하루 감사한 일을 떠올려봐요.", "사랑하는 사람에게 마음을 전하세요.", "힘든 날엔 잠시 하늘을 올려다봐요.", "달콤한 디저트는 기분 전환에 최고죠.", "아침 공기가 상쾌하게 느껴지네요.", "밤하늘의 별들은 저마다의 이야기를 간직하고 있다.", "바람결에 실려 온 꽃 향기가 마음을 간지럽힌다.", "익숙한 골목길에서 문득 새로운 풍경을 발견한다.", "가을비 내리는 날엔 따뜻한 차 한 잔이 위로가 된다.", "오래된 책갈피에서 잊고 지냈던 추억을 만났다.", "마음의 창을 열면 세상은 더 아름답게 보인다.", "작은 연못에 비친 달 그림자가 고요히 흔들린다.", "새벽녘 풀잎에 맺힌 이슬처럼 영롱한 순간들.", "구름 한 점 없는 하늘은 끝없는 가능성을 닮았다.", "모든 끝은 새로운 시작을 의미하기도 한다.", "삶이라는 여행길에서 가장 소중한 것은 경험이다.", "마음이 가는 대로 발길이 이끄는 대로.", "한 줄기 빛이 어둠을 가르듯 희망은 절망 속에서 피어난다.", "소리 없이 내리는 눈처럼 조용한 위로가 필요한 날.", "따뜻한 눈빛 하나가 얼어붙은 마음을 녹인다.", "시간의 강물은 쉼 없이 흐르지만 추억은 그 자리에 남는다.", "나뭇잎 사이로 부서지는 햇살이 보석처럼 반짝인다.", "낯선 곳에서의 우연한 만남은 예기치 못한 선물이다.", "가끔은 길을 잃어야 새로운 길을 찾을 수 있다.", "진정한 아름다움은 꾸밈없는 자연스러움에 있다.", "오늘 걷지 않으면 내일은 뛰어야 한다.", "백지장도 맞들면 낫다.", "뜻이 있는 곳에 길이 있다.", "시작이 반이다.", "하늘은 스스로 돕는 자를 돕는다.", "인내는 쓰지만 그 열매는 달다.", "구슬이 서 말이라도 꿰어야 보배다.", "세 살 버릇 여든까지 간다.", "젊어서 고생은 사서도 한다.", "콩 심은 데 콩 나고 팥 심은 데 팥 난다.", "키읔 티읕 피읖 히읗 거센소리 연습.", "쌍기역 쌍디귿 쌍비읍 쌍시옷 쌍지읒 된소리 연습.", "맑고 높은 가을 하늘 아래 코스모스 한들한들.", "반짝이는 별빛 아래 소중한 추억을 그려본다.", "찹쌀떡 맵쌀떡 온갖 떡들이 가득하다.", "깎아지른 절벽 아래 펼쳐진 푸른 바다.", "닭볶음탕과 칡넝쿨은 최고의 궁합이다.", "읊조리는 시 한 수가 마음을 촉촉하게 적신다.", "빠른 갈색 여우가 게으른 개 위로 뛰어넘는다.",  "외계생명체 존재 여부는 아직 밝혀지지 않았다.", "안녕하세요 만나서 반갑습니다 좋은 하루 되세요.", "대한민국 서울특별시 아름다운 우리 강산 푸르게 푸르게."], eng: ["The weather is lovely today perfect for a nice walk.", "Start your morning fresh with a warm cup of coffee.", "Listening to your favorite music always lifts the spirits.", "A small smile can brighten up someone's entire day.", "Sometimes it's nice to just gaze at the clear blue sky.", "A good book can be a wonderful and loyal companion.", "You did a great job today have a restful evening.", "Learning something new is always an exciting endeavor.", "Enjoy a delicious dinner together with your family.", "How about sending a warm greeting to an old friend?", "All that glitters is not gold.", "To be or not to be that is the question.", "The woods are lovely dark and deep.", "Hope is the thing with feathers that perches in the soul.", "It was the best of times it was the worst of times.", "The only thing we have to fear is fear itself.", "Stay hungry. Stay foolish.", "I have a dream that one day this nation will rise up.", "Two roads diverged in a wood and I I took the one less traveled by.", "The journey of a thousand miles begins with a single step.", "Be the change that you wish to see in the world.", "Not all those who wander are lost.", "That which does not kill us makes us stronger.", "Ask not what your country can do for you ask what you can do for your country.", "The unexamined life is not worth living.", "Where there is love there is life.", "The quick brown fox jumps over the lazy dog.", "Pack my box with five dozen liquor jugs.", "Sphinx of black quartz judge my vow.", "Amazingly few discotheques provide jukeboxes.", "How vexingly quick daft zebras jump.", "Bright vixens jump dozy fowl quack.", "Quick wafting zephyrs vex bold Jim.", "Crazy Fredrick bought many very exquisite opal jewels.", "Hello how are you today?", "Thank you very much for your help.", "Pleased to meet you.", "Practice makes perfect.", "Have a wonderful day ahead.", "Good morning sunshine.", "Keep up the good work.", "See you later alligator.", "What a beautiful surprise.", "Actions speak louder than words."], korLong: [ "낡은 다락방 창문으로 스며드는 오후의 햇살은 먼지 쌓인 시간 위로 부드럽게 내려앉았다. 공기 중에는 오래된 책 냄새와 희미한 나무 향기가 뒤섞여, 마치 잊혀진 이야기들이 낮은 목소리로 속삭이는 듯했다. 빛줄기를 따라 부유하는 작은 먼지들은 금빛 가루처럼 반짝였고, 그 너머로 보이는 바깥세상은 한 폭의 수채화처럼 아련했다. 나는 삐걱이는 나무 계단을 밟고 올라와, 창가 낡은 흔들의자에 가만히 몸을 기댔다. 창밖으로 보이는 느티나무는 수백 년의 세월을 말없이 지켜온 듯, 바람이 불 때마다 잎사귀를 흔들며 낮은 노래를 불렀다. 그 풍경 속에서 나는 어린 시절의 기억들을 하나씩 꺼내보았다. 할머니가 들려주시던 옛날이야기, 친구들과 뛰놀던 골목길의 저녁노을, 처음으로 느껴본 설렘과 아픔. 모든 것이 희미한 필름처럼 머릿속을 스쳐 지나갔지만, 그 감정만큼은 여전히 선명하게 남아 가슴 한구석을 아릿하게 만들었다. 시간은 모든 것을 변화시키지만, 기억 속에 새겨진 온기는 영원히 변치 않는다는 것을, 나는 그 순간 깨달았다. 어쩌면 우리는 모두 마음속에 자신만의 작은 다락방을 가지고 살아가는지도 모른다. 힘들고 지칠 때마다 찾아가 위로받을 수 있는, 소중한 추억들이 잠들어 있는 비밀스러운 공간을.", "깊은 밤, 창밖으로 무수한 별들이 보석처럼 쏟아질 듯 반짝였다. 나는 따뜻한 차 한 잔을 들고 창가에 서서, 끝없이 펼쳐진 밤하늘의 신비를 가만히 응시했다. 어둠이 짙을수록 별빛은 더욱 선명해졌고, 그 고요한 빛줄기는 내 마음속 깊은 곳까지 스며드는 듯했다. 저 멀리 이름 모를 별 하나가 유난히 밝게 빛나고 있었다. 마치 길 잃은 나그네에게 방향을 알려주는 등대처럼, 혹은 간절한 소망을 담아 하늘로 띄워 보낸 작은 등불처럼. 나는 그 별을 보며 어린 시절 순수했던 꿈들을 떠올렸다. 세상을 탐험하는 용감한 모험가, 사람들에게 감동을 주는 예술가, 밤하늘의 비밀을 푸는 천문학자. 현실의 벽에 부딪혀 하나둘씩 접어두었던 그 꿈들이, 별빛 아래에서 다시금 희미하게 살아나는 것을 느꼈다. 어쩌면 꿈이란, 완전히 사라지는 것이 아니라 잠시 우리 마음속 밤하늘에 숨어 반짝일 기회를 기다리는 별과 같은 것일지도 모른다. 중요한 것은 그 별빛을 잊지 않고, 언젠가 다시 그 빛을 따라 나아갈 용기를 내는 것이리라. 나는 마지막 한 모금의 차를 마시며, 내 마음속 별들을 향해 조용히 다짐했다. 아직 끝나지 않은 나의 이야기를 계속 써 내려가겠다고.", "이른 새벽, 안개가 자욱한 호숫가를 홀로 걸었다. 물안개는 마치 살아있는 생명체처럼 부드럽게 수면 위를 감돌았고, 멀리 보이는 산자락은 희미한 먹빛 그림자처럼 느껴졌다. 세상의 모든 소음이 잠든 듯, 오직 내 발걸음 소리와 이따금 들려오는 물새 소리만이 적막을 깨뜨렸다. 차가운 새벽 공기가 코끝을 스치자 정신이 맑아지는 기분이었다. 나는 호숫가 작은 벤치에 앉아, 서서히 밝아오는 동쪽 하늘을 바라보았다. 안개 너머로 붉은 기운이 조금씩 번지기 시작하더니, 이윽고 장엄한 해가 그 모습을 드러냈다. 떠오르는 태양은 밤새 호수를 뒤덮었던 안개를 부드럽게 걷어내었고, 그 아래 숨겨져 있던 맑고 투명한 호수의 민낯이 햇살 아래 눈부시게 반짝였다. 그 순간, 나는 마치 새로운 세상이 열리는 듯한 경이로움을 느꼈다. 어둠과 혼돈 속에서도 희망은 언제나 그렇게 떠오르는 것이라고, 자연은 말없이 가르쳐주는 듯했다. 삶이 때로 짙은 안개 속에 갇힌 것처럼 느껴질 때도 있겠지만, 그 안개 너머에는 분명 찬란한 아침이 기다리고 있음을, 그리고 그 아침을 맞이하기 위해서는 묵묵히 자신의 길을 걸어가야 함을, 나는 새벽 호숫가에서 깨달았다. 해가 완전히 떠오르자, 호수는 금빛으로 물들었고, 나는 새로운 하루를 시작할 용기를 얻어 다시 발걸음을 옮겼다.", "오래된 골목길 모퉁이를 돌자, 담벼락에 기대어 자라는 작은 담쟁이덩굴이 눈에 들어왔다. 거친 시멘트 벽을 가느다란 줄기로 힘겹게 부여잡고, 초록빛 잎사귀들을 햇살을 향해 힘껏 펼치고 있는 모습이었다. 그 작은 생명체의 강인함 앞에서 나는 잠시 발걸음을 멈추었다. 척박한 환경 속에서도 포기하지 않고, 자신의 자리를 묵묵히 지키며 생명의 푸르름을 피워내는 그 모습이 경이롭게 느껴졌다. 어쩌면 우리의 삶도 저 담쟁이덩굴과 크게 다르지 않을지도 모른다. 때로는 거칠고 힘겨운 현실이라는 벽에 부딪히고, 예상치 못한 시련의 바람에 흔들리기도 하지만, 그럼에도 불구하고 우리는 어떻게든 살아남아 자신의 이야기를 써 내려간다. 마음속 깊은 곳에 간직한 작은 희망의 씨앗을 붙들고, 한 뼘이라도 더 햇살을 향해 나아가려 애쓰면서 말이다. 담쟁이덩굴은 화려한 꽃을 피우거나 달콤한 열매를 맺지는 않지만, 그 자체로 충분히 아름답고 의미 있는 존재였다. 그것은 우리에게 말없이 가르쳐주고 있었다. 삶의 가치는 결과에만 있는 것이 아니라, 그 과정을 묵묵히 견뎌내고 자신의 자리에서 최선을 다하는 그 모든 순간에 깃들어 있다는 것을. 나는 작은 담쟁이덩굴에게서 큰 위로와 용기를 얻고, 다시금 내 삶의 담벼락을 향해 한 걸음 내디뎠다.", "늦은 오후, 텅 빈 기차역 플랫폼에 홀로 앉아 곧 떠나갈 기차를 기다렸다. 하늘에는 회색빛 구름이 낮게 드리워져 있었고, 바람은 스산하게 옷깃을 파고들었다. 어디론가 떠나고 싶은 마음과 어딘가에 머무르고 싶은 마음이 교차하는, 그런 묘한 감상에 젖어들었다. 잠시 후, 저 멀리서 기차가 육중한 소리를 내며 플랫폼으로 서서히 들어왔다. 낡았지만 정감 가는 기차의 창문 너머로, 각자의 사연을 안고 떠나는 사람들의 모습이 어렴풋이 보였다. 설렘과 아쉬움, 기대와 불안이 뒤섞인 그들의 표정 속에서 나는 내 삶의 여러 여정들을 떠올렸다. 새로운 시작을 향해 떠났던 길, 아쉬운 이별을 뒤로하고 돌아섰던 길, 목적지도 모른 채 그저 발길 닿는 대로 걸었던 길까지. 그 모든 길 위에서 나는 수많은 사람들을 만났고, 다양한 감정들을 경험했으며, 조금씩 성장해왔다. 기차가 멈춰 서고 문이 열리자, 나는 가방을 고쳐 메고 자리에서 일어섰다. 이번 여정의 끝에는 무엇이 기다리고 있을지 알 수 없지만, 그것 또한 내 삶의 한 페이지를 채워줄 소중한 경험이 될 것이라 믿었다. 기차는 다시 한번 육중한 기적 소리를 내며 천천히 움직이기 시작했고, 나는 창밖으로 멀어져 가는 익숙한 풍경들을 바라보며, 새로운 이야기가 시작될 미지의 공간을 향해 나아갔다.", "작은 도서관 구석, 햇살이 비껴드는 창가 자리에 앉아 오래된 소설책을 펼쳤다. 종이에서는 세월의 흔적이 느껴지는 희미한 냄새가 풍겨왔고, 손때 묻은 페이지들은 수많은 독자들의 이야기를 품고 있는 듯했다. 나는 한 자 한 자 천천히 글자를 따라 읽어 내려가며, 작가가 만들어낸 세계 속으로 깊이 빠져들었다. 그곳에는 내가 미처 경험하지 못한 삶과 감정들이 있었고, 현실에서는 만날 수 없는 매력적인 인물들이 살아가고 있었다. 때로는 주인공의 기쁨에 함께 웃고, 때로는 그의 슬픔에 함께 눈물 흘리며, 나는 책 속의 이야기와 온전히 하나가 되었다. 책을 읽는다는 것은 어쩌면, 시간과 공간을 초월하여 다른 누군가의 삶을 잠시 빌려 살아보는 것과 같은 경험일지도 모른다. 그 경험을 통해 우리는 세상을 바라보는 새로운 시각을 얻고, 인간과 삶에 대한 깊은 이해에 다가서게 된다. 한 권의 책은 때로 백 명의 스승보다 더 큰 가르침을 주기도 하고, 그 어떤 위로보다 더 따뜻한 안식을 선물하기도 한다. 나는 마지막 책장을 덮으며, 마음속에 잔잔하게 퍼지는 깊은 여운을 느꼈다. 책 속에서 만난 이야기와 인물들은 한동안 내 곁을 떠나지 않고, 내 삶의 중요한 일부가 되어 함께할 것 같았다. 그것이 바로 책이 가진 위대한 힘이리라.", "어스름이 내리는 저녁, 나는 강변을 따라 천천히 걷고 있었다. 강물은 해 질 녘의 붉은 노을을 온통 담아내며 고요히 흘러갔고, 강 건너편 도시의 불빛들은 하나둘씩 반짝이기 시작했다. 바람은 잔잔했고, 공기는 상쾌했다. 나는 강둑에 잠시 멈춰 서서, 아름다운 저녁 풍경을 가만히 바라보았다. 매일 반복되는 일상 속에서 우리는 종종 이런 순간의 아름다움을 잊고 살아간다. 하지만 잠시 멈춰 서서 주변을 둘러보면, 세상은 우리가 생각하는 것보다 훨씬 더 다채롭고 경이로운 모습으로 가득 차 있다는 것을 깨닫게 된다. 저녁노을이 만들어내는 황홀한 빛의 향연, 밤하늘을 수놓는 무수한 별들의 반짝임, 이름 모를 풀꽃의 소박한 아름다움까지. 이런 작은 것들 속에 삶의 진정한 기쁨과 위안이 숨겨져 있는지도 모른다. 중요한 것은 그것을 발견할 수 있는 열린 마음과 세상을 바라보는 따뜻한 시선이다. 어둠이 완전히 내려앉고 도시의 불빛이 더욱 선명해지자, 나는 다시 발걸음을 옮겼다. 짧은 산책이었지만, 내 마음은 어느새 평온함과 감사함으로 가득 차 있었다. 일상의 소중함을 다시 한번 깨닫게 해준 아름다운 저녁이었다.", "오랜만에 찾은 고향 집 마당에는 할머니가 심어두신 봉숭아 꽃이 곱게 피어 있었다. 어릴 적, 할머니 손을 잡고 봉숭아 꽃잎을 빻아 손톱에 물들이던 기억이 아련하게 떠올랐다. 빨갛게 물든 작은 손톱을 보며 세상을 다 가진 듯 기뻐했던 그 시절. 그때는 모든 것이 단순했고, 작은 것 하나에도 큰 행복을 느낄 수 있었다. 세월이 흘러 어른이 된 지금, 나는 많은 것을 가졌지만 그때만큼 순수하게 행복하다고 말할 수 있을까. 문득 그런 생각이 들었다. 어쩌면 우리는 성장하면서 세상을 너무 복잡하게 바라보고, 진정한 행복의 의미를 잊어버리는 것은 아닐까. 봉숭아 꽃은 예전과 다름없이 여전히 그 자리에서 소박한 아름다움을 뽐내고 있었다. 그것은 나에게 말없이 가르쳐주는 듯했다. 행복은 멀리 있는 것이 아니라, 바로 우리 마음속에, 그리고 우리가 지나쳐온 소중한 추억들 속에 있다는 것을. 나는 마당 한쪽에 쪼그리고 앉아, 바람에 흔들리는 봉숭아 꽃잎을 한참 동안 바라보았다. 그리고 어린 시절의 나에게, 그리고 지금의 나에게 조용히 속삭였다. 괜찮아, 지금 이 순간을 소중히 여기면 돼. 그것이 바로 행복이야.", "비 내리는 오후, 나는 창가에 앉아 하염없이 창밖을 바라보았다. 굵은 빗방울들이 유리창을 세차게 두드렸고, 세상은 온통 잿빛 물감으로 덧칠한 듯 흐릿했다. 이런 날이면 괜스레 마음이 차분해지고, 평소에는 떠오르지 않던 생각들이 꼬리에 꼬리를 물고 이어지곤 한다. 빗소리는 마치 세상의 모든 소음을 잠재우고, 오직 내면의 목소리에만 귀 기울이도록 만드는 마법과 같았다. 나는 잊고 지냈던 사람들을 떠올리고, 지나간 시간들을 반추하며, 미래의 불확실함에 대해 조용히 고민했다. 어쩌면 비는, 우리에게 잠시 멈춰 서서 자신을 돌아볼 시간을 선물하는 것일지도 모른다. 빠르게 변화하는 세상 속에서 미처 돌보지 못했던 마음의 상처들을 어루만지고, 잊고 지냈던 소중한 가치들을 다시 한번 되새길 수 있도록 말이다. 빗줄기가 조금씩 가늘어지더니, 이윽고 먹구름 사이로 희미한 햇살 한 줄기가 비쳐들었다. 비 온 뒤의 세상은 이전보다 더욱 깨끗하고 싱그러워 보였다. 내 마음도 한바탕 비를 맞고 난 뒤처럼, 한결 가볍고 맑아진 것을 느꼈다. 비는 모든 것을 쓸어내리고, 또다시 새로운 시작을 준비하게 만드는 자연의 경이로운 순환이었다.", "늦가을, 낙엽이 수북이 쌓인 오솔길을 혼자 걸었다. 발걸음을 옮길 때마다 바스락거리는 낙엽 소리가 정겹게 들려왔고, 코끝에는 쌉싸름하면서도 향긋한 가을 냄새가 스며들었다. 하늘은 더없이 높고 푸르렀으며, 나뭇가지 사이로 부서지는 햇살은 따스했다. 나는 천천히 걸으며, 화려했던 여름을 보내고 이제 겨울을 맞이할 준비를 하는 자연의 모습을 가만히 관찰했다. 울긋불긋 아름다운 색으로 물들었던 단풍잎들은 이제 마지막 빛을 발하며 땅으로 떨어져 내렸고, 앙상한 가지만 남은 나무들은 다가올 추위를 묵묵히 견뎌낼 준비를 하는 듯했다. 그 모습에서 나는 삶의 순환과 자연의 섭리를 느꼈다. 모든 것에는 시작과 끝이 있고, 성장의 시간이 있으면 쇠퇴의 시간도 있으며, 화려한 순간이 있으면 고요한 침묵의 순간도 있다는 것을. 그리고 그 모든 과정은 그 자체로 의미 있고 아름답다는 것을. 낙엽은 끝이 아니라 새로운 시작을 위한 준비였다. 땅으로 돌아가 거름이 되어, 다음 해 봄에 새로운 생명이 움틀 수 있도록 자신을 내어주는 것이다. 나는 깊어가는 가을의 정취 속에서, 삶의 유한함과 그 속에서 우리가 가져야 할 겸손함, 그리고 모든 것을 받아들이고 순응하는 지혜에 대해 생각했다. 낙엽 밟는 소리가 배경음악처럼 깔리는 그 길 위에서, 나는 자연이 주는 깊은 위안과 가르침을 얻었다.", "바람이 세차게 불던 어느 겨울날, 나는 바닷가 작은 등대를 찾아갔다. 하얀 포말을 일으키며 거칠게 밀려오는 파도와 매서운 바닷바람 속에서도 등대는 조금의 흔들림 없이 굳건히 서 있었다. 그 모습은 마치 세상의 온갖 풍파를 견뎌내며 자신의 자리를 지키는 고독한 수호자 같았다. 어둠이 내리면 등대는 어김없이 밝은 빛을 발하여, 밤바다를 항해하는 배들에게 길을 안내할 것이다. 그 빛은 단순한 불빛이 아니라, 험난한 바다 위에서 길을 잃은 이들에게 희망과 안도를 주는 생명의 빛이리라. 나는 문득 우리 삶에도 저런 등대와 같은 존재가 필요하다는 생각을 했다. 때로는 거친 파도처럼 힘겨운 시련이 몰아치고, 짙은 안개처럼 방향을 잃고 방황할 때, 우리를 올바른 길로 인도해주고 마음의 등불이 되어줄 그런 존재 말이다. 그것은 때로는 현명한 조언을 해주는 스승일 수도 있고, 변함없는 사랑을 주는 가족일 수도 있으며, 혹은 마음속 깊이 간직한 신념이나 가치관일 수도 있다. 중요한 것은 자신만의 등대를 가지고, 그 빛을 따라 꿋꿋이 나아가는 것이다. 세찬 바람 속에서도 묵묵히 빛을 밝히는 등대를 바라보며, 나는 내 삶의 등대는 무엇인지 다시 한번 생각해보았다.", "어린 시절, 동네 어귀에는 커다란 플라타너스 나무가 한 그루 서 있었다. 여름이면 무성한 잎으로 시원한 그늘을 만들어주었고, 가을이면 황금빛 낙엽을 아름답게 흩날렸으며, 겨울이면 앙상한 가지에 눈꽃을 피워 장관을 이루었다. 그 나무 아래는 언제나 아이들의 웃음소리가 끊이지 않는 놀이터였고, 동네 어른들의 정겨운 이야기가 오가는 쉼터였다. 나는 그 나무 아래에서 친구들과 술래잡기를 하고, 딱지치기를 하고, 때로는 가만히 앉아 하늘을 바라보며 엉뚱한 상상에 빠지기도 했다. 플라타너스 나무는 나의 유년 시절 모든 기억을 말없이 지켜봐 준 든든한 친구이자 보호자였다. 세월이 흘러 나는 어른이 되었고, 그 동네를 떠나온 지도 오래되었다. 하지만 문득 그 플라타너스 나무가 그리워질 때가 있다. 모든 것이 빠르게 변해가는 이 세상 속에서, 변함없이 그 자리를 지키고 있을 것 같은 그 나무의 존재가 주는 안정감 때문일까. 어쩌면 그 나무는 나에게 단순한 나무 이상의 의미였는지도 모른다. 그것은 돌아갈 수 없는 아름다운 시절에 대한 그리움이자, 순수했던 마음을 다시 찾고 싶은 작은 소망의 상징이었을 것이다. 언젠가 다시 그 나무 아래 서면, 나는 잠시나마 모든 것을 잊고 어린 시절의 나로 돌아갈 수 있을 것만 같다.", "나는 가끔 오래된 엘피판을 꺼내 턴테이블 위에 올려놓는다. 지지직거리는 작은 소음과 함께 바늘이 레코드의 검은 골을 따라 천천히 움직이기 시작하면, 곧이어 따뜻하고 풍부한 아날로그 사운드가 공간을 가득 채운다. 디지털 음원에서는 느낄 수 없는 그 특유의 깊이와 온기는 마치 시간 여행을 하는 듯한 묘한 감흥을 불러일으킨다. 엘피판 한 장에는 단순히 음악만 담겨 있는 것이 아니다. 그 음악이 유행했던 시대의 공기, 그 음악을 함께 들었던 사람들과의 추억, 그리고 그 음악을 들으며 느꼈던 나의 젊은 날의 감정들이 고스란히 담겨 있다. 그래서 엘피를 듣는 것은 단순한 음악 감상을 넘어, 지나간 시간과의 조우이자 잊혀진 기억과의 재회이기도 하다. 때로는 빛바랜 앨범 재킷을 어루만지며 그 시절을 추억하고, 때로는 가사를 음미하며 그 의미를 되새기기도 한다. 세상은 점점 더 빠르고 편리한 것을 추구하지만, 나는 가끔 이렇게 느리고 불편한 아날로그의 세계에 머무르는 것을 좋아한다. 그 속에는 디지털이 결코 흉내 낼 수 없는 인간적인 따뜻함과 시간의 깊이가 존재하기 때문이다. 엘피판이 돌아가는 것을 가만히 바라보며, 나는 오늘도 잊혀진 시간 속으로 짧은 여행을 떠난다.", "작은 시골 간이역, 해 질 녘 플랫폼에는 기차를 기다리는 사람들보다 먼저 와 자리를 잡은 저녁노을이 더 짙었다. 나는 낡은 나무 의자에 앉아, 서쪽 하늘을 붉게 물들이며 서서히 스러져가는 노을의 마지막 장관을 바라보았다. 세상의 모든 색을 다 끌어모은 듯한 그 찬란한 빛의 향연 앞에서, 인간의 언어는 한없이 초라하게 느껴졌다. 노을은 낮과 밤의 경계에서 피어나는 짧지만 강렬한 예술과 같았다. 뜨거웠던 하루의 열정을 모두 불태우고, 이제 고요한 휴식의 시간으로 접어들기 위한 마지막 인사처럼. 나는 그 아름다움에 매료되어 한동안 아무 말도 할 수 없었다. 잠시 후, 노을이 완전히 자취를 감추고 어둠이 내려앉자, 하늘에는 하나둘씩 별들이 모습을 드러내기 시작했다. 그것은 마치 화려한 무대가 끝나고 다음 막이 오르기 전의 고요한 설렘과도 같았다. 삶에도 저런 노을과 같은 순간들이 있을 것이다. 모든 것을 쏟아부은 뒤 맞이하는 찬란한 마무리, 그리고 새로운 시작을 예비하는 고요한 성찰의 시간. 우리는 그 순간들을 통해 지나온 길을 돌아보고, 앞으로 나아갈 힘을 얻는다. 나는 깊어가는 밤의 적막 속에서, 오늘 하루 나에게 주어진 시간과 경험들에 감사하며, 내일 또다시 떠오를 새로운 태양을 기다렸다.", "나는 오래된 만년필로 일기를 쓰는 것을 좋아한다. 사각거리는 펜촉이 종이 위를 스치는 소리, 손끝으로 전해져 오는 잉크의 미세한 흐름, 그리고 한 자 한 자 정성스럽게 써 내려가는 글자들이 만들어내는 그 모든 과정이 나에게는 작은 의식과도 같다. 디지털 시대에 손으로 글을 쓴다는 것은 어쩌면 비효율적이고 번거로운 일일지도 모른다. 하지만 나는 그 느림과 불편함 속에서 오히려 더 깊은 사색과 진정한 자기표현의 즐거움을 발견한다. 컴퓨터 자판으로는 미처 담아낼 수 없는 생각의 결들과 감정의 미묘한 떨림들이, 만년필을 통해 종이 위에 고스란히 새겨지는 것을 느낀다. 일기장에는 그날 있었던 소소한 사건들뿐만 아니라, 마음속 깊은 곳에 숨겨두었던 생각들, 누구에게도 말하지 못했던 비밀들, 그리고 미래에 대한 막연한 기대와 불안까지 모든 것이 담긴다. 그것은 오롯이 나 자신과 마주하는 시간이며, 내 삶의 발자취를 기록하는 소중한 작업이다. 훗날 이 일기장을 다시 펼쳐보았을 때, 나는 지금 이 순간의 나를 만나고, 그 시절의 고민과 기쁨을 공유하며, 내가 얼마나 성장했는지를 돌아볼 수 있을 것이다. 만년필의 잉크가 마르듯 시간은 흘러가겠지만, 종이 위에 남겨진 나의 이야기는 영원히 그 자리에 남아 빛날 것이다.", "어느 늦봄, 나는 이름 모를 작은 산사의 툇마루에 앉아 있었다. 산사는 깊은 산속에 고즈넉이 자리 잡아, 세상의 모든 번뇌와 소음으로부터 벗어난 듯 평화로웠다. 처마 끝에 매달린 풍경은 바람이 불 때마다 맑고 청아한 소리를 냈고, 그 소리는 내 마음속까지 잔잔하게 울려 퍼졌다. 마당에는 수령을 알 수 없는 오래된 매화나무 한 그루가 마지막 꽃잎을 떨구고 있었고, 그 아래에는 작은 새 한 마리가 날아와 지저귀고 있었다. 나는 눈을 감고 가만히 그 모든 소리와 풍경을 마음에 담았다. 자연의 소리는 그 어떤 음악보다 아름다웠고, 산사의 고요함은 그 어떤 명상보다 깊은 평화를 가져다주었다. 복잡했던 머릿속은 어느새 텅 비고, 무거웠던 마음은 한결 가벼워졌다. 우리는 종종 너무 많은 것을 보고 듣고 생각하며 살아간다. 그래서 정작 중요한 내면의 소리에는 귀 기울이지 못하고, 진정한 휴식의 의미를 잊어버리곤 한다. 하지만 이렇게 잠시 모든 것을 내려놓고 자연 속에 머무르다 보면, 비로소 우리가 얼마나 작은 존재인지, 그리고 우리가 진정으로 추구해야 할 가치는 무엇인지 깨닫게 된다. 풍경 소리가 다시 한번 맑게 울리자, 나는 깊은 숨을 내쉬며 자리에서 일어섰다. 짧은 시간이었지만, 산사가 준 깊은 평화와 깨달음은 오랫동안 내 마음속에 남아 있을 것 같았다.", "나는 가끔 오래된 흑백사진을 들여다본다. 빛바랜 사진 속에는 지금은 만날 수 없는 사람들의 미소와 다시 돌아갈 수 없는 풍경들이 담겨 있다. 컬러사진이 현실을 있는 그대로 생생하게 재현한다면, 흑백사진은 현실 너머의 어떤 아련한 감성과 시간의 깊이를 느끼게 해주는 묘한 매력이 있다. 색이 사라진 세상은 오히려 더 많은 것을 상상하게 만들고, 인물의 표정과 배경의 분위기에 더욱 집중하게 만든다. 사진 속 인물들은 어떤 이야기를 간직하고 있을까, 그들은 어떤 꿈을 꾸고 어떤 사랑을 했을까. 나는 그런 상상을 하며 사진 속 시간으로 잠시 여행을 떠나곤 한다. 흑백사진은 단순한 기록이 아니라, 한 시대의 초상이자 누군가의 삶의 증거이다. 그 속에는 기쁨과 슬픔, 만남과 이별, 희망과 절망 등 인간이 겪을 수 있는 모든 감정들이 응축되어 있다. 그래서 흑백사진을 보고 있으면, 때로는 알 수 없는 그리움에 가슴이 아련해지기도 하고, 때로는 삶의 숙연함에 고개가 숙여지기도 한다. 사진 한 장이 건네는 수많은 이야기들. 나는 그 이야기들을 통해 과거와 현재를 잇고, 사라진 시간 속에서 변치 않는 가치를 발견한다. 흑백사진은 나에게 침묵으로 더 많은 것을 말해주는 오래된 친구와 같다.", "한겨울 밤, 창밖에는 하얀 눈이 소리 없이 내리고 있었다. 나는 따뜻한 코코아 한 잔을 들고 창가에 서서, 밤새 세상을 하얗게 뒤덮을 것 같은 눈송이들을 하염없이 바라보았다. 가로등 불빛 아래 춤추듯 흩날리는 눈송이들은 마치 동화 속 한 장면처럼 비현실적으로 아름다웠다. 눈은 세상의 모든 더러움과 소음을 하얗게 덮어버리고, 고요하고 순수한 평화를 가져다주는 것 같았다. 나는 어린아이처럼 창문에 입김을 불어 작은 그림을 그리기도 하고, 손을 내밀어 차가운 눈송이를 직접 만져보기도 했다. 눈이 내리는 풍경은 언제나 나를 설레게 하고, 잊고 지냈던 동심을 일깨워준다. 어쩌면 눈은, 하늘이 우리에게 보내는 하얀 편지일지도 모른다. 잠시 모든 것을 잊고 순수한 기쁨을 느껴보라고, 그리고 새로운 시작을 준비하라고 속삭이는 아름다운 편지. 나는 코코아의 마지막 한 모금을 마시며, 내일 아침 눈부시게 펼쳐질 하얀 세상을 상상했다. 발자국 하나 없는 깨끗한 눈밭 위를 처음으로 걷는 기분은 얼마나 상쾌할까. 눈이 그치고 아침이 오면, 나는 가장 먼저 하얀 세상 속으로 달려 나가, 겨울이 주는 특별한 선물을 만끽할 것이다.", "나는 가끔 오래된 시장을 찾는 것을 좋아한다. 대형마트의 깔끔함과 편리함도 좋지만, 시장에는 그곳에서만 느낄 수 있는 특별한 활기와 정겨움이 있다. 좌판 가득 싱싱한 채소와 과일을 진열해놓고 구성진 목소리로 손님을 부르는 상인들, 흥정을 하며 덤을 얻어가는 손님들의 웃음소리, 맛있는 냄새를 풍기며 발길을 유혹하는 길거리 음식들까지. 시장은 살아있는 사람들의 이야기로 가득한 공간이다. 나는 천천히 시장 골목을 걸으며, 다양한 물건들을 구경하고 사람들의 살아가는 모습을 관찰한다. 그 속에서 나는 잊고 지냈던 인간적인 따뜻함과 소박한 삶의 아름다움을 발견한다. 시장 상인들의 거친 손마디에는 정직한 땀의 가치가 담겨 있고, 그들의 구릿빛 얼굴에는 세월의 흔적과 삶의 지혜가 새겨져 있다. 그들은 단순히 물건을 파는 것이 아니라, 자신의 삶을 나누고 사람들과 정을 주고받는다. 그래서 시장에서의 거래는 단순한 매매를 넘어, 따뜻한 인간관계의 한 형태가 된다. 나는 시장 한구석 작은 분식집에 앉아 뜨끈한 어묵 국물을 마시며, 시장의 활기찬 풍경을 다시 한번 눈에 담았다. 이곳에는 여전히 변치 않는 사람 사는 냄새가 있었고, 그것이 나를 위로하고 새로운 힘을 주는 것 같았다."], engLong: [ "The old attic window, streaked with the dust of ages, allowed the afternoon sun to filter in, casting a soft, golden glow over forgotten treasures. The air hung heavy with the scent of aged paper and faint wood, a nostalgic perfume that seemed to whisper tales of bygone eras. Tiny dust motes danced in the invading sunbeams, sparkling like miniature galaxies, and the world outside, viewed through the grimy pane, appeared as a distant, dreamlike watercolor. I had creaked my way up the wooden stairs, settling into the worn comfort of a rocking chair by the window. Below, an ancient oak stood sentinel, its leaves rustling a quiet, timeless song with every breeze, a silent observer of centuries unfolding. In that tranquil tableau, I found myself sifting through childhood memories: a grandmother's gentle voice narrating fairy tales, the vibrant hues of a sunset over a familiar alleyway, the first stirrings of a young heart's joy and sorrow. Time, in its relentless march, may alter all things, yet the warmth embedded in memory, I realized, remains an immutable sanctuary. Perhaps we all carry a small, secret attic within our souls, a place of solace filled with cherished recollections, a haven to retreat to when the world outside grows too loud.", "Under the velvet cloak of a moonless night, countless stars were scattered across the celestial canvas like diamonds on black silk. With a warm cup of herbal tea cradled in my hands, I stood by the window, lost in the profound mystery of the infinite expanse. The deeper the darkness, the more intensely the starlight seemed to pierce through, its serene luminescence seeping into the very core of my being. One distant, unnamed star shone with a particular brilliance, a beacon for a lost traveler, perhaps, or a tiny lantern carrying a whispered wish to the heavens. Gazing at it, I was transported back to the untainted dreams of youth: a daring explorer charting unknown territories, an artist evoking profound emotions, an astronomer unravelling cosmic secrets. Those aspirations, once so vivid but gradually set aside against the unyielding walls of reality, flickered faintly back to life under the starlight. Maybe dreams never truly vanish; perhaps they merely slumber in the night sky of our hearts, awaiting the courage to be pursued once more. As I sipped the last of my tea, I made a quiet promise to those stars, and to myself: to keep writing the unfinished chapters of my own story, guided by their distant, unwavering light.", "The scent of pine needles and damp earth filled the air as she walked deeper into the ancient woods. Sunlight struggled to penetrate the thick canopy, casting an ethereal, green-tinged light on the forest floor. Moss grew like velvet on the trunks and branches of old trees, and delicate ferns uncurled their fronds in the damp places where shadows lingered. She paused by a gnarled oak, its bark a tapestry of a thousand storms weathered and a thousand suns embraced. It seemed to whisper secrets of the ages, of creatures seen and unseen, of seasons turning in an endless, graceful dance. Here, away from the clamor of human invention, she felt a profound connection to something primal, something enduring. The forest was not merely a collection of trees, but a living, breathing entity, a sanctuary for the soul seeking quietude and a reminder of the intricate beauty of the natural world. Each fallen leaf crunched underfoot was a note in an ancient song, a testament to the cycle of life, death, and renewal, a humbling perspective in the grand theatre of existence.", "In the heart of the bustling city, there existed a small, almost forgotten courtyard, a tiny oasis of green amidst the towering steel and glass. Ivy climbed the old brick walls, and a single, resilient cherry tree bloomed defiantly each spring, its blossoms a soft pink rebellion against the urban grey. Few knew of this place, tucked away behind a narrow alley, and those who did cherished it as a secret haven. Here, the city's roar subsided to a distant hum, and one could hear the cooing of pigeons or the rustle of leaves in the gentle breeze. It was a place for quiet contemplation, for stolen moments of peace in a world that seldom seemed to pause. Sometimes, an artist would sit on the worn stone bench, sketching the play of light and shadow, or a writer would fill a notebook with fleeting thoughts and observations, inspired by the unexpected tranquility found in such an urban pocket of serenity. This courtyard was a reminder that even in the most concrete of jungles, nature, and a moment's peace, could always find a way to endure.", "The old lighthouse stood sentinel on the jagged cliff, its stoic form a familiar silhouette against the turbulent, grey sky. For generations, its beam had cut through the darkest storms, a steadfast promise of guidance to sailors navigating the treacherous coastal waters. The keeper, a man with a weather-beaten face and eyes that held the wisdom of the sea, lived a solitary life, his only companions the cry of gulls and the ceaseless rhythm of the waves. He knew every mood of the ocean, from its gentle summer caress to its furious winter rage. His days were marked by routine: tending the great lamp, polishing the massive Fresnel lens, and scanning the horizon for any sign of a vessel in distress. It was a life of responsibility, of quiet dedication to a purpose larger than himself. The lighthouse was more than just a structure of stone and light; it was a symbol of hope, a beacon of resilience against the raw, untamed power of nature, and a testament to the enduring human spirit that sought to illuminate the darkness and bring wanderers safely home, a silent guardian watching over the restless sea.", "A gentle rain began to fall as evening descended, a soft, persistent patter against the windowpanes. Inside, the warmth of the hearth cast a flickering, amber glow across the room, a stark contrast to the cool, damp air outside. She sat curled in an old armchair, a half-read book resting in her lap, a pensive expression on her face. The rain was a soothing melody, a lullaby that seemed to wash away the day's accumulated anxieties and quiet the relentless chatter of the mind. It was on nights like these, cocooned in the quiet solitude of her home, that her thoughts roamed free, unburdened by the demands of the world. She pondered the intricate tapestry of human connection, the fragile threads that bound one soul to another, the unexpected joys and inevitable sorrows that colored the human experience. The rhythmic drumming of the rain provided a comforting backdrop to her reflections, a reminder of nature's constant, gentle presence, and the quiet beauty to be found in a simple, rainy evening spent in peaceful contemplation.", "The desert stretched out before him, an endless expanse of undulating dunes under a sky so vast it seemed to swallow the horizon. The sun beat down relentlessly, and the air shimmered with an almost palpable heat. Yet, amidst this harsh and unforgiving landscape, there was a stark, austere beauty that captivated the soul. The way the wind sculpted the sand into ever-changing, sinuous patterns, the resilience of the sparse, thorny vegetation clinging stubbornly to life, the profound, almost deafening silence broken only by the whisper of the breeze – it all spoke of a raw, primal power and an ancient, unyielding spirit. He had come here seeking solitude, a place where the distractions and superficialities of the modern world would fade into insignificance, allowing him to confront the unadorned truths of his own existence. In the vast emptiness, he found not desolation, but a strange kind of freedom, a clarity that only such an elemental landscape could provide. The desert, in its starkness, mirrored the landscape of his own inner world, challenging and ultimately, offering a path to understanding."],
 
     js: [
@@ -2340,7 +2284,10 @@ def setup_database(db_name: str):
     conn.close()`
     ]
 };
-
+function getRandom(arr) {
+  if (!arr || arr.length === 0) return null;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 function initializeAudioPoolForPack(packKey) {
     if (!soundFiles[packKey] || soundFiles[packKey].length === 0) return;
     audioPool[packKey] = [];
@@ -2350,49 +2297,39 @@ function initializeAudioPoolForPack(packKey) {
         audioPool[packKey].push(audio);
     });
 }
-
-// 모든 사운드 팩에 대해 초기화를 실행하는 함수
 function initializeAudioPool() {
     for (const packKey in soundFiles) {
         initializeAudioPoolForPack(packKey);
     }
 }
-
-// ★★★★★ 드르륵 현상 해결을 위한 최종 재생 함수 ★★★★★
 function playTypingSound() {
-    // 1. 기존에 예약된 사운드 재생이 있다면 취소
     clearTimeout(soundTimer);
-
-    // 2. 아주 짧은 시간(1ms) 후에 실제 소리 재생 로직을 딱 한 번만 실행하도록 예약
     soundTimer = setTimeout(() => {
         if (!soundEnabled || !currentSoundPack) return;
-
         const masterAudioPool = audioPool[currentSoundPack];
         if (!masterAudioPool || masterAudioPool.length === 0) {
             initializeAudioPoolForPack(currentSoundPack);
             return;
         }
-
         const masterAudio = getRandom(masterAudioPool);
         if (!masterAudio) return;
-
         const audioToPlay = masterAudio.cloneNode();
-        audioToPlay.play().catch(e => { /* 무시 */ });
-    }, 1); // 1ms의 지연 시간으로 여러 호출을 병합
+        audioToPlay.play().catch(e => {});
+    }, 1);
 }
-
 function updateDropdown(level) {
     const gameLevelSelect = document.getElementById('gameLevelSelectInBar');
     if (gameLevelSelect) {
         gameLevelSelect.value = level;
     }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('no-transition');
   languageSelectEl = document.getElementById('languageSelect');
   languageSelectLabelEl = document.getElementById('languageSelectLabel');
   toggleSoundBtn = document.getElementById('toggleSoundBtn');
   toggleHighlightBtn = document.getElementById('toggleHighlightBtn');
+  toggleLayoutBtn = document.getElementById('toggleLayoutBtn');
   lineDisplayArea = document.getElementById('line-display-area');
   typingInputField = document.getElementById('typing-input-field');
   fakeInputField = document.getElementById('fake-input-field');
@@ -2429,61 +2366,54 @@ document.addEventListener('DOMContentLoaded', () => {
   soundSettingsEl = document.getElementById('soundSettingsElement');
   themeSettingsEl = document.getElementById('themeSettingsElement');
   mainControlsEl = document.querySelector('.main-controls');
-
-  const allElements = [languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl, freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl, freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker, copyAllBtn, clearAllBtn, insertHrBtn, focusModeBtn, charCountEl, wordCountEl, helpModal, helpModalBody, helpModalClose];
+  const allElements = [languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, toggleLayoutBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl, freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl, freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker, copyAllBtn, clearAllBtn, insertHrBtn, focusModeBtn, charCountEl, wordCountEl, helpModal, helpModalBody, helpModalClose];
   if (!allElements.every(el => el)) {
       console.error("하나 이상의 필수 HTML 요소를 찾을 수 없습니다. 누락된 요소를 확인해주세요.");
       if (resultEl) resultEl.textContent = "페이지 로딩 오류.";
       return;
   }
-
   originalSoundParent = soundSettingsEl.parentNode;
   originalSoundNextSibling = soundSettingsEl.nextSibling;
   originalThemeParent = themeSettingsEl.parentNode;
   originalThemeNextSibling = themeSettingsEl.nextSibling;
-
-  soundPackSelectEl.innerHTML = ''; // 기존 옵션 초기화
+  soundPackSelectEl.innerHTML = '';
   for (let i = 1; i <= totalSoundPacks; i++) {
     const option = document.createElement('option');
     option.value = String(i);
     option.textContent = String(i);
     soundPackSelectEl.appendChild(option);
   }
-
   soundPackSelectEl.value = currentSoundPack;
   const savedTheme = localStorage.getItem('typingTheme') || 'dark';
   applyTheme(savedTheme);
   themeSelectEl.value = savedTheme;
-
   document.getElementById('soundPackLabel').textContent = '타건음:';
   document.getElementById('themeSelectLabel').textContent = '테마:';
-
-
   initializeAudioPool();
   buildKeyboard();
-
+  if (toggleLayoutBtn) {
+    toggleLayoutBtn.addEventListener('click', () => {
+        layoutCollapsed = !layoutCollapsed;
+        updateLayout();
+        localStorage.setItem('layoutCollapsed', layoutCollapsed);
+    });
+  }
   document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(button => {
     button.addEventListener('click', function() {
       const type = this.dataset.practiceType;
-      
       if (type === 'freestyle') {
           startFreestyleMode();
           return;
       }
-      
       const lang = languageSelectEl.value;
       const isLong = (type === 'long');
-      
       const mode = isLong ? `${lang}Long` : lang;
-      
       startPractice(mode, true);
     });
   });
-
   if (gameModeBtnEl) {
     gameModeBtnEl.addEventListener('click', () => activateGameMode('rainfall'));
   }
-
   if (gameAreaContainerEl) {
     gameAreaContainerEl.addEventListener('click', function(e) {
       if (e.target.closest('#gameHelpBtn')) {
@@ -2493,24 +2423,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-
   const restartPractice = () => {
     const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
     if (!activePracticeBtn || currentMode === 'freestyle') return;
-    
     const type = activePracticeBtn.dataset.practiceType;
     const lang = languageSelectEl.value;
     const isLong = (type === 'long');
-
     const mode = isLong ? `${lang}Long` : lang;
     startPractice(mode, true);
   };
-  
   languageSelectEl.addEventListener('change', restartPractice);
-
   toggleSoundBtn.classList.toggle('active', soundEnabled);
   toggleSoundBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> 타건음 ON' : '<i class="fas fa-volume-mute"></i> 타건음 OFF';
-
   if (statsVisible) {
     toggleStatsBtn.classList.add('active');
     toggleStatsBtn.innerHTML = '<i class="fas fa-chart-line"></i> 측정 ON';
@@ -2520,17 +2444,13 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleStatsBtn.innerHTML = '<i class="fas fa-eye-slash"></i> 측정 OFF';
     statsEl.classList.add('hidden');
   }
-
   typingInputField.addEventListener('input', (e) => {
-    // 새로운 입력이 시작될 때마다 플래그를 리셋
     soundPlayedForThisInput = false;
     handleInputEvent(e);
   });
-
   if (fakeInputField && typingInputField) {
       fakeInputField.addEventListener('click', () => typingInputField.focus());
   }
-
   document.body.addEventListener('click', function(e) {
     if (emojiPicker.classList.contains('visible') && !emojiPicker.contains(e.target) && !emojiBtn.contains(e.target)) {
         emojiPicker.classList.remove('visible');
@@ -2538,9 +2458,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (helpModal.classList.contains('visible') && !e.target.closest('.help-modal-content')) {
         hideHelpModal();
     }
-
     const isInteractiveElement = e.target.closest('button, a, select, input, textarea, #emoji-picker span, .help-modal-content');
-
     if (!isInteractiveElement) {
       if (document.body.classList.contains('game-mode-active')) {
         if (gameInputField && !gameInputField.disabled) gameInputField.focus();
@@ -2551,7 +2469,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
-
   toggleSoundBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
     toggleSoundBtn.classList.toggle('active', soundEnabled);
@@ -2561,7 +2478,6 @@ document.addEventListener('DOMContentLoaded', () => {
         gameToggleSoundBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> 타건음 ON' : '<i class="fas fa-volume-mute"></i> 타건음 OFF';
     }
   });
-
   toggleHighlightBtn.addEventListener('click', () => {
     highlightEnabled = !highlightEnabled;
     toggleHighlightBtn.classList.toggle('active', highlightEnabled);
@@ -2571,37 +2487,28 @@ document.addEventListener('DOMContentLoaded', () => {
         handleHighlightUpdate(currentLineEl, typingInputField.value, linesToPractice[currentDisplayLineIndex]);
     }
   });
-
-  // ▼▼▼ [최종 수정] 사운드팩 변경 리스너 ▼▼▼
   soundPackSelectEl.addEventListener('change', (event) => {
     currentSoundPack = event.target.value;
-    // 사운드팩을 바꾸면, 해당 팩의 마스터 오디오 풀을 새로 생성합니다.
     initializeAudioPoolForPack(currentSoundPack);
   });
-  // ▲▲▲ [최종 수정] 사운드팩 변경 리스너 완료 ▲▲▲
-
   themeSelectEl.addEventListener('change', (event) => {
     const selectedTheme = event.target.value;
     applyTheme(selectedTheme);
     localStorage.setItem('typingTheme', selectedTheme);
   });
-
   toggleStatsBtn.addEventListener('click', () => {
     statsVisible = !statsVisible;
     toggleStatsBtn.classList.toggle('active', statsVisible);
     toggleStatsBtn.innerHTML = statsVisible ? '<i class="fas fa-chart-line"></i> 측정 ON' : '<i class="fas fa-eye-slash"></i> 측정 OFF';
     statsEl.classList.toggle('hidden', !statsVisible);
   });
-
   toggleKeyboardGuideBtn.addEventListener('click', () => {
     keyboardGuideEnabled = !keyboardGuideEnabled;
     toggleKeyboardGuideBtn.classList.toggle('active', keyboardGuideEnabled);
     toggleKeyboardGuideBtn.innerHTML = keyboardGuideEnabled ? '<i class="fas fa-keyboard"></i> 자리연습 ON' : '<i class="far fa-keyboard"></i> 자리연습 OFF';
-
     if (keyboardGuideEl) {
         keyboardGuideEl.classList.toggle('visible', keyboardGuideEnabled);
     }
-
     if (keyboardGuideEnabled) {
         updateKeyboardDisplay();
         updateKeyboardHighlight();
@@ -2609,11 +2516,8 @@ document.addEventListener('DOMContentLoaded', () => {
         clearKeyboardHighlight();
     }
   });
-
   helpModalClose.addEventListener('click', hideHelpModal);
-
   freestyleInputAreaEl.addEventListener('input', () => {
-    // 플래그 리셋
     soundPlayedForThisInput = false; 
     playTypingSound();
     if (!startTime) {
@@ -2621,9 +2525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateFreestyleStats();
   });
-  
   freestyleInputAreaEl.addEventListener('keydown', (e) => {
-    // 플래그 리셋
     soundPlayedForThisInput = false;
     if (e.key === 'Backspace' || e.key === 'Enter' || e.key === ' ') {
         playTypingSound();
@@ -2656,56 +2558,51 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
-
+  const savedLayoutState = localStorage.getItem('layoutCollapsed') === 'true';
+  if (savedLayoutState) {
+      layoutCollapsed = true;
+      updateLayout();
+  }
   startPractice('kor', true);
+  setTimeout(() => {
+    document.body.classList.remove('no-transition');
+  }, 100);
 });
-
 function cleanupActiveModes() {
     document.body.classList.remove('game-mode-active', 'freestyle-mode-active', 'focus-mode-active');
-
     if (rainfall_gameLoopId) cancelAnimationFrame(rainfall_gameLoopId);
     if (lbb_gameLoopId) cancelAnimationFrame(lbb_gameLoopId);
     if (gb_gameLoopId) cancelAnimationFrame(gb_gameLoopId);
     if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId);
     if (lbb_enemyActionIntervalId) clearInterval(lbb_enemyActionIntervalId);
-    if (gb_enemyAttackIntervalId) clearInterval(gb_enemyAttackIntervalId);
+    if (gb_enemyAttackIntervalId) cancelAnimationFrame(gb_enemyAttackIntervalId);
     if (freestyleStatsInterval) clearInterval(freestyleStatsInterval);
-
     rainfall_isGameActive = false;
     lbb_isGameActive = false;
     gb_isGameActive = false;
     freestyleStatsInterval = null;
     startTime = null;
-
     if(typingInputField) typingInputField.removeEventListener('keydown', handleKeyDownEvent);
     if(gameInputField) gameInputField.removeEventListener('keydown', handleKeyDownEvent);
-
     enablePracticeControls();
 }
-
 function disableFreestyleControls() {
     toggleHighlightBtn.classList.add('disabled');
     toggleKeyboardGuideBtn.classList.add('disabled');
     languageSelectEl.closest('.language-settings').classList.add('disabled');
 }
-
 function enablePracticeControls() {
     toggleHighlightBtn.classList.remove('disabled');
     toggleKeyboardGuideBtn.classList.remove('disabled');
     languageSelectEl.closest('.language-settings').classList.remove('disabled');
 }
-
-// ▼▼▼ 이 함수로 완전히 교체하세요 ▼▼▼
-async function startPractice(mode, resetSessionStats = false) { // 1. async 키워드 추가
+function startPractice(mode, resetSessionStats = false) {
     cleanupActiveModes();
-
     currentMode = mode;
     currentGameType = '';
-
     document.querySelectorAll('.practice-mode-controls button').forEach(btn => {
         let type = btn.dataset.practiceType;
         let isActive = false;
-        
         if (type === 'short' && !mode.endsWith('Long')) {
             isActive = true;
         } else if (type === 'long' && mode.endsWith('Long')) {
@@ -2713,56 +2610,35 @@ async function startPractice(mode, resetSessionStats = false) { // 1. async 키�
         }
         btn.classList.toggle('active', isActive);
     });
-
     if (gameModeBtnEl) gameModeBtnEl.classList.remove('active');
-
     if(resultEl) resultEl.textContent = '새로운 문제를 불러옵니다...';
-
     if (typingInputField) {
         typingInputField.disabled = false;
         typingInputField.value = '';
         typingInputField.addEventListener('keydown', handleKeyDownEvent);
     }
-
     if (statsVisible && statsEl) statsEl.classList.remove('hidden');
-
     if (resetSessionStats) {
         overallMaxSpeed = 0; overallAvgSpeedLog = [];
         sessionTotalValidChars = 0; sessionTotalCorrectChars = 0; sessionTotalMistypedChars = 0;
         lastArticleSpeed = 0;
     }
-
     currentLineStartTime = null;
     currentArticleCorrectChars = 0;
     currentDisplayLineIndex = 0;
-
-    // 2. 문장을 가져오는 부분을 백엔드 API 호출로 변경
-    try {
-        // Vercel 환경에서는 이 상대 경로가 자동으로 API를 가리킵니다.
-        const response = await fetch(`/api/getSentences?lang=${mode.replace('Long', '')}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        let textToPractice = data.sentence;
-
+    const source = sentencePool[mode];
+    if (!source || source.length === 0) {
+        linesToPractice = ["선택한 언어 또는 모드에 대한 예문이 없습니다."];
+    } else {
+        const textToPractice = getRandom(source);
         linesToPractice = splitTextIntoLines(textToPractice, currentMode, window.innerWidth);
-        if (linesToPractice.length === 0) {
-            linesToPractice.push("예문 처리 중 오류가 발생했습니다.");
-        }
-    } catch (error) {
-        console.error("문장을 가져오는 데 실패했습니다:", error);
-        linesToPractice = ["서버에서 문장을 가져오는데 실패했습니다."]; // 에러 발생 시 대체 문장
     }
-    
     disassembledLine = Hangul.disassemble(linesToPractice[currentDisplayLineIndex] || '');
-    
     if (currentMode.endsWith('Long') && linesToPractice.length > 1) {
         if(progressBarContainerEl) progressBarContainerEl.style.display = 'block';
     } else {
         if(progressBarContainerEl) progressBarContainerEl.style.display = 'none';
     }
-
     renderTypingLayout();
     if(resultEl) resultEl.textContent = '타자를 시작하세요!';
     updateStatsDisplay(resetSessionStats);
@@ -2770,40 +2646,29 @@ async function startPractice(mode, resetSessionStats = false) { // 1. async 키�
     updateFakeInput('', true);
     updateKeyboardDisplay();
     updateKeyboardHighlight();
-
     setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
 }
-// ▲▲▲ 여기까지 교체 완료 ▲▲▲
-
-
 function startFreestyleMode() {
     cleanupActiveModes();
     document.body.classList.add('freestyle-mode-active');
     currentMode = 'freestyle';
-
     document.querySelectorAll('.practice-mode-controls button').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.practiceType === 'freestyle');
     });
     if (gameModeBtnEl) gameModeBtnEl.classList.remove('active');
-
     disableFreestyleControls();
-
     if (statsVisible) {
         statsVisible = false;
         toggleStatsBtn.classList.remove('active');
         toggleStatsBtn.innerHTML = '<i class="fas fa-eye-slash"></i> 측정 OFF';
         statsEl.classList.add('hidden');
     }
-
     if (toggleHighlightBtn.classList.contains('active')) toggleHighlightBtn.classList.remove('active');
     if (toggleKeyboardGuideBtn.classList.contains('active')) toggleKeyboardGuideBtn.classList.remove('active');
     highlightEnabled = false;
     keyboardGuideEnabled = false;
     if (keyboardGuideEl) keyboardGuideEl.classList.remove('visible');
-
-
     if (resultEl) resultEl.textContent = '자유롭게 글을 작성하고 타건을 즐겨보세요.';
-
     startTime = null;
     overallMaxSpeed = 0;
     overallAvgSpeedLog = [];
@@ -2812,19 +2677,15 @@ function startFreestyleMode() {
     sessionTotalMistypedChars = 0;
     lastArticleSpeed = 0;
     updateStatsDisplay(true);
-
     if (document.getElementById('accuracyStat')) document.getElementById('accuracyStat').innerHTML = '<span class="value">—</span>';
     if (document.getElementById('avgSpeedStat')) document.getElementById('avgSpeedStat').innerHTML = '<span class="value">—</span>';
     if (document.getElementById('maxSpeedStat')) document.getElementById('maxSpeedStat').innerHTML = '<span class="value">—</span>';
-
     freestyleInputAreaEl.value = '';
     freestyleInputAreaEl.focus();
-
     updateFreestyleStats();
     if(freestyleStatsInterval) clearInterval(freestyleStatsInterval);
     freestyleStatsInterval = setInterval(updateFreestyleStats, 500);
 }
-
 function updateFreestyleStats() {
     if (currentMode !== 'freestyle') {
         if(freestyleStatsInterval) clearInterval(freestyleStatsInterval);
@@ -2833,10 +2694,8 @@ function updateFreestyleStats() {
     const text = freestyleInputAreaEl.value;
     const charLength = text.length;
     const wordLength = text.trim().split(/\s+/).filter(Boolean).length;
-
     charCountEl.textContent = `${charLength}자`;
     wordCountEl.textContent = `${wordLength}단어`;
-
     if (startTime) {
         const elapsedMinutes = (Date.now() - startTime) / 60000;
         if (elapsedMinutes > 0) {
@@ -2853,18 +2712,15 @@ function handleFreestyleDownload() {
         alert('저장할 내용이 없습니다.');
         return;
     }
-
     let filename = freestyleFilenameInputEl.value.trim();
     if (filename === '') {
         const now = new Date();
         const timestamp = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}`;
         filename = `keytherapy_${timestamp}`;
     }
-
     if (!filename.toLowerCase().endsWith('.txt')) {
         filename += '.txt';
     }
-
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -2875,7 +2731,6 @@ function handleFreestyleDownload() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
-
 function insertAtCursor(myField, myValue) {
     if (document.selection) {
         myField.focus();
@@ -2896,7 +2751,6 @@ function insertAtCursor(myField, myValue) {
     updateFreestyleStats();
     myField.focus();
 }
-
 function copyAllFreestyleText() {
     const text = freestyleInputAreaEl.value;
     if (text.trim() === '') {
@@ -2911,24 +2765,20 @@ function copyAllFreestyleText() {
     });
     freestyleInputAreaEl.focus();
 }
-
 function clearAllFreestyleText() {
     const text = freestyleInputAreaEl.value;
     if (text.trim() === '') return;
-
     if (confirm("정말 모든 내용을 삭제하시겠습니까?")) {
         freestyleInputAreaEl.value = '';
         updateFreestyleStats();
         freestyleInputAreaEl.focus();
     }
 }
-
 function insertDate() {
     const now = new Date();
     const dateString = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
     insertAtCursor(freestyleInputAreaEl, dateString + " ");
 }
-
 function insertTime() {
     const now = new Date();
     const hours = now.getHours();
@@ -2938,7 +2788,6 @@ function insertTime() {
     const timeString = `${ampm} ${formattedHours}:${minutes}`;
     insertAtCursor(freestyleInputAreaEl, timeString + " ");
 }
-
 function toggleFocusMode() {
     document.body.classList.toggle('focus-mode-active');
     const icon = focusModeBtn.querySelector('i');
@@ -2951,7 +2800,6 @@ function toggleFocusMode() {
     }
     freestyleInputAreaEl.focus();
 }
-
 function hexToRgb(hex) {
     if (!hex) return null;
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -2963,12 +2811,10 @@ function hexToRgb(hex) {
         b: parseInt(result[3], 16)
     } : null;
 }
-
 function splitTextIntoLines(text, mode, screenWidth) {
     if (mode.startsWith('js') || mode.startsWith('python')) {
         return text.split('\n');
     }
-    
     let maxLength;
     if (mode.endsWith('Long')) {
         if (screenWidth <= 480) maxLength = mode.startsWith('eng') ? 40 : 25;
@@ -2977,7 +2823,6 @@ function splitTextIntoLines(text, mode, screenWidth) {
     } else {
         maxLength = 1000;
     }
-
     const lines = [];
     if (!text || typeof text !== 'string') return [""];
     if (maxLength === 1000 || !mode.endsWith('Long')) {
@@ -2996,27 +2841,22 @@ function splitTextIntoLines(text, mode, screenWidth) {
     }
     return lines.length > 0 ? lines : [text.trim()];
 }
-
 function renderTypingLayout() {
     if (!lineDisplayArea || !upcomingLinesArea) return;
     lineDisplayArea.innerHTML = '';
     upcomingLinesArea.innerHTML = '';
-
     const fragmentPassedCurrent = document.createDocumentFragment();
     const fragmentUpcoming = document.createDocumentFragment();
-
     const passedLineText = (currentDisplayLineIndex > 0 && linesToPractice[currentDisplayLineIndex - 1] !== undefined) ? linesToPractice[currentDisplayLineIndex - 1] : " ";
     const passedEl = document.createElement('div');
     passedEl.classList.add('typing-line', 'passed');
     passedEl.innerHTML = formatCodeLineForDisplay(passedLineText);
     if (passedLineText === " ") passedEl.style.visibility = 'hidden';
     fragmentPassedCurrent.appendChild(passedEl);
-
     const currentLineText = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : "";
     const currentEl = document.createElement('div');
     currentEl.id = 'current-typing-line';
     currentEl.classList.add('typing-line');
-
     if (currentLineText !== null && currentLineText !== undefined && currentLineText.length > 0) {
         currentEl.classList.add('current-to-type');
         currentEl.dataset.originalLine = currentLineText;
@@ -3029,12 +2869,10 @@ function renderTypingLayout() {
     }
     fragmentPassedCurrent.appendChild(currentEl);
     lineDisplayArea.appendChild(fragmentPassedCurrent);
-
     for (let i = 1; i <= MAX_VISIBLE_UPCOMING_LINES; i++) {
         const upcomingIndex = currentDisplayLineIndex + i;
         const upcomingEl = document.createElement('div');
         upcomingEl.classList.add('typing-line', 'upcoming');
-
         if (upcomingIndex < linesToPractice.length && linesToPractice[upcomingIndex] !== undefined) {
             const upcomingLineText = linesToPractice[upcomingIndex];
             upcomingEl.innerHTML = formatCodeLineForDisplay(upcomingLineText);
@@ -3046,12 +2884,9 @@ function renderTypingLayout() {
     }
     upcomingLinesArea.appendChild(fragmentUpcoming);
 }
-
 function handleInputEvent(e) {
-    playTypingSound(); // input 이벤트 발생 시 소리 재생 요청
-
+    playTypingSound();
     if (currentMode !== 'game' && currentMode !== 'freestyle' && e.target === typingInputField) {
-        // ... 기존 시각적 업데이트 로직은 그대로 ...
         const typedValue = typingInputField.value;
         const currentLineEl = document.getElementById('current-typing-line');
         if (!currentLineEl) return;
@@ -3068,57 +2903,60 @@ function handleInputEvent(e) {
         updateKeyboardHighlight();
     }
 }
-
 function updateFakeInput(typedValue, isReset = false) {
     if (!fakeInputField) return;
     if (isReset) {
         fakeInputField.innerHTML = `<span class="placeholder">타자 연습 시작...</span><span id="cursor"></span>`;
         return;
     }
-
     if (typedValue.length === 0) {
         fakeInputField.innerHTML = `<span id="cursor"></span>`;
     } else {
         fakeInputField.innerHTML = `${typedValue}<span id="cursor"></span>`;
     }
 }
-
 function handleHighlightUpdate(targetElement, typedValue, originalLine) {
-    if (!targetElement) return;
-    if (typeof originalLine !== 'string') {
-        targetElement.textContent = ' ';
+    if (!targetElement || typeof originalLine !== 'string') {
+        if(targetElement) targetElement.textContent = ' ';
         return;
     }
-
     let builtHTML = "";
-    const isCodeMode = currentMode.startsWith('js') || currentMode.startsWith('python');
-    let leadingSpacesCount = 0;
-
-    if (isCodeMode) {
-        const match = originalLine.match(/^( +)/);
-        if (match) {
-            leadingSpacesCount = match[1].length;
-        }
-    }
-
-    for (let i = 0; i < originalLine.length; i++) {
-        const originalChar = originalLine[i];
-        const displayChar = (isCodeMode && i < leadingSpacesCount) ? '·' : originalChar;
-        const charClass = (isCodeMode && i < leadingSpacesCount) ? ' whitespace-char' : '';
-
-        if (i < typedValue.length) {
-            if (highlightEnabled && typedValue[i] !== originalChar) {
-                builtHTML += `<span class="highlight${charClass}">${displayChar}</span>`;
+    let originalIdx = 0;
+    let typedIdx = 0;
+    while (originalIdx < originalLine.length) {
+        const originalChar = originalLine[originalIdx];
+        const displayChar = originalChar;
+        if (typedIdx < typedValue.length) {
+            const typedChar = typedValue[typedIdx];
+            if (originalChar === typedChar) {
+                builtHTML += `<strong>${displayChar}</strong>`;
+                originalIdx++;
+                typedIdx++;
             } else {
-                builtHTML += `<strong class="${charClass}">${displayChar}</strong>`;
+                let lookahead = false;
+                if (originalIdx + 1 < originalLine.length && typedChar === originalLine[originalIdx + 1]) {
+                    builtHTML += `<span class="highlight">${displayChar}</span>`;
+                    originalIdx++;
+                    lookahead = true;
+                } 
+                else if (typedIdx + 1 < typedValue.length && typedValue[typedIdx + 1] === originalChar) {
+                    builtHTML += `<span class="highlight">${typedChar}</span>`;
+                    typedIdx++;
+                    lookahead = true;
+                }
+                if (!lookahead) {
+                    builtHTML += `<span class="highlight">${displayChar}</span>`;
+                    originalIdx++;
+                    typedIdx++;
+                }
             }
         } else {
-            builtHTML += `<span class="untyped-char${charClass}">${displayChar}</span>`;
+            builtHTML += `<span class="untyped-char">${displayChar}</span>`;
+            originalIdx++;
         }
     }
     targetElement.innerHTML = builtHTML || ' ';
 }
-
 function formatCodeLineForDisplay(line) {
     if (!line) return '';
     const isCodeMode = currentMode.startsWith('js') || currentMode.startsWith('python');
@@ -3134,14 +2972,9 @@ function formatCodeLineForDisplay(line) {
     }
     return line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
-
 function handleKeyDownEvent(e) {
     if (e.isComposing) return;
-
-    // Backspace, Enter, Space 등 input 이벤트를 발생시키지 않는 키들을 위해
-    // keydown 에서도 소리 재생을 요청합니다.
     playTypingSound();
-
     const targetInput = e.target;
     if (currentMode === 'game' && targetInput === gameInputField) {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -3161,7 +2994,6 @@ function handleKeyDownEvent(e) {
         }
         return;
     }
-
    if (currentMode !== 'game' && currentMode !== 'freestyle' && targetInput === typingInputField) {
         const typedValue = typingInputField.value;
         const originalLine = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : null;
@@ -3178,8 +3010,6 @@ function handleKeyDownEvent(e) {
         }
     }
 }
-
-
 function processCurrentLineCompletion() {
     const typedValue = typingInputField.value;
     if (currentDisplayLineIndex >= linesToPractice.length) {
@@ -3192,10 +3022,8 @@ function processCurrentLineCompletion() {
         else startPractice(currentMode, false);
         return;
     }
-
     let lineCorrectCharsThisLine = 0;
     let lineMistypedCharsOnThisLine = 0;
-
     for (let i = 0; i < originalLine.length; i++) {
         if (i < typedValue.length) {
             if (typedValue[i] === originalLine[i]) {
@@ -3210,12 +3038,10 @@ function processCurrentLineCompletion() {
     if (typedValue.length > originalLine.length) {
         lineMistypedCharsOnThisLine += (typedValue.length - originalLine.length);
     }
-
     currentArticleCorrectChars += lineCorrectCharsThisLine;
     sessionTotalCorrectChars += lineCorrectCharsThisLine;
     sessionTotalMistypedChars += lineMistypedCharsOnThisLine;
     sessionTotalValidChars += originalLine.length;
-
     if (currentLineStartTime && lineCorrectCharsThisLine > 0) {
         const elapsedLineMinutes = (Date.now() - currentLineStartTime) / 60000;
         const speedFactor = (currentMode.startsWith('kor')) ? KOR_SPEED_FACTOR : 1;
@@ -3232,8 +3058,6 @@ function processCurrentLineCompletion() {
         lastArticleSpeed = 0;
          if (overallAvgSpeedLog.length > 0 || lastArticleSpeed === 0) overallAvgSpeedLog.push(0);
     }
-
-
     currentDisplayLineIndex++;
     disassembledLine = Hangul.disassemble(linesToPractice[currentDisplayLineIndex] || '');
     if(typingInputField) {
@@ -3241,12 +3065,10 @@ function processCurrentLineCompletion() {
         updateFakeInput('', true);
     }
     currentLineStartTime = null;
-
     if (!currentMode.endsWith('Long')) {
         currentArticleCorrectChars = 0;
         startTime = null;
     }
-
     if (currentDisplayLineIndex < linesToPractice.length) {
         renderTypingLayout();
         updateKeyboardHighlight();
@@ -3280,7 +3102,6 @@ function processCurrentLineCompletion() {
         }
     }
 }
-
 function updateStatsDisplay(isSessionReset = false) {
   const statsElements = {
     speed: document.getElementById('speedStat'),
@@ -3289,7 +3110,6 @@ function updateStatsDisplay(isSessionReset = false) {
     max: document.getElementById('maxSpeedStat')
   };
   if (!Object.values(statsElements).every(el => el)) return;
-
   let currentSpeedToShow = 0;
   if (isSessionReset) {
       currentSpeedToShow = 0;
@@ -3307,7 +3127,6 @@ function updateStatsDisplay(isSessionReset = false) {
       currentSpeedToShow = lastArticleSpeed;
   }
   statsElements.speed.textContent = `${currentSpeedToShow} 타/분`;
-
   let accuracy = 0;
   if (isSessionReset) {
       accuracy = 0;
@@ -3315,7 +3134,6 @@ function updateStatsDisplay(isSessionReset = false) {
       accuracy = Math.max(0, Math.min(Math.round((sessionTotalCorrectChars / sessionTotalValidChars) * 100), 100));
   }
   statsElements.accuracy.textContent = `${accuracy}%`;
-
   let finalOverallAverageSpeed = 0;
   if (isSessionReset) {
       finalOverallAverageSpeed = 0;
@@ -3323,11 +3141,8 @@ function updateStatsDisplay(isSessionReset = false) {
       finalOverallAverageSpeed = Math.round(overallAvgSpeedLog.reduce((a,b) => a+b,0) / overallAvgSpeedLog.length);
   }
   statsElements.avg.textContent = `${finalOverallAverageSpeed} 타/분`;
-
   statsElements.max.textContent = `${isSessionReset ? 0 : overallMaxSpeed} 타/분`;
 }
-
-
 function updateProgressBar() {
     if (progressBarEl && progressBarContainerEl && linesToPractice.length > 0 && currentMode.endsWith('Long')) {
         const progress = linesToPractice.length > 1 ? (currentDisplayLineIndex / linesToPractice.length) * 100 : (currentDisplayLineIndex >= 1 ? 100 : 0);
@@ -3336,30 +3151,25 @@ function updateProgressBar() {
         progressBarEl.style.width = '0%';
     }
 }
-
 function activateGameMode(gameType) {
     cleanupActiveModes();
     document.body.classList.add('game-mode-active');
-
     currentMode = 'game';
     currentGameType = gameType;
-
     if (typingInputField) {
         typingInputField.removeEventListener('keydown', handleKeyDownEvent);
     }
-
     if (rainfall_gameLoopId) cancelAnimationFrame(rainfall_gameLoopId);
     if (lbb_gameLoopId) cancelAnimationFrame(lbb_gameLoopId);
     if (gb_gameLoopId) cancelAnimationFrame(gb_gameLoopId);
     if (rainfall_wordGenerationIntervalId) clearInterval(rainfall_wordGenerationIntervalId);
     if (lbb_enemyActionIntervalId) clearInterval(lbb_enemyActionIntervalId);
-    if (gb_enemyAttackIntervalId) clearInterval(gb_enemyAttackIntervalId);
+    if (gb_enemyAttackIntervalId) cancelAnimationFrame(gb_enemyAttackIntervalId);
     if (window.rainfallTimeStopTimeoutId) clearTimeout(window.rainfallTimeStopTimeoutId);
     if (lbb_enemyFreezeTimeoutId) clearTimeout(lbb_enemyFreezeTimeoutId);
     if (lbb_playerNoPlayableBlocksTimerId) clearTimeout(lbb_playerNoPlayableBlocksTimerId);
     if (lbb_enemyNoPlayableBlocksTimerId) clearTimeout(lbb_enemyNoPlayableBlocksTimerId);
     if (lbb_relocationCountdownIntervalId) clearInterval(lbb_relocationCountdownIntervalId);
-
     rainfall_isGameActive = false;
     lbb_isGameActive = false;
     gb_isGameActive = false;
@@ -3371,7 +3181,6 @@ function activateGameMode(gameType) {
     lbb_enemyNoPlayableBlocksTimerId = null;
     lbb_relocationCountdownIntervalId = null;
     lbb_relocationCountdown = 0;
-
     gameAreaContainerEl.innerHTML = `
         <div id="gameInternalControlsBar">
             <div class="game-control-row" id="gameTypeSelectionRow"></div>
@@ -3389,7 +3198,6 @@ function activateGameMode(gameType) {
         </div>
         <div id="item-effect-popup"></div>
         <div id="gameOverlay" class="game-overlay"></div>`;
-
     gameStartMessageEl = gameAreaContainerEl.querySelector('#game-start-message');
     gameCanvas = gameAreaContainerEl.querySelector('#game-canvas');
     if (gameCanvas) {
@@ -3398,31 +3206,25 @@ function activateGameMode(gameType) {
         console.error("activateGameMode: game-canvas 요소를 찾을 수 없습니다.");
         return;
     }
-
     gameInputField = gameAreaContainerEl.querySelector('#game-input-field');
     gameOverlayEl = gameAreaContainerEl.querySelector('#gameOverlay');
     itemEffectPopupEl = gameAreaContainerEl.querySelector('#item-effect-popup');
     lbbTimerBarContainerEl = gameAreaContainerEl.querySelector('#lbb-timer-bar-container');
     lbbTimerBarEl = gameAreaContainerEl.querySelector('#lbb-timer-bar');
     lbbTimerTextEl = gameAreaContainerEl.querySelector('#lbb-timer-text');
-    
     if (gameInputField) {
         gameInputField.removeEventListener('keydown', handleKeyDownEvent);
         gameInputField.addEventListener('keydown', handleKeyDownEvent);
         gameInputField.removeEventListener('input', handleInputEvent);
         gameInputField.addEventListener('input', handleInputEvent);
     }
-
     const gameTypeRow = gameAreaContainerEl.querySelector('#gameTypeSelectionRow');
     const settingsRow1 = gameAreaContainerEl.querySelector('#gameSettingsRow1');
     const settingsRow2 = gameAreaContainerEl.querySelector('#gameSettingsRow2');
-    
     if (!gameTypeRow || !settingsRow1 || !settingsRow2) {
         console.error("게임 컨트롤 바 요소를 찾을 수 없습니다. HTML 구조를 확인하세요.");
         return;
     }
-
-
     gameTypeRow.innerHTML = '';
     const sonagiBtn = document.createElement('button');
     sonagiBtn.classList.add('game-type-button');
@@ -3431,7 +3233,6 @@ function activateGameMode(gameType) {
     if (currentGameType === 'rainfall') sonagiBtn.classList.add('active');
     sonagiBtn.addEventListener('click', () => activateGameMode('rainfall'));
     gameTypeRow.appendChild(sonagiBtn);
-
     const letterBlockBtn = document.createElement('button');
     letterBlockBtn.classList.add('game-type-button');
     letterBlockBtn.innerHTML = '<i class="fas fa-th-large"></i> 블록 배틀';
@@ -3439,7 +3240,6 @@ function activateGameMode(gameType) {
     if (currentGameType === 'letterBlockBattle') letterBlockBtn.classList.add('active');
     letterBlockBtn.addEventListener('click', () => activateGameMode('letterBlockBattle'));
     gameTypeRow.appendChild(letterBlockBtn);
-
     const typingBattleBtn = document.createElement('button');
     typingBattleBtn.classList.add('game-type-button');
     typingBattleBtn.innerHTML = '<i class="fas fa-fist-raised"></i> 타이핑 배틀';
@@ -3447,21 +3247,16 @@ function activateGameMode(gameType) {
     if (currentGameType === 'giantBattle') typingBattleBtn.classList.add('active');
     typingBattleBtn.addEventListener('click', () => activateGameMode('giantBattle'));
     gameTypeRow.appendChild(typingBattleBtn);
-
-    
     settingsRow1.innerHTML = ''; 
     settingsRow2.innerHTML = '';
-
     const themeControlItem = document.createElement('div');
     themeControlItem.classList.add('game-control-item');
     themeControlItem.appendChild(themeSettingsEl);
     settingsRow1.appendChild(themeControlItem);
-
     const soundPackControlItem = document.createElement('div');
     soundPackControlItem.classList.add('game-control-item');
     soundPackControlItem.appendChild(soundSettingsEl);
     settingsRow1.appendChild(soundPackControlItem);
-
     gameToggleSoundBtn = document.createElement('button');
     gameToggleSoundBtn.id = 'gameToggleSoundBtn';
     gameToggleSoundBtn.classList.toggle('active', soundEnabled);
@@ -3479,7 +3274,6 @@ function activateGameMode(gameType) {
     soundToggleControlItem.classList.add('game-control-item');
     soundToggleControlItem.appendChild(gameToggleSoundBtn);
     settingsRow1.appendChild(soundToggleControlItem);
-
     const levelControlItem = document.createElement('div');
     levelControlItem.classList.add('game-control-item');
     const levelSelectLabel = document.createElement('label');
@@ -3489,10 +3283,8 @@ function activateGameMode(gameType) {
     const gameLevelSelectInBar = document.createElement('select');
     gameLevelSelectInBar.id = 'gameLevelSelectInBar';
     gameLevelSelectInBar.className = 'game-control-select';
-
     let maxLevelForSelect;
     let currentLevelForSelect;
-
     if (gameType === 'rainfall') {
         maxLevelForSelect = rainfall_gameMainLevelsConfig.length;
         currentLevelForSelect = rainfall_gameLevel;
@@ -3503,7 +3295,6 @@ function activateGameMode(gameType) {
         maxLevelForSelect = GB_MAX_LEVEL;
         currentLevelForSelect = gb_currentLevel;
     }
-
     for (let i = 1; i <= maxLevelForSelect; i++) {
         const option = document.createElement('option');
         option.value = i;
@@ -3530,19 +3321,15 @@ function activateGameMode(gameType) {
     });
     levelControlItem.appendChild(levelSelectLabel);
     levelControlItem.appendChild(gameLevelSelectInBar);
-
     settingsRow2.appendChild(levelControlItem);
-
     const returnBtn = document.createElement('button');
     returnBtn.id = 'returnToPracticeBtnGame';
     returnBtn.innerHTML = `<i class="fas fa-keyboard"></i> 타자연습 가기`;
     returnBtn.addEventListener('click', () => returnToPracticeMode(true));
     settingsRow2.appendChild(returnBtn);
-
     const containerWidth = gameAreaContainerEl.querySelector('.game-ui-wrapper').clientWidth;
     gameCanvas.width = Math.min(containerWidth > 0 ? containerWidth : 600, 800);
     gameCanvas.height = Math.max(window.innerHeight * 0.55, 350);
-
     if (gameType === 'letterBlockBattle') {
         gameCanvas.height = Math.max(window.innerHeight * 0.48, 300);
         const boardAreaHeight = gameCanvas.height - 50;
@@ -3550,7 +3337,6 @@ function activateGameMode(gameType) {
         const baseFontSize = LBB_BLOCK_SIZE * 0.28;
         lbb_blockTextFont = `bold ${Math.max(6, baseFontSize)}px 'Noto Sans KR', sans-serif`;
     }
-
     if (gameType === 'rainfall') {
         gameStartMessageEl.innerHTML = `
              <h2><i class="fas fa-cloud-showers-heavy"></i> 소나기</h2>
@@ -3597,13 +3383,11 @@ function activateGameMode(gameType) {
     }
     gameStartMessageEl.style.display = 'flex';
     gameInputField.placeholder = "단어 입력 후 Enter 또는 Space";
-
     document.querySelectorAll('.practice-mode-controls button[data-practice-type]').forEach(btn => btn.classList.remove('active'));
     if (gameModeBtnEl) {
         gameModeBtnEl.classList.add('active');
     }
 }
-
 function showGamePopup(text, duration = 1200, styleProps = {}) {
     if (!itemEffectPopupEl) itemEffectPopupEl = document.getElementById('item-effect-popup');
     if (itemEffectPopupEl) {
@@ -3617,7 +3401,6 @@ function showGamePopup(text, duration = 1200, styleProps = {}) {
         }, duration);
     }
 }
-
 function showSharePopup(message) {
     const popup = document.getElementById('result-share-popup');
     popup.textContent = message;
@@ -3628,8 +3411,6 @@ function showSharePopup(message) {
         popup.style.transform = 'translateX(-50%) translateY(20px)';
     }, 2000);
 }
-
-
 // --- RAINFALL (소나기) GAME FUNCTIONS ---
 function initRainfallGame(fromStartButton = false, level) {
     if (level !== undefined) rainfall_gameLevel = level;
@@ -3664,7 +3445,6 @@ function initRainfallGame(fromStartButton = false, level) {
     startRainfallWordGeneration();
     startRainfallGameLoop();
 }
-
 function startRainfallGameLoop() {
     if (rainfall_gameLoopId) cancelAnimationFrame(rainfall_gameLoopId);
     function loop() {
@@ -3684,7 +3464,6 @@ function startRainfallGameLoop() {
     }
     rainfall_gameLoopId = requestAnimationFrame(loop);
 }
-
 function updateRainfallGameLogic() {
     if (!rainfall_isGameActive || !gameCanvas || rainfall_gamePausedForOverlay) return;
     if (rainfall_isTimeStopped) return;
@@ -3726,7 +3505,6 @@ function updateRainfallGameLogic() {
         handleGameEnd(false, 'lives');
     }
 }
-
 function drawRainfallGame() {
     if (!gameCtx || !gameCanvas) return;
 
@@ -3795,8 +3573,6 @@ function drawRainfallGame() {
     }
     gameCtx.shadowBlur = 0;
 }
-
-
 function startRainfallWordGeneration() {
     const levelData = rainfall_gameMainLevelsConfig[rainfall_gameLevel - 1];
     if (!levelData || !levelData.subLevels) {
@@ -3849,8 +3625,6 @@ function startRainfallWordGeneration() {
     generateWord();
     rainfall_wordGenerationIntervalId = setInterval(generateWord, levelConfig.genRate);
 }
-
-
 function handleRainfallGameInputSubmit() {
     if (!rainfall_isGameActive || rainfall_gamePausedForOverlay) return;
     const typedWord = gameInputField.value.trim();
@@ -3880,7 +3654,6 @@ function handleRainfallGameInputSubmit() {
     }
     gameInputField.value = "";
 }
-
 function activateRainfallItemEffect(itemType, duration) {
     let popupText = "";
     const itemInfo = Object.values(RAINFALL_ITEM_TYPES).find(it => it.type === itemType);
@@ -3909,16 +3682,12 @@ function activateRainfallItemEffect(itemType, duration) {
     }
     if (popupText) showGamePopup(popupText, 1500);
 }
-
-
 function triggerRainfallLifeLostEffect() {
     if (gameCanvas) {
         gameCanvas.classList.add('flash-effect');
         setTimeout(() => { if(gameCanvas) gameCanvas.classList.remove('flash-effect'); }, 300);
     }
 }
-
-
 // --- LETTER BLOCK BATTLE GAME FUNCTIONS ---
 function initLetterBlockBattleGame(fromStartButtonOrNextLevel = false, level) {
     if(level) lbb_gameLevel = level;
@@ -3963,7 +3732,7 @@ function initLetterBlockBattleGame(fromStartButtonOrNextLevel = false, level) {
         setTimeout(() => { if(gameInputField) gameInputField.focus(); }, 100);
     }
 
-    lbb_gameStartTime = Date.now();
+        lbb_gameStartTime = Date.now();
     lbb_enemyActionIntervalId = setInterval(lbb_enemyAIAction, lbb_enemyMoveDelay);
     startLBBGameLoop();
 }
@@ -4235,7 +4004,7 @@ function lbb_enemyAIAction() {
     if (!lbb_isGameActive || lbb_gamePausedForOverlay || lbb_gamePausedForEffect || lbb_isEnemyFrozen || lbb_isRelocating || lbb_finalBattleAnimation.isActive) return;
 
     const surroundingBlocks = getSurroundingLBBBlocks(lbb_enemyPos);
-    if(surroundingBlocks.length > 0) {
+    if (surroundingBlocks.length > 0) {
         if (lbb_enemyNoPlayableBlocksTimerId) {
             clearTimeout(lbb_enemyNoPlayableBlocksTimerId);
             lbb_enemyNoPlayableBlocksTimerId = null;
@@ -4480,7 +4249,7 @@ function initGiantBattleGame(fromStartButtonOrNextLevel = false, level) {
     }
 
     if (gb_gameLoopId) cancelAnimationFrame(gb_gameLoopId);
-    if (gb_enemyAttackIntervalId) clearInterval(gb_enemyAttackIntervalId);
+    if (gb_enemyAttackIntervalId) cancelAnimationFrame(gb_enemyAttackIntervalId); 
 
     gb_isGameActive = true;
     gb_gamePausedForOverlay = false;
@@ -4500,12 +4269,26 @@ function initGiantBattleGame(fromStartButtonOrNextLevel = false, level) {
       gameInputField.placeholder = "단어 입력 후 Enter 또는 Space";
       setTimeout(() => { if(gameInputField) gameInputField.focus(); }, 100);
     }
-
-    gb_enemyAttackIntervalId = setInterval(gb_spawnEnemyAttack, currentLevelConfig.attackInterval);
+    
+    let lastAttackTime = 0;
+    function enemyAttackLoop(timestamp) {
+        if (!gb_isGameActive) {
+            if (gb_enemyAttackIntervalId) cancelAnimationFrame(gb_enemyAttackIntervalId);
+            return;
+        };
+        if (!lastAttackTime) lastAttackTime = timestamp;
+        const elapsed = timestamp - lastAttackTime;
+        const interval = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))].attackInterval;
+        if(elapsed > interval) {
+            gb_spawnEnemyAttack();
+            lastAttackTime = timestamp;
+        }
+        gb_enemyAttackIntervalId = requestAnimationFrame(enemyAttackLoop);
+    }
+    requestAnimationFrame(enemyAttackLoop);
 
     startGiantBattleGameLoop();
 }
-
 function startGiantBattleGameLoop() {
     if (gb_gameLoopId) cancelAnimationFrame(gb_gameLoopId);
     function loop() {
@@ -4522,7 +4305,6 @@ function startGiantBattleGameLoop() {
     }
     gb_gameLoopId = requestAnimationFrame(loop);
 }
-
 function updateGiantBattleGameLogic() {
     if (!gb_isGameActive || !gameCanvas || gb_gamePausedForOverlay) return;
 
@@ -4569,7 +4351,6 @@ function updateGiantBattleGameLogic() {
         return;
     }
 }
-
 function drawGiantBattleGame() {
     if (!gameCtx || !gameCanvas) return;
 
@@ -4633,7 +4414,7 @@ function drawGiantBattleGame() {
       b = parseInt(b * (1 - percent));
       return `rgb(${r}, ${g}, ${b})`;
     }
-const topUiY = 30;
+    const topUiY = 30;
     const uiMargin = 15;
     const healthBarHeight = 18;
 
@@ -4703,7 +4484,6 @@ const topUiY = 30;
     gameCtx.shadowOffsetX = 0;
     gameCtx.shadowOffsetY = 0;
 }
-
 function gb_spawnPlayerAttackWord() {
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
     const wordPool = gameWordsKor;
@@ -4711,15 +4491,12 @@ function gb_spawnPlayerAttackWord() {
     const filteredWordPool = wordPool.filter(w => w.length >= minLen && w.length <= 4);
     gb_playerAttackWord = getRandom(filteredWordPool.length > 0 ? filteredWordPool : wordPool.filter(w => w.length >= minLen && w.length <= 4)) || "공격";
 }
-
 function gb_spawnDefenseWord(currentLevelConfig) {
     const wordPool = gameWordsKor;
     const minLen = Math.max(3, currentLevelConfig.wordMinLen);
     const defenseWordPool = wordPool.filter(w => w.length >= minLen && w.length <= 4);
     return getRandom(defenseWordPool.length > 0 ? defenseWordPool : wordPool.filter(w => w.length >= minLen && w.length <= 4)) || "수비";
 }
-
-
 function gb_spawnEnemyAttack() {
     if (!gb_isGameActive || gb_gamePausedForOverlay || !gameCanvas) return;
     const currentLevelConfig = gb_levelConfigs[Math.max(0, Math.min(gb_currentLevel - 1, gb_levelConfigs.length - 1))];
@@ -4729,7 +4506,6 @@ function gb_spawnEnemyAttack() {
     let isSpecialAttack = Math.random() < GB_SPECIAL_ATTACK_CHANCE;
     let originalWordForSpecial = "";
     const minLenForAttack = Math.max(3, currentLevelConfig.wordMinLen);
-
 
     if (isSpecialAttack) {
         const specialMinLen = 4;
@@ -4753,7 +4529,6 @@ function gb_spawnEnemyAttack() {
         isSpecial: isSpecialAttack
     });
 }
-
 function handleGiantBattleInputSubmit() {
     if (currentGameType !== 'giantBattle' || !gb_isGameActive || gb_gamePausedForOverlay) return;
     const typedWordFull = gameInputField.value.trim();
@@ -4791,7 +4566,6 @@ function handleGiantBattleInputSubmit() {
     setTimeout(() => { if(gameAreaContainerEl) gameAreaContainerEl.classList.remove('shake-effect'); }, 200);
     if(gameInputField) gameInputField.value = "";
 }
-
 function gb_playerAttack() {
     gb_enemyHealth -= GB_PLAYER_ATTACK_DAMAGE;
     gb_enemyHitEffectTimer = GB_ENEMY_HIT_EFFECT_DURATION;
@@ -4802,7 +4576,6 @@ function gb_playerAttack() {
         handleGameEnd(true, "hp");
     }
 }
-
 function gb_playerDefend(rock) {
     const index = gb_enemyAttacks.indexOf(rock);
     if (index > -1) {
@@ -4810,21 +4583,15 @@ function gb_playerDefend(rock) {
         showGamePopup("방어! 🛡️", 800, { backgroundColor: `rgba(80, 200, 120, 0.7)` });
     }
 }
+function handleGameEnd(playerWins, reason) {
+    if (currentGameType === 'rainfall') rainfall_isGameActive = false;
+    else if (currentGameType === 'letterBlockBattle') lbb_isGameActive = false;
+    else if (currentGameType === 'giantBattle') gb_isGameActive = false;
 
-// --- 공통 게임 함수 (오버레이, 연습모드 복귀 등) ---
-function handleGameEnd(playerWins, reason = "") {
-    rainfall_isGameActive = false; lbb_isGameActive = false; gb_isGameActive = false;
-    rainfall_gamePausedForOverlay = true; lbb_gamePausedForOverlay = true; gb_gamePausedForOverlay = true;
-    if (gameInputField) gameInputField.disabled = true;
-
-    if (rainfall_gameLoopId) { cancelAnimationFrame(rainfall_gameLoopId); rainfall_gameLoopId = null; }
-    if (lbb_gameLoopId) { cancelAnimationFrame(lbb_gameLoopId); lbb_gameLoopId = null; }
-    if (gb_gameLoopId) { cancelAnimationFrame(gb_gameLoopId); gb_gameLoopId = null; }
-    if (rainfall_wordGenerationIntervalId) { clearInterval(rainfall_wordGenerationIntervalId); rainfall_wordGenerationIntervalId = null; }
-    if (lbb_enemyActionIntervalId) { clearInterval(lbb_enemyActionIntervalId); lbb_enemyActionIntervalId = null; }
-    if (gb_enemyAttackIntervalId) { clearInterval(gb_enemyAttackIntervalId); gb_enemyAttackIntervalId = null; }
+    if(gameInputField) gameInputField.disabled = true;
 
     let gameConfig, currentLevel, resultData;
+    window.gameResultData = null;
     const gameLevelSelectEl = document.getElementById('gameLevelSelectInBar');
 
     if (currentGameType === 'rainfall') {
@@ -4858,11 +4625,7 @@ function handleGameEnd(playerWins, reason = "") {
             showCountdownThenStart(gameConfig.initFunc, [true, nextLevel]);
         };
         resultData.nextActionText = `다음 레벨 (${currentLevel + 1})`;
-        showResultOverlay(resultData);
-        return;
-    }
-    
-    if (playerWins) {
+    } else if (playerWins) {
         resultData.title = `🏆 모든 레벨 클리어!`;
         resultData.nextAction = () => {
              window[gameConfig.levelVarName] = 1;
@@ -4882,19 +4645,16 @@ function handleGameEnd(playerWins, reason = "") {
         };
         resultData.nextActionText = "다시 도전";
     }
+    
+    window.gameResultData = resultData;
     showResultOverlay(resultData);
 }
-
-
 function showCountdownThenStart(startGameFunction, args = [true, 1]) {
     if(gameStartMessageEl) gameStartMessageEl.style.display = 'none';
-
     let count = 3;
     const countdown = () => {
         const drawFunc = window[`draw${currentGameType.charAt(0).toUpperCase() + currentGameType.slice(1)}Game`];
-
         if (drawFunc) drawFunc();
-
         if (count > 0) {
             gameCtx.fillStyle = 'rgba(0,0,0,0.5)';
             gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
@@ -4924,11 +4684,8 @@ function showCountdownThenStart(startGameFunction, args = [true, 1]) {
     };
     countdown();
 }
-
-
 function returnToPracticeMode(resetSessionStats = true) {
     cleanupActiveModes();
-
     const gameInternalControlsBar = document.getElementById('gameInternalControlsBar');
     if (mainControlsEl && originalSoundParent && originalThemeParent && soundSettingsEl && themeSettingsEl && gameInternalControlsBar) {
         if (soundSettingsEl.parentNode && soundSettingsEl.parentNode.classList.contains('game-control-item')) {
@@ -4942,14 +4699,12 @@ function returnToPracticeMode(resetSessionStats = true) {
         gameToggleSoundBtn.parentNode.removeChild(gameToggleSoundBtn);
         gameToggleSoundBtn = null;
     }
-
     if (!statsVisible) {
         statsVisible = true;
         toggleStatsBtn.classList.add('active');
         toggleStatsBtn.innerHTML = '<i class="fas fa-chart-line"></i> 측정 ON';
         statsEl.classList.remove('hidden');
     }
-
     let lastPracticeMode = 'kor';
     const activePracticeBtn = document.querySelector('.practice-mode-controls button[data-practice-type].active');
     if (activePracticeBtn && languageSelectEl) {
@@ -5250,34 +5005,109 @@ function hideHelpModal() {
     else if (currentGameType === 'letterBlockBattle') lbb_gamePausedForOverlay = false;
     else if (currentGameType === 'giantBattle') gb_gamePausedForOverlay = false;
 }
-
-// === RESULT & SHARE FUNCTIONS ===
-function generateShareText(resultData) {
-    let text = `Key Therapy 결과\n`;
-    text += `[${resultData.gameName || '타자 연습'}]\n`;
-    if(resultData.stats['레벨']) {
-      text += `도전 레벨: ${resultData.stats['레벨']}\n`;
+async function shareResult() {
+    if (!window.gameResultData) {
+        showSharePopup('공유할 결과 데이터가 없습니다.');
+        return;
     }
-    text += '\n';
 
-    if (resultData.type === 'practice') {
-        const speed = parseInt(resultData.stats['평균 속도']);
-        const accuracy = parseInt(resultData.stats['정확도']);
-        text += `평균 ${speed}타/분, 정확도 ${accuracy}%\n`;
-        for(let i = 0; i < 5; i++) {
-            text += (speed > (i * 150)) ? '🟨' : '⬜️';
-        }
-    } else { // Game
-        const score = resultData.stats['점수'] ?? resultData.stats['내 점수'] ?? resultData.stats['남은 HP'];
-        text += `결과: ${resultData.title}\n`;
-        text += `점수: ${score}\n`;
-        for(let i = 0; i < 5; i++) {
-            text += (score > (i * 100)) ? '🟩' : '⬜️';
-        }
-    }
+    const resultData = window.gameResultData;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // 캔버스 크기 및 스타일 설정
+    const width = 500;
+    const height = 280;
+    const padding = 30;
+    const borderRadius = 12;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const theme = document.body.classList.contains('light-theme') ? 'light' : (document.body.classList.contains('pink-theme') ? 'pink' : 'dark');
     
-    text += '\n\n#KeyTherapy #타자연습';
-    return text;
+    // 테마별 색상 설정
+    const colors = {
+        dark: { bg: '#2a2826', text: '#e8e0d8', accent: '#d4af7a', secondary: '#b2aca2' },
+        light: { bg: '#fff', text: '#524a42', accent: '#b89a6c', secondary: '#756A5F' },
+        pink: { bg: '#ffffff', text: '#4F333D', accent: '#E85D75', secondary: '#735A64' }
+    };
+    const currentTheme = colors[theme];
+    
+    // 배경 그리기 (둥근 모서리)
+    ctx.fillStyle = currentTheme.bg;
+    ctx.beginPath();
+    ctx.moveTo(borderRadius, 0);
+    ctx.lineTo(width - borderRadius, 0);
+    ctx.quadraticCurveTo(width, 0, width, borderRadius);
+    ctx.lineTo(width, height - borderRadius);
+    ctx.quadraticCurveTo(width, height, width - borderRadius, height);
+    ctx.lineTo(borderRadius, height);
+    ctx.quadraticCurveTo(0, height, 0, height - borderRadius);
+    ctx.lineTo(0, borderRadius);
+    ctx.quadraticCurveTo(0, 0, borderRadius, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    // 제목 그리기
+    ctx.fillStyle = currentTheme.accent;
+    ctx.font = "bold 36px 'Playfair Display', serif";
+    ctx.textAlign = 'center';
+    ctx.fillText(resultData.title, width / 2, padding + 40);
+    
+    // 통계 그리기
+    ctx.font = "500 18px 'Poppins', sans-serif";
+    const stats = Object.entries(resultData.stats);
+    const statY = 130;
+    const statXMargin = width / (stats.length + 1);
+
+    stats.forEach(([key, value], index) => {
+        const x = statXMargin * (index + 1);
+        ctx.fillStyle = currentTheme.secondary;
+        ctx.fillText(key + ':', x, statY);
+        ctx.fillStyle = currentTheme.text;
+        ctx.fillText(value, x, statY + 28);
+    });
+
+    // 캔버스 이미지를 Blob으로 변환하여 파일 객체로 만듭니다.
+    canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        
+        const file = new File([blob], 'keytherapy-result.png', { type: 'image/png' });
+        const shareTitle = 'Key Therapy 게임 결과';
+        const shareText = `🎉 ${resultData.title} 🎉\n\n지금 바로 Key Therapy에서 타자 실력을 확인해보세요!`;
+        const shareUrl = 'https://keytherapy.vercel.app';
+
+        // Web Share API를 지원하는지 확인
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: shareTitle,
+                    text: shareText,
+                    url: shareUrl,
+                });
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Web Share API 공유 실패:', error);
+                    showSharePopup('결과 공유에 실패했습니다.');
+                }
+            }
+        } else {
+            // Web Share API를 지원하지 않는 경우, 클립보드 복사로 대체 (Fallback)
+            try {
+                const clipboardItem = new ClipboardItem({
+                    'image/png': blob,
+                    'text/plain': new Blob([`${shareTitle}\n${shareText}\n${shareUrl}`], { type: 'text/plain' })
+                });
+                await navigator.clipboard.write([clipboardItem]);
+                showSharePopup('결과 이미지와 링크가 복사되었습니다!');
+            } catch (error) {
+                console.error('클립보드 복사 실패:', error);
+                showSharePopup('결과 공유에 실패했습니다.');
+            }
+        }
+    }, 'image/png');
 }
 
 
@@ -5311,19 +5141,23 @@ function showResultOverlay(resultData) {
         });
     }
 
-    const shareBtn = document.getElementById('shareResultBtn');
+        const shareBtn = document.getElementById('shareResultBtn');
     if(shareBtn) {
-        shareBtn.addEventListener('click', () => {
-            const shareText = generateShareText(resultData);
-            navigator.clipboard.writeText(shareText).then(() => {
-                showSharePopup('클립보드에 복사되었습니다!');
-            }).catch(err => {
-                console.error('공유 텍스트 복사 실패:', err);
-                showSharePopup('복사에 실패했습니다.');
-            });
-        });
+        shareBtn.addEventListener('click', shareResult); // [수정] shareResult 함수 호출
     }
 }
+
+function updateLayout() {
+    if (!toggleLayoutBtn) return;
+
+    document.body.classList.toggle('layout-collapsed', layoutCollapsed);
+    if (layoutCollapsed) {
+        toggleLayoutBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 메뉴 펼치기';
+    } else {
+        toggleLayoutBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 메뉴 숨기기';
+    }
+}
+
 function applyTheme(theme) {
     document.body.classList.remove('light-theme', 'pink-theme');
     if (theme === 'light') document.body.classList.add('light-theme');
@@ -5337,7 +5171,6 @@ function applyTheme(theme) {
         });
     }
 }
-
 </script>
 </body>
 </html>
