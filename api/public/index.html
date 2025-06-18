@@ -3713,6 +3713,15 @@ function handleHighlightUpdate(typedValue, originalLine) {
         return ' ';
     }
 
+    // [수정] 오타 체크(highlightEnabled)가 꺼져있을 경우, 오타를 표시하지 않고 처리
+    if (!highlightEnabled) {
+        const typedPart = originalLine.substring(0, typedValue.length);
+        const untypedPart = originalLine.substring(typedValue.length);
+        const formattedTypedPart = typedPart.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+        const formattedUntypedPart = untypedPart.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+        return `<strong>${formattedTypedPart}</strong><span class="untyped-char">${formattedUntypedPart}</span>`;
+    }
+
     let builtHTML = "";
     let originalIdx = 0;
     let typedIdx = 0;
@@ -3838,6 +3847,14 @@ function handleInputEvent(e) {
 
         updateFakeInput(typedValue, false);
         updateKeyboardHighlight();
+
+        // [추가] 스페이스바 입력으로 다음 문장으로 넘어가는 로직
+        // 입력값의 끝이 공백이고, 공백을 제외한 글자 수가 원본 글자 수보다 많거나 같으면 실행
+        if (typedValue.endsWith(' ')) {
+            if (originalLine !== null && typedValue.trim().length >= originalLine.length) {
+                processCurrentLineCompletion();
+            }
+        }
     }
 }
 function updateFakeInput(typedValue, isReset = false) {
@@ -3895,7 +3912,7 @@ function handleKeyDownEvent(e) {
         return;
     }
    if (currentMode !== 'game' && currentMode !== 'freestyle' && targetInput === typingInputField) {
-        const typedValue = typingInputField.value;
+        // [수정] 스페이스바 관련 로직을 제거하고 엔터키 처리만 남겨둡니다.
         const originalLine = (currentDisplayLineIndex < linesToPractice.length) ? linesToPractice[currentDisplayLineIndex] : null;
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -3904,9 +3921,6 @@ function handleKeyDownEvent(e) {
             } else if (currentDisplayLineIndex >= linesToPractice.length) {
                 startPractice(currentMode, false);
             }
-        } else if (e.key === ' ' && originalLine !== null && typedValue.length >= originalLine.length) {
-            e.preventDefault();
-            processCurrentLineCompletion();
         }
     }
 }
