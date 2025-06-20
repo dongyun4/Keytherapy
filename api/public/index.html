@@ -6491,19 +6491,28 @@ async function shareResult() {
     }
 }
 
+// ▼▼▼▼▼ 최종 수정된 HITS 서비스 코드로 교체합니다. ▼▼▼▼▼
 async function updateVisitorCount() {
   const counterElement = document.getElementById('visitor-counter-value');
   if (!counterElement) return;
 
-  // HITS 서비스는 전체 URL을 기반으로 카운트합니다.
   const targetUrl = 'https://keytherapy.vercel.app';
-  const apiUrl = `https://hits.seeyoufarm.com/api/count/incr/edge/url/${encodeURIComponent(targetUrl)}/hit.json`;
+  // ?url=... 형태로 올바르게 수정된 주소입니다.
+  const apiUrl = `https://hits.seeyoufarm.com/api/count/incr/edge.json?url=${encodeURIComponent(targetUrl)}`;
 
   try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    // CORS 문제를 피하기 위해 'no-cors' 모드를 사용합니다.
+    // 이 모드에서는 응답 본문을 직접 읽을 수 없지만, 카운트는 정상적으로 증가합니다.
+    // 따라서, 우리는 값을 가져오는 대신, 별도의 API로 값을 조회합니다.
     
-    // HITS는 value 필드에 숫자를 담아 반환합니다.
+    // 1. 카운트 증가 요청 (응답은 사용하지 않음)
+    await fetch(apiUrl, { mode: 'no-cors' });
+
+    // 2. 현재 카운트 값 조회 요청
+    const getApiUrl = `https://hits.seeyoufarm.com/api/count/get/edge.json?url=${encodeURIComponent(targetUrl)}`;
+    const response = await fetch(getApiUrl);
+    const data = await response.json();
+
     if (data.value) {
         counterElement.textContent = data.value.toLocaleString();
     } else {
