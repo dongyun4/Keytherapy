@@ -1838,6 +1838,9 @@ body.layout-collapsed.freestyle-mode-active .main-content {
       문의: <a href="mailto:keytherapy@naver.com">keytherapy@naver.com</a>
       <button id="copyEmailBtn" title="이메일 주소 복사"><i class="far fa-copy"></i></button>
     </p>
+    <p id="visitor-counter" style="margin-top: 15px; opacity: 0.7; display: none;">
+      총 방문자: <span id="visitor-counter-value">...</span>
+    </p>
   </div>
 
   <div id="helpModal">
@@ -6475,18 +6478,65 @@ async function shareResult() {
         }
 
         function applyTheme(theme) {
-            document.body.classList.remove('light-theme', 'pink-theme');
-            if (theme === 'light') document.body.classList.add('light-theme');
-            else if (theme === 'pink') document.body.classList.add('pink-theme');
+    document.body.classList.remove('light-theme', 'pink-theme');
+    if (theme === 'light') document.body.classList.add('light-theme');
+    else if (theme === 'pink') document.body.classList.add('pink-theme');
 
-            if (gameCanvas && currentGameType) {
-                requestAnimationFrame(() => {
-                    if (currentGameType === 'rainfall') drawRainfallGame();
-                    else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
-                    else if (currentGameType === 'giantBattle') drawGiantBattleGame();
-                });
+    if (gameCanvas && currentGameType) {
+        requestAnimationFrame(() => {
+            if (currentGameType === 'rainfall') drawRainfallGame();
+            else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
+            else if (currentGameType === 'giantBattle') drawGiantBattleGame();
+        });
+    }
+}
+
+// ▼▼▼▼▼ 방문자 카운터 함수 (새로 추가) ▼▼▼▼▼
+async function updateVisitorCount() {
+  const counterElement = document.getElementById('visitor-counter-value');
+  if (!counterElement) return;
+
+  const namespace = 'keytherapy.vercel.app';
+  const key = 'visits';
+  const apiUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    counterElement.textContent = data.value.toLocaleString();
+  } catch (error) {
+    console.error('방문자 수를 가져오는 데 실패했습니다:', error);
+    counterElement.textContent = 'Error';
+  }
+}
+// ▲▲▲▲▲ 여기까지 추가 ▲▲▲▲▲
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ... (기존 DOMContentLoaded 리스너 내용은 동일) ...
+
+    // ▼▼▼▼▼ DOMContentLoaded 리스너 끝 부분에 함수 호출 추가 ▼▼▼▼▼
+    updateVisitorCount(); 
+    // ▲▲▲▲▲ 여기까지 추가 ▲▲▲▲▲
+});
+
+document.addEventListener('keydown', (e) => {
+    // ... (기존 keydown 리스너 내용은 동일) ...
+    
+    // ▼▼▼▼▼ keydown 리스너 안에 비밀 키 감지 로직 추가 ▼▼▼▼▼
+    if (e.ctrlKey && e.altKey && (e.key === 'v' || e.key === 'V')) {
+        e.preventDefault();
+        const counterElement = document.getElementById('visitor-counter');
+        if (counterElement) {
+            if (counterElement.style.display === 'none') {
+                counterElement.style.display = 'block';
+            } else {
+                counterElement.style.display = 'none';
             }
         }
+    }
+    // ▲▲▲▲▲ 여기까지 추가 ▲▲▲▲▲
+});
 </script>
 </body>
 </html>
