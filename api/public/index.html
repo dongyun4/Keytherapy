@@ -1838,9 +1838,6 @@ body.layout-collapsed.freestyle-mode-active .main-content {
       문의: <a href="mailto:keytherapy@naver.com">keytherapy@naver.com</a>
       <button id="copyEmailBtn" title="이메일 주소 복사"><i class="far fa-copy"></i></button>
     </p>
-    <p id="visitor-counter" style="margin-top: 15px; opacity: 0.7; display: none;">
-      총 방문자: <span id="visitor-counter-value">...</span>
-    </p>
   </div>
 
   <div id="helpModal">
@@ -6478,76 +6475,18 @@ async function shareResult() {
         }
 
         function applyTheme(theme) {
-    document.body.classList.remove('light-theme', 'pink-theme');
-    if (theme === 'light') document.body.classList.add('light-theme');
-    else if (theme === 'pink') document.body.classList.add('pink-theme');
+            document.body.classList.remove('light-theme', 'pink-theme');
+            if (theme === 'light') document.body.classList.add('light-theme');
+            else if (theme === 'pink') document.body.classList.add('pink-theme');
 
-    if (gameCanvas && currentGameType) {
-        requestAnimationFrame(() => {
-            if (currentGameType === 'rainfall') drawRainfallGame();
-            else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
-            else if (currentGameType === 'giantBattle') drawGiantBattleGame();
-        });
-    }
-}
-
-async function updateVisitorCount() {
-  const counterElement = document.getElementById('visitor-counter-value');
-  if (!counterElement) return;
-
-  // HITS 서비스의 올바른 API 주소 형식입니다.
-  const apiUrl = 'https://hits.seeyoufarm.com/api/count/incr/edge.json';
-  const siteUrl = 'https://keytherapy.vercel.app';
-
-  try {
-    // API에 POST 방식으로 요청을 보냅니다.
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // body에 사이트 URL을 담아 보냅니다.
-      body: JSON.stringify({ url: siteUrl }),
-    });
-
-    const data = await response.json();
-
-    if (data.value) {
-      counterElement.textContent = data.value.toLocaleString();
-    } else {
-      throw new Error('Invalid response format from HITS API');
-    }
-  } catch (error) {
-    console.error('방문자 수를 가져오는 데 실패했습니다:', error);
-    counterElement.textContent = 'Error';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    // ... (기존 DOMContentLoaded 리스너 내용은 동일) ...
-
-    // ▼▼▼▼▼ DOMContentLoaded 리스너 끝 부분에 함수 호출 추가 ▼▼▼▼▼
-    updateVisitorCount(); 
-    // ▲▲▲▲▲ 여기까지 추가 ▲▲▲▲▲
-});
-
-document.addEventListener('keydown', (e) => {
-    // ... (기존 keydown 리스너 내용은 동일) ...
-    
-    // ▼▼▼▼▼ keydown 리스너 안에 비밀 키 감지 로직 추가 ▼▼▼▼▼
-    if (e.ctrlKey && e.altKey && (e.key === 'v' || e.key === 'V')) {
-        e.preventDefault();
-        const counterElement = document.getElementById('visitor-counter');
-        if (counterElement) {
-            if (counterElement.style.display === 'none') {
-                counterElement.style.display = 'block';
-            } else {
-                counterElement.style.display = 'none';
+            if (gameCanvas && currentGameType) {
+                requestAnimationFrame(() => {
+                    if (currentGameType === 'rainfall') drawRainfallGame();
+                    else if (currentGameType === 'letterBlockBattle') drawLetterBlockBattleGame();
+                    else if (currentGameType === 'giantBattle') drawGiantBattleGame();
+                });
             }
         }
-    }
-    // ▲▲▲▲▲ 여기까지 추가 ▲▲▲▲▲
-});
 </script>
 </body>
 </html>
