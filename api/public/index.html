@@ -6491,13 +6491,14 @@ async function shareResult() {
     }
 }
 
-// ▼▼▼▼▼ 방문자 카운터 함수 (새로 추가) ▼▼▼▼▼
+// ▼▼▼▼▼ 방문자 카운터 함수 (수정된 버전) ▼▼▼▼▼
 async function updateVisitorCount() {
   const counterElement = document.getElementById('visitor-counter-value');
   if (!counterElement) return;
 
   const namespace = 'keytherapy.vercel.app';
   const key = 'visits';
+  // 점(.)으로 올바르게 수정된 주소입니다.
   const apiUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
 
   try {
@@ -6510,7 +6511,6 @@ async function updateVisitorCount() {
     counterElement.textContent = 'Error';
   }
 }
-// ▲▲▲▲▲ 여기까지 추가 ▲▲▲▲▲
 
 document.addEventListener('DOMContentLoaded', () => {
     // ... (기존 DOMContentLoaded 리스너 내용은 동일) ...
