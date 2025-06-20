@@ -6491,21 +6491,24 @@ async function shareResult() {
     }
 }
 
-// ▼▼▼▼▼ 방문자 카운터 함수 (수정된 버전) ▼▼▼▼▼
 async function updateVisitorCount() {
   const counterElement = document.getElementById('visitor-counter-value');
   if (!counterElement) return;
 
-  const namespace = 'keytherapy.vercel.app';
-  const key = 'visits';
-  // 점(.)으로 올바르게 수정된 주소입니다.
-  const apiUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+  // HITS 서비스는 전체 URL을 기반으로 카운트합니다.
+  const targetUrl = 'https://keytherapy.vercel.app';
+  const apiUrl = `https://hits.seeyoufarm.com/api/count/incr/edge/url/${encodeURIComponent(targetUrl)}/hit.json`;
 
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
     
-    counterElement.textContent = data.value.toLocaleString();
+    // HITS는 value 필드에 숫자를 담아 반환합니다.
+    if (data.value) {
+        counterElement.textContent = data.value.toLocaleString();
+    } else {
+        throw new Error('Invalid response format');
+    }
   } catch (error) {
     console.error('방문자 수를 가져오는 데 실패했습니다:', error);
     counterElement.textContent = 'Error';
