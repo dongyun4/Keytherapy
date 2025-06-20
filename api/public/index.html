@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <meta name="naver-site-verification" content="a8106e0cbefd36468e543556b1a32d52aa11f6a6" />
+  <meta name="naver-site-verification" content="8618ed275af69bb1d516d2b1c3cf358ddfa91dd3" />
   <title>Key Therapy - 온라인 타자연습 & 게임</title>
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1060,15 +1060,18 @@
         text-shadow: 0 1px 4px rgba(0,0,0,0.25);
     }
     .result-card-stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 25px;
-        text-align: left;
-    }
-    .result-card-stats .stat-item {
-        font-size: 1.1em;
-    }
+    display: flex; /* [수정] Grid 대신 Flexbox를 사용하여 유연한 정렬을 구현합니다. */
+    flex-wrap: wrap; /* 공간이 부족하면 자동으로 줄바꿈 처리합니다. */
+    justify-content: space-around; /* 항목들을 수평으로 균등하게 분배합니다. */
+    gap: 10px 15px; /* 세로/가로 간격 */
+    margin-bottom: 25px;
+}
+.result-card-stats .stat-item {
+    font-size: 1.1em;
+    text-align: center; /* [추가] 각 항목의 텍스트를 중앙 정렬합니다. */
+    flex-grow: 1; /* [추가] 항목들이 가용한 공간을 채우도록 합니다. */
+    min-width: 140px; /* [추가] 항목이 너무 좁아지는 것을 방지합니다. */
+}
     .result-card-stats .stat-item .label {
         color: var(--text-secondary);
         font-size: 0.9em;
@@ -1744,9 +1747,6 @@ body.layout-collapsed.freestyle-mode-active .main-content {
                 <div class="feature-toggles control-button-group">
                     <button id="toggleSoundBtn"><i class="fas fa-volume-mute"></i> 타건음 OFF</button>
                     <button id="toggleHighlightBtn" class="active"><i class="fas fa-highlighter"></i> 오타체크 ON</button>
-                    <!-- ==================== ▼▼▼ 1. HTML 버튼 추가 ▼▼▼ ==================== -->
-                    <button id="toggleAutoCompleteBtn"><i class="fas fa-magic"></i> 특수기호 자동완성 OFF</button>
-                    <!-- ==================== ▲▲▲ 1. HTML 버튼 추가 ▲▲▲ ==================== -->
                     <button id="toggleStatsBtn" class="active"><i class="fas fa-chart-line"></i> 측정 ON</button>
                     <button id="toggleKeyboardGuideBtn"><i class="far fa-keyboard"></i> 자리연습 OFF</button>
                 </div>
@@ -1851,7 +1851,8 @@ body.layout-collapsed.freestyle-mode-active .main-content {
       결과가 클립보드에 복사되었습니다!
   </div>
 
-      <div id="shortcut-help-container">
+      <!-- 수정된 코드 -->
+<div id="shortcut-help-container">
     <div class="shortcut-tooltip">
         <strong>단축키 안내</strong><br>
         <p><b>Esc</b><span>: 메뉴 숨기기/펼치기</span></p>
@@ -1860,14 +1861,13 @@ body.layout-collapsed.freestyle-mode-active .main-content {
         <p><b>Alt + ←</b><span>: 이전 글</span></p>
         <p><b>Alt + '</b><span>: 다음 타건음</span></p>
         <p><b>Alt + ;</b><span>: 이전 타건음</span></p>
-        <p><b>Alt + N</b><span>: 타건음 ON/OFF</span></p>
-        <p><b>Alt + M</b><span>: 오타체크 ON/OFF</span></p>
-        <p><b>Alt + ,</b><span>: 특수기호 자동 ON/OFF</span></p>
+        <p><b>Alt + M</b><span>: 타건음 ON/OFF</span></p>
+        <p><b>Alt + ,</b><span>: 오타체크 ON/OFF</span></p>
         <p><b>Alt + .</b><span>: 측정 ON/OFF</span></p>
         <p><b>Alt + /</b><span>: 자리연습 ON/OFF</span></p>
     </div>
     <i class="fas fa-question-circle"></i>
-  </div>
+</div>
 
 <script>
 let currentMode = '';
@@ -1895,7 +1895,7 @@ let highlightEnabled = true;
 let statsVisible = true;
 let keyboardGuideEnabled = false;
 let layoutCollapsed = false;
-let autoCompleteEnabled = false; 
+let autoCompleteEnabled = true; 
 let isProgrammaticallyChangingInput = false;
 let isComposingNow = false;
 let freestyleStatsInterval = null;
@@ -1906,9 +1906,6 @@ let charCountEl, wordCountEl;
 let longTextSelectContainerEl, longTextSelectEl, practiceTitleDisplayEl;
 
 let languageSelectEl, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, toggleLayoutBtn;
-// ==================== ▼▼▼ 2. JS 전역 변수 추가 ▼▼▼ ====================
-let toggleAutoCompleteBtn;
-// ==================== ▲▲▲ 2. JS 전역 변수 추가 ▲▲▲ ====================
 let languageSelectLabelEl;
 let progressBarContainerEl, progressBarEl;
 let gameAreaContainerEl, gameCanvas, gameCtx, gameInputField, gameStartMessageEl, itemEffectPopupEl;
@@ -2173,7 +2170,7 @@ const sentencePool = {
     "한 걸음만 더 가면 될 것 같은데, 그 한 걸음이 내딛기 힘들다.",
     "묵묵히 흐르는 강물을 보며, 내 마음도 흘려보내고 싶었다.",
     "오늘 본 하늘은 꼭 너의 눈동자 색을 닮았더라.",
-    "'다음에 밥 한번 먹자'는 인사가 제일 서글프게 들릴 때가 있다.",
+    "다음에 밥 한번 먹자는 인사가 제일 서글프게 들릴 때가 있다.",
     "늦은 밤 엄마의 기침 소리에, 가슴 한쪽이 철렁 내려앉았다.",
     "먼 훗날, 오늘을 떠올리며 웃을 수 있는 날이 오겠지?",
     "너와의 추억이 담긴 상자를 열었다. 먼지가 쌓여 있었다.",
@@ -2208,7 +2205,7 @@ const sentencePool = {
     "혼자 마시는 술이 늘었다. 털어놓을 곳이 없어서겠지.",
     "바람이 참 시원하다. 내 복잡한 마음도 씻어주면 좋을 텐데.",
     "너 없는 사계절은, 색깔 없는 풍경화 같았다.",
-    "'힘내'라는 말보다 '힘들지?'라는 말이 더 위로가 될 때가 있다.",
+    "힘내라는 말보다 '힘들지?'라는 말이 더 위로가 될 때가 있다.",
     "내가 나를 사랑해 줘야 하는데, 그게 제일 어려운 것 같다.",
     "해 질 녘 노을을 보면, 왠지 모르게 눈물이 날 것 같다.",
     "잊혀진다는 건, 어떤 기분일까. 문득 두려워졌다.",
@@ -2681,7 +2678,6 @@ const sentencePool = {
     "행복은 전염된다. 내가 먼저 행복한 사람이 되어주자.",
     "다른 사람의 속도와 내 속도를 비교하지 않는다. 나는 내 길을 간다.",
     "나는 내 인생의 유일한 조종사다. 목적지는 내가 정한다.",
-    "인생은 B와 D 사이의 C. 출생과 죽음 사이의 선택이다.",
     "가장 큰 용서는, 완벽하지 않은 나 자신을 용서하는 것이다.",
     "행복은 덧셈이 아니라 뺄셈. 불필요한 것들을 덜어낼 때 찾아온다.",
     "나를 믿어주는 단 한 사람, 그게 나 자신이라면 충분하다.",
@@ -3067,9 +3063,6 @@ document.addEventListener('DOMContentLoaded', () => {
   languageSelectLabelEl = document.getElementById('languageSelectLabel');
   toggleSoundBtn = document.getElementById('toggleSoundBtn');
   toggleHighlightBtn = document.getElementById('toggleHighlightBtn');
-  // ==================== ▼▼▼ 3. JS 초기화 로직 수정 ▼▼▼ ====================
-  toggleAutoCompleteBtn = document.getElementById('toggleAutoCompleteBtn');
-  // ==================== ▲▲▲ 3. JS 초기화 로직 수정 ▲▲▲ ====================
   toggleLayoutBtn = document.getElementById('toggleLayoutBtn');
   lineDisplayArea = document.getElementById('line-display-area');
   typingInputField = document.getElementById('typing-input-field');
@@ -3110,7 +3103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   themeSettingsEl = document.getElementById('themeSettingsElement');
   mainControlsEl = document.querySelector('.main-controls');
 
-  const allElements = [languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, toggleAutoCompleteBtn, toggleLayoutBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl, freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl, freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker, copyAllBtn, clearAllBtn, insertHrBtn, charCountEl, wordCountEl, helpModal, helpModalBody, helpModalClose, longTextSelectContainerEl, longTextSelectEl, practiceTitleDisplayEl];
+  const allElements = [languageSelectEl, lineDisplayArea, typingInputField, fakeInputField, toggleSoundBtn, toggleHighlightBtn, toggleLayoutBtn, resultEl, upcomingLinesArea, soundPackSelectEl, themeSelectEl, toggleStatsBtn, gameModeBtnEl, progressBarContainerEl, progressBarEl, statsEl, gameAreaContainerEl, soundSettingsEl, themeSettingsEl, mainControlsEl, toggleKeyboardGuideBtn, keyboardGuideEl, freestyleAreaContainerEl, freestyleInputAreaEl, downloadFreestyleBtnEl, freestyleFilenameInputEl, freestyleToolbarEl, insertDateBtn, insertTimeBtn, emojiBtn, emojiPicker, copyAllBtn, clearAllBtn, insertHrBtn, charCountEl, wordCountEl, helpModal, helpModalBody, helpModalClose, longTextSelectContainerEl, longTextSelectEl, practiceTitleDisplayEl];
   if (!allElements.every(el => el)) {
       console.error("하나 이상의 필수 HTML 요소를 찾을 수 없습니다. 누락된 요소를 확인해주세요.");
       if (resultEl) resultEl.textContent = "페이지 로딩 오류.";
@@ -3249,13 +3242,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
   });
-  // ==================== ▼▼▼ 3. JS 초기화 로직 수정 ▼▼▼ ====================
-  toggleAutoCompleteBtn.addEventListener('click', () => {
-    autoCompleteEnabled = !autoCompleteEnabled;
-    updateAutoCompleteButton();
-    localStorage.setItem('autoCompleteEnabled', autoCompleteEnabled);
-  });
-  // ==================== ▲▲▲ 3. JS 초기화 로직 수정 ▲▲▲ ====================
   soundPackSelectEl.addEventListener('change', (event) => {
     currentSoundPack = event.target.value;
     initializeAudioPoolForPack(currentSoundPack);
@@ -3373,77 +3359,75 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.altKey) {
         e.preventDefault();
 
-                       switch (e.key.toLowerCase()) { // 대소문자 구분 없이 처리하기 위해 toLowerCase() 추가
-            // === 네비게이션 단축키 ===
-            case 'arrowdown':
-                if (currentMode === 'game' && currentGameType) {
-                    if (!isOverlayVisible) {
-                        handleGameEnd(false, 'level_change'); // 게임 레벨 변경 시 재시작
-                    }
-                } else if (currentMode !== 'freestyle') {
-                    restartCurrentPractice(); // 현재 연습 다시 시작
-                }
-                break;
-            
-            case 'arrowright':
-                if (currentMode === 'game' && currentGameType) {
-                    if (!isOverlayVisible) changeGameLevel(1);
-                } else if (currentMode.endsWith('Long')) {
-                    changeLongText(1);
-                } else if (currentMode !== 'freestyle') {
-                    startPractice(currentMode, false);
-                }
-                break;
-
-            case 'arrowleft':
-                if (currentMode === 'game' && currentGameType) {
-                    if (!isOverlayVisible) changeGameLevel(-1);
-                } else if (currentMode.endsWith('Long')) {
-                    changeLongText(-1);
-                } else if (currentMode !== 'freestyle') {
-                    startPractice(currentMode, false);
-                }
-                break;
-
-            // === 기능 토글 단축키 ===
-            case "'": // 다음 타건음
-                if (soundPackSelectEl) {
-                    let currentIndex = soundPackSelectEl.selectedIndex;
-                    let nextIndex = (currentIndex + 1) % soundPackSelectEl.options.length;
-                    soundPackSelectEl.selectedIndex = nextIndex;
-                    soundPackSelectEl.dispatchEvent(new Event('change'));
-                }
-                break;
-                
-            case ';': // 이전 타건음
-                if (soundPackSelectEl) {
-                    let currentIndex = soundPackSelectEl.selectedIndex;
-                    let prevIndex = (currentIndex - 1 + soundPackSelectEl.options.length) % soundPackSelectEl.options.length;
-                    soundPackSelectEl.selectedIndex = prevIndex;
-                    soundPackSelectEl.dispatchEvent(new Event('change'));
-                }
-                break;
-            
-            case 'n': // [변경] 타건음 ON/OFF
-                if (toggleSoundBtn) toggleSoundBtn.click();
-                break;
-
-            case 'm': // [변경] 오타체크 ON/OFF
-                if (toggleHighlightBtn) toggleHighlightBtn.click();
-                break;
-
-            case ',': // [추가] 특수기호 자동 ON/OFF
-                if (toggleAutoCompleteBtn) toggleAutoCompleteBtn.click();
-                break;
-                
-            case '.': // 측정 ON/OFF
-                if (toggleStatsBtn) toggleStatsBtn.click();
-                break;
-
-            case '/': // 자리연습 ON/OFF
-                if (toggleKeyboardGuideBtn) toggleKeyboardGuideBtn.click();
-                break;
+                       // 수정된 코드
+switch (e.key.toLowerCase()) { // 대소문자 구분 없이 처리하기 위해 toLowerCase() 추가
+    // === 네비게이션 단축키 ===
+    case 'arrowdown':
+        if (currentMode === 'game' && currentGameType) {
+            if (!isOverlayVisible) {
+                handleGameEnd(false, 'level_change'); // 게임 레벨 변경 시 재시작
+            }
+        } else if (currentMode !== 'freestyle') {
+            restartCurrentPractice(); // 현재 연습 다시 시작
         }
+        break;
+    
+    case 'arrowright':
+        if (currentMode === 'game' && currentGameType) {
+            if (!isOverlayVisible) changeGameLevel(1);
+        } else if (currentMode.endsWith('Long')) {
+            changeLongText(1);
+        } else if (currentMode !== 'freestyle') {
+            startPractice(currentMode, false);
+        }
+        break;
+
+    case 'arrowleft':
+        if (currentMode === 'game' && currentGameType) {
+            if (!isOverlayVisible) changeGameLevel(-1);
+        } else if (currentMode.endsWith('Long')) {
+            changeLongText(-1);
+        } else if (currentMode !== 'freestyle') {
+            startPractice(currentMode, false);
+        }
+        break;
+
+    // === 기능 토글 단축키 ===
+    case "'": // 다음 타건음
+        if (soundPackSelectEl) {
+            let currentIndex = soundPackSelectEl.selectedIndex;
+            let nextIndex = (currentIndex + 1) % soundPackSelectEl.options.length;
+            soundPackSelectEl.selectedIndex = nextIndex;
+            soundPackSelectEl.dispatchEvent(new Event('change'));
+        }
+        break;
+        
+    case ';': // 이전 타건음
+        if (soundPackSelectEl) {
+            let currentIndex = soundPackSelectEl.selectedIndex;
+            let prevIndex = (currentIndex - 1 + soundPackSelectEl.options.length) % soundPackSelectEl.options.length;
+            soundPackSelectEl.selectedIndex = prevIndex;
+            soundPackSelectEl.dispatchEvent(new Event('change'));
+        }
+        break;
+    
+    // [수정된 단축키]
+    case 'm': // 타건음 ON/OFF (기존 Alt+N에서 변경)
+        if (toggleSoundBtn) toggleSoundBtn.click();
+        break;
+
+    case ',': // 오타체크 ON/OFF (새로 할당)
+        if (toggleHighlightBtn) toggleHighlightBtn.click();
+        break;
+    
+    case '.': // 측정 ON/OFF (유지)
+        if (toggleStatsBtn) toggleStatsBtn.click();
+        break;
+
+    case '/': // 자리연습 ON/OFF (유지)
+        if (toggleKeyboardGuideBtn) toggleKeyboardGuideBtn.click();
+        break;
+}
     }
   });
 
@@ -3453,12 +3437,6 @@ document.addEventListener('DOMContentLoaded', () => {
       updateLayout();
   }
   
-  // ==================== ▼▼▼ 3. JS 초기화 로직 수정 ▼▼▼ ====================
-  const savedAutoComplete = localStorage.getItem('autoCompleteEnabled') === 'true';
-  autoCompleteEnabled = savedAutoComplete;
-  updateAutoCompleteButton();
-  // ==================== ▲▲▲ 3. JS 초기화 로직 수정 ▲▲▲ ====================
-  
   window.addEventListener('resize', alignInputField);
 
   startPractice('kor', true);
@@ -3466,16 +3444,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('no-transition');
   }, 100);
 });
-
-// ==================== ▼▼▼ 3. JS 초기화 로직 수정 (함수 추가) ▼▼▼ ====================
-function updateAutoCompleteButton() {
-    if (!toggleAutoCompleteBtn) return;
-    toggleAutoCompleteBtn.classList.toggle('active', autoCompleteEnabled);
-    toggleAutoCompleteBtn.innerHTML = autoCompleteEnabled 
-        ? '<i class="fas fa-magic"></i> 특수기호 자동 ON' 
-        : '<i class="fas fa-wand-sparkles"></i> 특수문자 자동 OFF';
-}
-// ==================== ▲▲▲ 3. JS 초기화 로직 수정 (함수 추가) ▲▲▲ ====================
 
 function applyFontFamily(family) {
     const root = document.documentElement;
@@ -3503,21 +3471,17 @@ function cleanupActiveModes() {
     if(gameInputField) gameInputField.removeEventListener('keydown', handleKeyDownEvent);
     enablePracticeControls();
 }
-// ==================== ▼▼▼ 5. 모드별 버튼 활성화/비활성화 처리 ▼▼▼ ====================
 function disableFreestyleControls() {
     toggleHighlightBtn.classList.add('disabled');
     toggleKeyboardGuideBtn.classList.add('disabled');
-    toggleAutoCompleteBtn.classList.add('disabled'); // 버튼 비활성화 추가
     languageSelectEl.closest('.language-settings').classList.add('disabled');
 }
 
 function enablePracticeControls() {
     toggleHighlightBtn.classList.remove('disabled');
     toggleKeyboardGuideBtn.classList.remove('disabled');
-    toggleAutoCompleteBtn.classList.remove('disabled'); // 버튼 활성화 추가
     languageSelectEl.closest('.language-settings').classList.remove('disabled');
 }
-// ==================== ▲▲▲ 5. 모드별 버튼 활성화/비활성화 처리 ▲▲▲ ====================
 function populateLongTextDropdown(lang) {
     const source = sentencePool[lang + 'Long'];
     if (!longTextSelectEl || !source) return;
@@ -3911,12 +3875,12 @@ function renderTypingLayout() {
     alignInputField();
 }
 
-// ▼▼▼ 아래 코드 묶음 전체(함수 7개)를 복사해서 붙여넣으세요 ▼▼▼
-
 function isSpecialCharacter(char) {
     return /[.,?!;:'"(){}[\]\/\-=\+_`~@#$%^&*|\\<>]/.test(char);
 }
-
+function isSpecialCharacterForAutoComplete(char) {
+    return /[.,?!;:'"(){}[\]\/\-=\+_`~@#$%^&*|\\<>]/.test(char);
+}
 function formatCodeLineForDisplay(line) {
     if (!line) return '';
     const isCodeMode = currentMode.startsWith('js') || currentMode.startsWith('python');
@@ -3952,13 +3916,6 @@ function updateFakeInput(typedValue, isReset = false) {
     }
 }
 
-
-/**
- * [최종 아키텍처] 모든 타이핑 분석을 통합 처리하는 마스터 함수.
- * @param {string} typedValue - 사용자가 입력한 문자열
- * @param {string} originalLine - 원본 문자열
- * @returns {{html: string, effectiveIndex: number, correctChars: number}} - 분석 결과 객체
- */
 function getTypingAnalysis(typedValue, originalLine) {
     if (!originalLine) {
         return { html: `<span class="highlight">${typedValue}</span>`, effectiveIndex: 0, correctChars: 0 };
@@ -3979,8 +3936,8 @@ function getTypingAnalysis(typedValue, originalLine) {
     while (typedIdx < typedValue.length && originalIdx < originalLine.length) {
         const originalChar = originalLine[originalIdx];
         const typedChar = typedValue[typedIdx];
-        const safeOriginalChar = originalChar.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/ /g, ' ');
-        const safeTypedChar = typedChar.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/ /g, ' ');
+        const safeOriginalChar = originalChar.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/ /g, ' ');
+        const safeTypedChar = typedChar.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/ /g, ' ');
         
         const errorTag = highlightEnabled ? 'span' : 'strong';
         const highlightClass = highlightEnabled ? 'highlight' : '';
@@ -4022,7 +3979,8 @@ function getTypingAnalysis(typedValue, originalLine) {
     return { html: builtHTML, effectiveIndex: originalIdx, correctChars: correctChars };
 }
 
-
+// ▼▼▼▼▼ 기존 handleInputEvent 함수 ▼▼▼▼▼
+// ▼▼▼▼▼ 이 함수 전체를 복사해서 기존 함수와 교체하세요. ▼▼▼▼▼
 function handleInputEvent(e) {
     if (isProgrammaticallyChangingInput) {
         return;
@@ -4034,7 +3992,7 @@ function handleInputEvent(e) {
         const typedValue = e.target.value;
         const originalLine = linesToPractice[currentDisplayLineIndex] || "";
 
-        // --- 1. [핵심] 모든 시각적 업데이트는 항상 즉시 실행 ---
+        // --- 1. 시각적 업데이트는 항상 즉시 실행 ---
         const analysis = getTypingAnalysis(typedValue, originalLine);
         
         const currentLineEl = document.getElementById('current-typing-line');
@@ -4043,16 +4001,14 @@ function handleInputEvent(e) {
             if (innerSpan) innerSpan.innerHTML = analysis.html;
         }
         updateFakeInput(typedValue, false);
-        updateKeyboardHighlight(); // 이 함수가 항상 실행되어야 모음도 추천됩니다.
+        updateKeyboardHighlight();
 
-        // --- 2. 한글 조합 중이라면, 여기서 실행을 멈춥니다. ---
+        // --- 2. 한글 조합 중이라면 여기서 실행을 멈춤 ---
         if (isComposingNow) {
             return;
         }
         
-        // --- 3. 조합이 끝난 후에만 아래의 기능적 로직을 실행합니다. ---
-        
-        // 통계 업데이트
+        // --- 3. 조합이 끝난 후에만 아래의 기능적 로직을 실행 ---
         if (typedValue.length > 0) {
             if (!startTime) startTime = Date.now();
             if (originalLine && !currentLineStartTime) currentLineStartTime = Date.now();
@@ -4060,38 +4016,62 @@ function handleInputEvent(e) {
         } else if (startTime && typedValue.length === 0) {
             updateStatsDisplay(false);
         }
-
-        // 자동 완성 로직
-        const effectiveIndex = analysis.effectiveIndex;
-        const isDeletion = e.inputType && e.inputType.startsWith('delete');
         
-        if (autoCompleteEnabled && !isDeletion && typedValue.length > 0) {
-            if (effectiveIndex < originalLine.length) {
-                const nextCharInOriginal = originalLine[effectiveIndex];
-                if (isSpecialCharacter(nextCharInOriginal)) {
-                    let textToAppend = "";
-                    let lookaheadIndex = effectiveIndex;
-                    while (lookaheadIndex < originalLine.length && isSpecialCharacter(originalLine[lookaheadIndex])) {
-                        textToAppend += originalLine[lookaheadIndex];
-                        lookaheadIndex++;
-                    }
-                    if (textToAppend.length > 0) {
-                        isProgrammaticallyChangingInput = true;
-                        const newTypedValue = typedValue + textToAppend;
-                        typingInputField.value = newTypedValue;
-                        isProgrammaticallyChangingInput = false;
+        // [핵심 수정] 모든 입력 후, 입력값과 원본이 정확히 일치하는지 확인
+        if (typedValue === originalLine) {
+            processCurrentLineCompletion();
+            return; // 일치하면 즉시 함수를 종료하여 아래 로직을 타지 않도록 함
+        }
 
-                        const newAnalysis = getTypingAnalysis(newTypedValue, originalLine);
-                        const innerSpan = document.querySelector('#current-typing-line span');
-                        if (innerSpan) innerSpan.innerHTML = newAnalysis.html;
-                        updateFakeInput(newTypedValue, false);
-                    }
+        // ▼▼▼▼▼ [스페이스바를 이용한 중간 특수문자 자동 완성 로직] ▼▼▼▼▼
+        const isDeletion = e.inputType && e.inputType.startsWith('delete');
+        const justTypedSpace = typedValue.endsWith(' ');
+
+        if (autoCompleteEnabled && !isDeletion && justTypedSpace) {
+            const baseTyped = typedValue.slice(0, -1);
+            const analysisForBase = getTypingAnalysis(baseTyped, originalLine);
+            let startIndex = analysisForBase.effectiveIndex;
+            let textToAppend = "";
+
+            while (startIndex < originalLine.length && isSpecialCharacterForAutoComplete(originalLine[startIndex])) {
+                textToAppend += originalLine[startIndex];
+                startIndex++;
+            }
+
+            if (textToAppend.length > 0) {
+                isProgrammaticallyChangingInput = true;
+                
+                const isLineNowComplete = (analysisForBase.effectiveIndex + textToAppend.length === originalLine.length);
+
+                if (isLineNowComplete) {
+                    typingInputField.value = baseTyped + textToAppend;
+                    processCurrentLineCompletion(); 
+                    
+                    setTimeout(() => {
+                        isProgrammaticallyChangingInput = false;
+                    }, 0);
+                    return;
+                } else {
+                    const finalReplacement = textToAppend + ' ';
+                    const newTypedValue = baseTyped + finalReplacement;
+                    
+                    typingInputField.value = newTypedValue;
+                    
+                    const newAnalysis = getTypingAnalysis(newTypedValue, originalLine);
+                    const innerSpan = document.querySelector('#current-typing-line span');
+                    if (innerSpan) innerSpan.innerHTML = newAnalysis.html;
+                    updateFakeInput(newTypedValue, false);
+                    updateKeyboardHighlight();
+
+                    setTimeout(() => {
+                        isProgrammaticallyChangingInput = false;
+                    }, 0);
                 }
             }
         }
+        // ▲▲▲▲▲ [자동 완성 로직 끝] ▲▲▲▲▲
     }
 }
-
 function handleKeyDownEvent(e) {
     if (e.isComposing) return;
     playTypingSound();
@@ -4131,16 +4111,20 @@ function handleKeyDownEvent(e) {
     }
 }
 
+// ▼▼▼▼▼ 이 함수 전체를 복사해서 기존 함수와 교체하세요. ▼▼▼▼▼
+
 function processCurrentLineCompletion() {
     const typedValue = typingInputField.value;
     if (currentDisplayLineIndex >= linesToPractice.length) {
-        startPractice(currentMode, false); return;
+        // 이미 연습이 끝난 상태에서 Enter를 누르면 새 연습 시작
+        startPractice(currentMode, true); // 새 연습은 통계 리셋
+        return;
     }
     const originalLine = linesToPractice[currentDisplayLineIndex];
     if (originalLine === null || originalLine === undefined) {
         currentDisplayLineIndex++;
         if (currentDisplayLineIndex < linesToPractice.length) renderTypingLayout();
-        else startPractice(currentMode, false);
+        else startPractice(currentMode, true); // 새 연습은 통계 리셋
         return;
     }
 
@@ -4181,6 +4165,7 @@ function processCurrentLineCompletion() {
         currentArticleCorrectChars = 0;
         startTime = null;
     }
+
     if (currentDisplayLineIndex < linesToPractice.length) {
         renderTypingLayout();
         updateKeyboardHighlight();
@@ -4189,13 +4174,15 @@ function processCurrentLineCompletion() {
         updateProgressBar();
         setTimeout(() => { if(typingInputField) typingInputField.focus(); }, 50);
     } else {
+        // 모든 줄이 끝났을 때
         updateStatsDisplay(false);
         updateProgressBar();
+
         if (currentMode.endsWith('Long')) {
             const finalAccuracy = sessionTotalValidChars > 0 ? Math.round((sessionTotalCorrectChars / sessionTotalValidChars) * 100) : 0;
             const avgSpeed = overallAvgSpeedLog.length > 0 ? Math.round(overallAvgSpeedLog.reduce((a, b) => a + b, 0) / overallAvgSpeedLog.length) : 0;
             
-            showResultOverlay({
+            const resultData = {
                 type: 'practice',
                 title: '연습 완료!',
                 stats: {
@@ -4203,20 +4190,28 @@ function processCurrentLineCompletion() {
                     "최고 속도": `${overallMaxSpeed} 타/분`,
                     "정확도": `${finalAccuracy}%`
                 },
-                nextAction: () => startPractice(currentMode, false),
-                nextActionText: "다시하기 (Enter)"
-            });
+                nextAction: () => {
+                    if (longTextSelectEl) {
+                        longTextSelectEl.value = "-1";
+                    }
+                    startPractice(currentMode, true);
+                },
+                nextActionText: "다음 글 (Enter)"
+            };
+            
+            showResultOverlay(resultData);
+            
             currentArticleCorrectChars = 0;
             startTime = null;
         } else {
             if(resultEl) resultEl.textContent = '연습 완료! 새로운 문제 준비 중...';
+            // [핵심 변경] 단문 연습이 끝나고 다음 문제로 넘어갈 때, 세션 통계를 유지하도록 false로 변경
             setTimeout(() => startPractice(currentMode, false), 200);
         }
     }
 }
 
-// ▲▲▲ 여기까지가 한 묶음 ▲▲▲
-
+// ▼▼▼▼▼ 이 함수 전체를 복사해서 기존 함수와 교체하세요. ▼▼▼▼▼
 function updateStatsDisplay(isSessionReset = false) {
   const statsElements = {
     speed: document.getElementById('speedStat'),
@@ -4225,12 +4220,13 @@ function updateStatsDisplay(isSessionReset = false) {
     max: document.getElementById('maxSpeedStat')
   };
   if (!Object.values(statsElements).every(el => el)) return;
+
   let currentSpeedToShow = 0;
   if (isSessionReset) {
+      // 세션이 완전히 리셋될 때 (예: 모드 변경) 모든 값을 0으로 설정
       currentSpeedToShow = 0;
-  } else if (startTime === null && !currentMode.endsWith('Long')) {
-      currentSpeedToShow = lastArticleSpeed;
   } else if (currentMode.endsWith('Long') && startTime && currentArticleCorrectChars > 0) {
+      // 장문 연습 중일 때: 실시간 타수 표시
       const elapsedMinutes = (Date.now() - startTime) / 60000;
       const speedFactor = (currentMode.startsWith('kor')) ? KOR_SPEED_FACTOR : 1;
       if (elapsedMinutes > 0.0001) {
@@ -4239,9 +4235,12 @@ function updateStatsDisplay(isSessionReset = false) {
         currentSpeedToShow = 0;
       }
   } else {
+      // 단문 연습 중이거나, 장문 연습 시작 전: 마지막으로 완료한 문장의 타수를 표시
       currentSpeedToShow = lastArticleSpeed;
   }
+
   statsElements.speed.textContent = `${currentSpeedToShow} 타/분`;
+
   let accuracy = 0;
   if (isSessionReset) {
       accuracy = 0;
@@ -4249,6 +4248,7 @@ function updateStatsDisplay(isSessionReset = false) {
       accuracy = Math.max(0, Math.min(Math.round((sessionTotalCorrectChars / sessionTotalValidChars) * 100), 100));
   }
   statsElements.accuracy.textContent = `${accuracy}%`;
+
   let finalOverallAverageSpeed = 0;
   if (isSessionReset) {
       finalOverallAverageSpeed = 0;
@@ -5297,7 +5297,6 @@ function startRainfallWordGeneration() {
                 handleGameEnd(lbb_playerScore > lbb_enemyScore, "battle");
             }
         }
-
         function checkAndTriggerPlayerLBBRelocation() {
             if(lbb_isRelocating) return;
             const surroundingBlocks = getSurroundingLBBBlocks(lbb_playerPos);
@@ -6165,9 +6164,7 @@ function startRainfallWordGeneration() {
             highlightedKeys.forEach(key => key.classList.remove('highlight-key'));
         }
 
-        // ▼▼▼ 아래의 최종 수정된 updateKeyboardHighlight 함수를 붙여넣으세요 ▼▼▼
-
-function updateKeyboardHighlight() {
+        function updateKeyboardHighlight() {
     if (!keyboardGuideEnabled || !keyboardGuideEl || currentMode === 'game' || currentMode === 'freestyle') {
         clearKeyboardHighlight();
         return;
@@ -6178,15 +6175,13 @@ function updateKeyboardHighlight() {
     const disassembledTyped = Hangul.disassemble(typingInputField.value);
     let nextCharIndex = disassembledTyped.length;
 
-    // [핵심 수정] 자동 완성이 켜져 있을 때 특수문자를 건너뛰는 로직
-    if (autoCompleteEnabled) {
-        while (
-            nextCharIndex < disassembledLine.length &&
-            isSpecialCharacter(disassembledLine[nextCharIndex])
-        ) {
-            // 다음 글자가 특수문자이면, 인덱스를 1 증가시켜 건너뜁니다.
-            nextCharIndex++;
-        }
+    // 자동 완성이 항상 켜져 있으므로, 특수문자를 건너뛰는 로직을 항상 실행합니다.
+    while (
+        nextCharIndex < disassembledLine.length &&
+        isSpecialCharacter(disassembledLine[nextCharIndex])
+    ) {
+        // 다음 글자가 특수문자이면, 인덱스를 1 증가시켜 건너뜁니다.
+        nextCharIndex++;
     }
 
     // 모든 추천 과정을 건너뛰고 문장의 끝에 도달했다면, 함수를 종료합니다.
@@ -6291,105 +6286,142 @@ function updateKeyboardHighlight() {
             else if (currentGameType === 'letterBlockBattle') lbb_gamePausedForOverlay = false;
             else if (currentGameType === 'giantBattle') gb_gamePausedForOverlay = false;
         }
-        async function shareResult() {
-            if (!window.gameResultData) {
-                showSharePopup('공유할 결과 데이터가 없습니다.');
-                return;
-            }
+        // ▼▼▼▼▼ 이 함수 전체를 복사해서 기존 함수와 교체하세요. ▼▼▼▼▼
+async function shareResult() {
+    if (!window.gameResultData) {
+        showSharePopup('공유할 결과 데이터가 없습니다.');
+        return;
+    }
 
-            const resultData = window.gameResultData;
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+    const resultData = window.gameResultData;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
-            const width = 500;
-            const height = 280;
-            const padding = 30;
-            const borderRadius = 12;
+    const width = 500;
+    const height = 340; // [수정] 이미지 세로 길이 증가 (280 -> 340)
+    const padding = 30;
+    const borderRadius = 12;
 
-            canvas.width = width;
-            canvas.height = height;
+    canvas.width = width;
+    canvas.height = height;
 
-            const theme = document.body.classList.contains('light-theme') ? 'light' : (document.body.classList.contains('pink-theme') ? 'pink' : 'dark');
-            
-            const colors = {
-                dark: { bg: '#2a2826', text: '#e8e0d8', accent: '#d4af7a', secondary: '#b2aca2' },
-                light: { bg: '#fff', text: '#524a42', accent: '#b89a6c', secondary: '#756A5F' },
-                pink: { bg: '#ffffff', text: '#4F333D', accent: '#E85D75', secondary: '#735A64' }
-            };
-            const currentTheme = colors[theme];
-            
-            ctx.fillStyle = currentTheme.bg;
-            ctx.beginPath();
-            ctx.moveTo(borderRadius, 0);
-            ctx.lineTo(width - borderRadius, 0);
-            ctx.quadraticCurveTo(width, 0, width, borderRadius);
-            ctx.lineTo(width, height - borderRadius);
-            ctx.quadraticCurveTo(width, height, width - borderRadius, height);
-            ctx.lineTo(borderRadius, height);
-            ctx.quadraticCurveTo(0, height, 0, height - borderRadius);
-            ctx.lineTo(0, borderRadius);
-            ctx.quadraticCurveTo(0, 0, borderRadius, 0);
-            ctx.closePath();
-            ctx.fill();
+    const theme = document.body.classList.contains('light-theme') ? 'light' : (document.body.classList.contains('pink-theme') ? 'pink' : 'dark');
+    
+    const colors = {
+        dark: { bg: '#2a2826', text: '#e8e0d8', accent: '#d4af7a', secondary: '#b2aca2' },
+        light: { bg: '#fff', text: '#524a42', accent: '#b89a6c', secondary: '#756A5F' },
+        pink: { bg: '#ffffff', text: '#4F333D', accent: '#E85D75', secondary: '#735A64' }
+    };
+    const currentTheme = colors[theme];
+    
+    ctx.fillStyle = currentTheme.bg;
+    ctx.beginPath();
+    ctx.moveTo(borderRadius, 0);
+    ctx.lineTo(width - borderRadius, 0);
+    ctx.quadraticCurveTo(width, 0, width, borderRadius);
+    ctx.lineTo(width, height - borderRadius);
+    ctx.quadraticCurveTo(width, height, width - borderRadius, height);
+    ctx.lineTo(borderRadius, height);
+    ctx.quadraticCurveTo(0, height, 0, height - borderRadius);
+    ctx.lineTo(0, borderRadius);
+    ctx.quadraticCurveTo(0, 0, borderRadius, 0);
+    ctx.closePath();
+    ctx.fill();
 
-            ctx.fillStyle = currentTheme.accent;
-            ctx.font = "bold 36px 'Playfair Display', serif";
-            ctx.textAlign = 'center';
-            ctx.fillText(resultData.title, width / 2, padding + 40);
-            
-            ctx.font = "500 18px 'Poppins', sans-serif";
-            const stats = Object.entries(resultData.stats);
-            const statY = 130;
-            const statXMargin = width / (stats.length + 1);
+    // --- 제목 그리기 ---
+    ctx.fillStyle = currentTheme.accent;
+    ctx.font = "bold 36px 'Playfair Display', serif";
+    ctx.textAlign = 'center';
+    ctx.fillText(resultData.title, width / 2, padding + 40);
 
-            stats.forEach(([key, value], index) => {
-                const x = statXMargin * (index + 1);
-                ctx.fillStyle = currentTheme.secondary;
-                ctx.fillText(key + ':', x, statY);
-                ctx.fillStyle = currentTheme.text;
-                ctx.fillText(value, x, statY + 28);
-            });
+    // --- [추가] 게임 이름 그리기 ---
+    ctx.fillStyle = currentTheme.secondary;
+    ctx.font = "normal 18px 'Poppins', sans-serif";
+    ctx.fillText(`- ${resultData.gameName} -`, width / 2, padding + 75);
+    
+    // --- 통계 그리기 ---
+    ctx.font = "500 18px 'Poppins', sans-serif";
+    const stats = Object.entries(resultData.stats);
+    const statY = 160; // [수정] 통계 위치 아래로 조정 (130 -> 160)
+    const statXMargin = width / (stats.length + 1);
 
-            canvas.toBlob(async (blob) => {
-                if (!blob) return;
-                
-                const file = new File([blob], 'keytherapy-result.png', { type: 'image/png' });
-                const shareTitle = 'Key Therapy 게임 결과';
-                const shareText = `🎉 ${resultData.title} 🎉\n\n지금 바로 Key Therapy에서 타자 실력을 확인해보세요!`;
-                const shareUrl = 'https://keytherapy.vercel.app';
+    stats.forEach(([key, value], index) => {
+        const x = statXMargin * (index + 1);
+        ctx.fillStyle = currentTheme.secondary;
+        ctx.fillText(key + ':', x, statY);
+        ctx.fillStyle = currentTheme.text;
+        ctx.fillText(value, x, statY + 30);
+    });
 
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            files: [file],
-                            title: shareTitle,
-                            text: shareText,
-                            url: shareUrl,
-                        });
-                    } catch (error) {
-                        if (error.name !== 'AbortError') {
-                            console.error('Web Share API 공유 실패:', error);
-                            showSharePopup('결과 공유에 실패했습니다.');
-                        }
-                    }
-                } else {
-                    try {
-                        const clipboardItem = new ClipboardItem({
-                            'image/png': blob,
-                            'text/plain': new Blob([`${shareTitle}\n${shareText}\n${shareUrl}`], { type: 'text/plain' })
-                        });
-                        await navigator.clipboard.write([clipboardItem]);
-                        showSharePopup('결과 이미지와 링크가 복사되었습니다!');
-                    } catch (error) {
-                        console.error('클립보드 복사 실패:', error);
-                        showSharePopup('결과 공유에 실패했습니다.');
-                    }
+    // --- [추가] 사이트 이름과 주소 (푸터) 그리기 ---
+    ctx.fillStyle = currentTheme.secondary;
+    ctx.font = "bold 16px 'Poppins', sans-serif";
+    ctx.fillText("Key Therapy", width / 2, height - padding - 30);
+
+    ctx.globalAlpha = 0.7;
+    ctx.font = "normal 12px 'Poppins', sans-serif";
+    ctx.fillText("https://keytherapy.vercel.app", width / 2, height - padding - 10);
+    ctx.globalAlpha = 1.0; // 투명도 초기화
+
+    // --- 이미지 생성 및 공유 로직 ---
+    canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        
+        const file = new File([blob], 'keytherapy-result.png', { type: 'image/png' });
+        const shareTitle = 'Key Therapy 게임 결과';
+        const shareText = `🎉 ${resultData.title} 🎉\n\n지금 바로 Key Therapy에서 타자 실력을 확인해보세요!`;
+        const shareUrl = 'https://keytherapy.vercel.app';
+
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: shareTitle,
+                    text: shareText,
+                    url: shareUrl,
+                });
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Web Share API 공유 실패:', error);
+                    showSharePopup('결과 공유에 실패했습니다.');
                 }
-            }, 'image/png');
+            }
+        } else {
+            try {
+                const clipboardItem = new ClipboardItem({
+                    'image/png': blob,
+                    'text/plain': new Blob([`${shareTitle}\n${shareText}\n${shareUrl}`], { type: 'text/plain' })
+                });
+                await navigator.clipboard.write([clipboardItem]);
+                showSharePopup('결과 이미지와 링크가 복사되었습니다!');
+            } catch (error) {
+                console.error('클립보드 복사 실패:', error);
+                showSharePopup('결과 공유에 실패했습니다.');
+            }
         }
+    }, 'image/png');
+}
 
         function showResultOverlay(resultData) {
-            if (!gameOverlayEl) return;
+            // [핵심 추가] 팝업 표시 전 타이핑 입력 필드 비활성화
+            if (typingInputField) {
+                typingInputField.disabled = true;
+            }
+
+            if (!gameOverlayEl) {
+                // gameOverlayEl이 없으면 생성
+                gameOverlayEl = document.createElement('div');
+                gameOverlayEl.id = 'gameOverlay';
+                gameOverlayEl.className = 'game-overlay';
+                
+                // main-content의 자식으로 추가해야 다른 요소들을 덮을 수 있음
+                const mainContent = document.querySelector('.main-content');
+                if(mainContent) {
+                    mainContent.appendChild(gameOverlayEl);
+                } else {
+                    document.body.appendChild(gameOverlayEl);
+                }
+            }
 
             let statsHtml = '';
             for (const [key, value] of Object.entries(resultData.stats)) {
@@ -6404,7 +6436,7 @@ function updateKeyboardHighlight() {
                     <div class="result-card-stats">${statsHtml}</div>
                     <div class="result-buttons">
                         <button id="nextStepBtnOverlay" class="game-button">${resultData.nextActionText}</button>
-                        ${shareButtonHtml}
+                        ${resultData.type === 'game' ? shareButtonHtml : ''}
                     </div>
                 </div>`;
 
@@ -6418,6 +6450,11 @@ function updateKeyboardHighlight() {
             if (nextBtn) {
                 nextBtn.addEventListener('click', () => {
                     gameOverlayEl.classList.remove('visible');
+                    // [핵심 추가] 팝업 닫힐 때 입력 필드 다시 활성화
+                    if (typingInputField) {
+                        typingInputField.disabled = false;
+                        typingInputField.focus();
+                    }
                     resultData.nextAction();
                 });
             }
@@ -6450,6 +6487,17 @@ function updateKeyboardHighlight() {
                 });
             }
         }
+</script>
+<script>
+  window.va = window.va || function () { (window.va.q = window.va.q || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script>
+  window.addEventListener('load', () => {
+    if (window.va) {
+      window.va('auto');
+    }
+  });
 </script>
 </body>
 </html>
