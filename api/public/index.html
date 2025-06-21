@@ -3982,64 +3982,57 @@ function getTypingAnalysis(typedValue, originalLine) {
     return { html: builtHTML, effectiveIndex: originalIdx, correctChars: correctChars };
 }
 
-// ▼▼▼▼▼ 수정된 handleInputEvent 함수 ▼▼▼▼▼
-// ▼▼▼▼▼ 이 함수 전체를 복사해서 기존 함수와 교체하세요. ▼▼▼▼▼
-// ▼▼▼▼▼ 수정된 handleInputEvent 함수 ▼▼▼▼▼
-// ▼▼▼▼▼ 수정된 handleInputEvent 함수 ▼▼▼▼▼
-// ▼▼▼▼▼ 이 함수 전체를 복사해서 기존 함수와 교체하세요. ▼▼▼▼▼
 // ▼▼▼▼▼ 이 함수 전체를 복사해서 기존 함수와 교체하세요. ▼▼▼▼▼
 function handleInputEvent(e) {
     if (isProgrammaticallyChangingInput) {
         return;
     }
 
-    // 줄바꿈 직후 입력되는 "유령 공백"을 여기서 처리
-    if (e.target.value === ' ') {
-        e.target.value = '';
-        return;
+    let typedValue = e.target.value;
+
+    // [핵심 수정] "유령 공백" 방지 로직 개선
+    // 입력값이 공백 하나일 때, 현재 연습할 문장이 공백으로 시작하지 않는 경우에만 입력을 무시합니다.
+    if (typedValue === ' ') {
+        const originalLine = linesToPractice[currentDisplayLineIndex] || "";
+        if (!originalLine.startsWith(' ')) {
+            e.target.value = ''; // 입력 필드 비우기
+            return; // 함수 실행 중단
+        }
     }
 
     playTypingSound();
 
     if (currentMode !== 'game' && currentMode !== 'freestyle' && e.target === typingInputField) {
-        let typedValue = e.target.value;
         const originalLine = linesToPractice[currentDisplayLineIndex] || "";
         const isDeletion = e.inputType && e.inputType.startsWith('delete');
 
-        // ▼▼▼▼▼ [핵심 수정] 자동 특수문자 건너뛰기(Auto-skip) 로직 ▼▼▼▼▼
+        // 자동 특수문자 건너뛰기(Auto-skip) 로직
         const lastTypedChar = typedValue.slice(-1);
         const baseTyped = typedValue.slice(0, -1);
         
-        // 사용자가 새 글자를 입력했고, 조합 중이 아니며, 삭제 중이 아닐 때만 실행
         if (lastTypedChar && !isComposingNow && !isDeletion) {
             const analysisForBase = getTypingAnalysis(baseTyped, originalLine);
             const nextOriginalIndex = analysisForBase.effectiveIndex;
             
             let specialCharsToSkip = "";
             let charAfterSpecialIndex = nextOriginalIndex;
-            // 건너뛸 수 있는 연속된 특수문자를 모두 찾습니다.
             while(charAfterSpecialIndex < originalLine.length && isSpecialCharacterForAutoComplete(originalLine[charAfterSpecialIndex])) {
                 specialCharsToSkip += originalLine[charAfterSpecialIndex];
                 charAfterSpecialIndex++;
             }
 
-            // 건너뛴 특수문자가 있고, 그 다음 글자가 사용자가 입력한 글자와 일치하는 경우
             if (specialCharsToSkip.length > 0 && charAfterSpecialIndex < originalLine.length && lastTypedChar === originalLine[charAfterSpecialIndex]) {
                 isProgrammaticallyChangingInput = true;
                 
-                // 입력값을 (기존 입력값 + 건너뛴 특수문자 + 방금 입력한 글자)로 재구성합니다.
                 typedValue = baseTyped + specialCharsToSkip + lastTypedChar;
                 typingInputField.value = typedValue;
                 
-                // 플래그를 비동기로 리셋하여 무한 루프를 방지합니다.
                 setTimeout(() => { isProgrammaticallyChangingInput = false; }, 0);
             }
         }
-        // ▲▲▲▲▲ 자동 특수문자 건너뛰기 로직 끝 ▲▲▲▲▲
 
-        // --- 1. 시각적 업데이트 (위에서 재구성된 typedValue를 사용) ---
+        // 1. 시각적 업데이트
         const analysis = getTypingAnalysis(typedValue, originalLine);
-        
         const currentLineEl = document.getElementById('current-typing-line');
         if (currentLineEl) {
             const innerSpan = currentLineEl.querySelector('span');
@@ -4048,12 +4041,12 @@ function handleInputEvent(e) {
         updateFakeInput(typedValue, false);
         updateKeyboardHighlight();
 
-        // --- 2. 한글 조합 중이라면 여기서 실행을 멈춤 ---
+        // 2. 한글 조합 중이면 중단
         if (isComposingNow) {
             return;
         }
         
-        // --- 3. 통계, 문장 완성, 스페이스바 로직 등 실행 ---
+        // 3. 통계 및 기타 로직 실행
         if (typedValue.length > 0) {
             if (!startTime) startTime = Date.now();
             if (originalLine && !currentLineStartTime) currentLineStartTime = Date.now();
@@ -4067,7 +4060,7 @@ function handleInputEvent(e) {
             return;
         }
 
-        // ▼▼▼▼▼ [기존] 스페이스바를 이용한 자동 완성 로직 ▼▼▼▼▼
+        // 스페이스바 자동 완성 로직
         const justTypedSpace = typedValue.endsWith(' ');
         if (autoCompleteEnabled && !isDeletion && justTypedSpace) {
             const baseTypedForSpace = typedValue.slice(0, -1);
@@ -4082,28 +4075,23 @@ function handleInputEvent(e) {
 
             if (textToAppend.length > 0) {
                 isProgrammaticallyChangingInput = true;
-                
                 const isLineNowComplete = (analysisForSpace.effectiveIndex + textToAppend.length === originalLine.length);
                 if (isLineNowComplete) {
                     typingInputField.value = baseTypedForSpace + textToAppend;
                     processCurrentLineCompletion();
-                    setTimeout(() => { isProgrammaticallyChangingInput = false; }, 0);
-                    return;
                 } else {
                     const nextCharIndexAfterAppend = analysisForSpace.effectiveIndex + textToAppend.length;
                     const shouldAddSpace = originalLine[nextCharIndexAfterAppend] === ' ';
                     const finalReplacement = textToAppend + (shouldAddSpace ? ' ' : '');
                     const newTypedValue = baseTypedForSpace + finalReplacement;
-                    
                     typingInputField.value = newTypedValue;
-                    
                     const newAnalysis = getTypingAnalysis(newTypedValue, originalLine);
                     const innerSpan = document.querySelector('#current-typing-line span');
                     if (innerSpan) innerSpan.innerHTML = newAnalysis.html;
                     updateFakeInput(newTypedValue, false);
                     updateKeyboardHighlight();
-                    setTimeout(() => { isProgrammaticallyChangingInput = false; }, 0);
                 }
+                setTimeout(() => { isProgrammaticallyChangingInput = false; }, 0);
             }
         }
     }
