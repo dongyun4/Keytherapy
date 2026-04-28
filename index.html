@@ -16352,39 +16352,34 @@ const ASMR = (() => {
         try { centerCaretInAsmrLine(); } catch(_) {}
     }
 
-    /** 인너를 좌우로 translate 해서 .caret 이 display 의 가로 중앙에 오게 만듦.
-     *  결과: 사용자가 타이핑할 때마다 라인이 부드럽게 흘러가며, 입력 위치는 항상 중앙 고정. */
+    /** 인너를 좌우로 translate 해서 .caret 이 display 의 가로 중앙에 항상 오게 만듦.
+     *  결과: monkeytype/typeracer 스타일 — 타이핑할 때마다 라인이 부드럽게 좌로 흐르고,
+     *  사용자 시점에선 늘 화면 가운데에서 입력 (라인 길이 무관, 항상 적용). */
     function centerCaretInAsmrLine() {
         const display = document.getElementById('asmrLineDisplay');
         if (!display) return;
         const inner = display.querySelector('.asmr-line-inner');
         if (!inner) return;
         const caret = inner.querySelector('.caret');
-        if (!caret) {
-            // caret 없음 (모두 타이핑 끝) → 시프트 제거, 자연 가운데 정렬
-            inner.style.transform = '';
-            return;
-        }
-        // bounding rect 측정
+        // 캐럿 없음 (모두 다 친 상태) → 시프트 풀어 자연 가운데 복귀
+        if (!caret) { inner.style.transform = ''; return; }
         const dRect = display.getBoundingClientRect();
         const iRect = inner.getBoundingClientRect();
-        const cRect = caret.getBoundingClientRect();
         if (dRect.width === 0 || iRect.width === 0) return;
-        // 인너 자연 폭 ≤ display 폭 인 경우 — 라인이 작게 들어맞으면 그냥 가운데 두고 시프트 X
-        if (iRect.width <= dRect.width - 12) {
-            inner.style.transform = '';
-            return;
-        }
-        // 캐럿의 인너 내부 오프셋
-        const caretOffsetInInner = cRect.left - iRect.left + (cRect.width / 2);
-        // 자연 가운데 정렬에서 인너의 좌측 = (dRect.width - iRect.width) / 2
-        const naturalInnerLeft = (dRect.width - iRect.width) / 2;
-        // 우리가 원하는 인너 좌측 = display 가운데 - 캐럿 인너내 오프셋
-        const targetInnerLeft = dRect.width / 2 - caretOffsetInInner;
-        // 시프트 = target - natural
-        const translateX = targetInnerLeft - naturalInnerLeft;
-        inner.style.transform = `translateX(${translateX}px)`;
-        // transition 은 inner 자체에 CSS 로 (renderLine 직후 부드럽게 이동)
+        // 인너의 자연(=현재) left 위치 vs 우리가 원하는 left 위치 차이를 transform 으로
+        const cRect = caret.getBoundingClientRect();
+        // 캐럿 인너내 오프셋 (caret.left - inner.left, transform 적용 전 값으로 계산)
+        // 현재 transform 이 이미 적용돼 있으면 한 번 풀고 측정해야 정확하지만,
+        // 매 키마다 호출되므로 단순히 현재 cRect 와 dRect 의 차이로 보정 (수렴함)
+        const caretCenterX = cRect.left + cRect.width / 2;
+        const displayCenterX = dRect.left + dRect.width / 2;
+        const delta = displayCenterX - caretCenterX;
+        // 현재 transform 의 translateX 를 읽고 누적
+        const cur = inner.style.transform || '';
+        const match = cur.match(/translateX\(([-\d.]+)px\)/);
+        const currentTx = match ? parseFloat(match[1]) : 0;
+        const newTx = currentTx + delta;
+        inner.style.transform = `translateX(${newTx.toFixed(1)}px)`;
         if (!inner.style.transition) {
             inner.style.transition = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)';
         }
