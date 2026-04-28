@@ -16348,6 +16348,46 @@ const ASMR = (() => {
         display.innerHTML = `<span class="asmr-line-inner">${html}</span>`;
         // 데스크톱·모바일: 컨테이너에 맞춰 폰트 자동 축소
         try { if (typeof fitAsmrLine === 'function') fitAsmrLine(); } catch(_) {}
+        // 캐럿(현재 타이핑 위치)이 항상 화면 가운데 오도록 인너 시프트
+        try { centerCaretInAsmrLine(); } catch(_) {}
+    }
+
+    /** 인너를 좌우로 translate 해서 .caret 이 display 의 가로 중앙에 오게 만듦.
+     *  결과: 사용자가 타이핑할 때마다 라인이 부드럽게 흘러가며, 입력 위치는 항상 중앙 고정. */
+    function centerCaretInAsmrLine() {
+        const display = document.getElementById('asmrLineDisplay');
+        if (!display) return;
+        const inner = display.querySelector('.asmr-line-inner');
+        if (!inner) return;
+        const caret = inner.querySelector('.caret');
+        if (!caret) {
+            // caret 없음 (모두 타이핑 끝) → 시프트 제거, 자연 가운데 정렬
+            inner.style.transform = '';
+            return;
+        }
+        // bounding rect 측정
+        const dRect = display.getBoundingClientRect();
+        const iRect = inner.getBoundingClientRect();
+        const cRect = caret.getBoundingClientRect();
+        if (dRect.width === 0 || iRect.width === 0) return;
+        // 인너 자연 폭 ≤ display 폭 인 경우 — 라인이 작게 들어맞으면 그냥 가운데 두고 시프트 X
+        if (iRect.width <= dRect.width - 12) {
+            inner.style.transform = '';
+            return;
+        }
+        // 캐럿의 인너 내부 오프셋
+        const caretOffsetInInner = cRect.left - iRect.left + (cRect.width / 2);
+        // 자연 가운데 정렬에서 인너의 좌측 = (dRect.width - iRect.width) / 2
+        const naturalInnerLeft = (dRect.width - iRect.width) / 2;
+        // 우리가 원하는 인너 좌측 = display 가운데 - 캐럿 인너내 오프셋
+        const targetInnerLeft = dRect.width / 2 - caretOffsetInInner;
+        // 시프트 = target - natural
+        const translateX = targetInnerLeft - naturalInnerLeft;
+        inner.style.transform = `translateX(${translateX}px)`;
+        // transition 은 inner 자체에 CSS 로 (renderLine 직후 부드럽게 이동)
+        if (!inner.style.transition) {
+            inner.style.transition = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
     }
 
     function escapeHtml(s) {
