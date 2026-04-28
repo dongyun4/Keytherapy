@@ -1,0 +1,75 @@
+/* ============================================================
+   Footer — 페이지 하단 영역
+   ============================================================ */
+
+.kt-footer {
+  padding: var(--kt-space-5) var(--kt-space-7);
+  text-align: center;
+  border-top: 1px solid var(--kt-border-subtle);
+  color: var(--kt-text-tertiary);
+  font-size: var(--kt-font-size-sm);
+  line-height: var(--kt-leading-relaxed);
+}
+
+.kt-footer__line {
+  margin: 0 0 var(--kt-space-2);
+}
+
+.kt-footer__contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--kt-space-2);
+  margin-top: var(--kt-space-3);
+}
+
+.kt-footer__email {
+  color: var(--kt-text-accent);
+  text-decoration: none;
+  transition: color var(--kt-duration-fast) ease;
+}
+
+.kt-footer__email:hover {
+  color: var(--kt-action-primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.kt-footer__copy-btn {
+  min-width: 32px;
+  min-height: 32px;
+  padding: var(--kt-space-1) var(--kt-space-2);
+  background: transparent;
+  border: 1px solid var(--kt-border-subtle);
+  border-radius: var(--kt-radius-sm);
+  color: var(--kt-text-secondary);
+  cursor: pointer;
+  transition: all var(--kt-duration-fast) ease;
+}
+
+.kt-footer__copy-btn:hover {
+  color: var(--kt-action-primary);
+  border-color: var(--kt-action-primary);
+  background: rgba(var(--kt-color-amber-rgb), 0.06);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .kt-footer {
+    padding: var(--kt-space-4) var(--kt-space-4);
+    font-size: 0.82rem;
+  }
+  .kt-footer__copy-btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: var(--kt-space-2) var(--kt-space-3);
+  }
+}
+
+/* PWA standalone — home indicator 영역 확보 */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  .kt-footer {
+    padding-bottom: max(env(safe-area-inset-bottom), var(--kt-space-4));
+  }
+}

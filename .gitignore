@@ -1,0 +1,45 @@
+# ─── 의존성 ───
+node_modules/
+package-lock.json.backup
+
+# ─── 빌드/캐시 ───
+dist/
+.cache/
+.parcel-cache/
+.vite/
+*.log
+npm-debug.log*
+
+# ─── 환경 ───
+.env
+.env.local
+.env.*.local
+
+# ─── 에디터 ───
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# ─── 원본 사운드 (배포 불필요) ───
+newsound/
+sound\ effect/
+public/ambience/_mastered_tmp/
+**/*.mastered.mp3
+# 앰비언스 wav 만 제외 (soundFiles/ 의 키보드 .wav 는 유지)
+public/ambience/**/*.wav
+
+# ─── 작업 노트/문서 (배포 불필요) ───
+KEYTHERAPY_*.md
+KeyTherapy_*.md
+docs/
+CONTRIBUTING.md
+
+# ─── 로컬 스타터/실험 ───
+vite-starter/
+
+# ─── 테스트 출력 ───
+test-results/
+playwright-report/
+coverage/

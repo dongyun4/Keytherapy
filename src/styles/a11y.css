@@ -1,0 +1,201 @@
+/* ============================================================
+   Key Therapy — Accessibility Styles (S8)
+   ============================================================
+   WCAG 2.1 AA 준수를 위한 글로벌 접근성 스타일.
+   :focus-visible 일관·prefers-* 보강·고대비 모드 대응.
+   ============================================================ */
+
+/* ─────────────────────────────────────────────────
+   :focus-visible — 키보드 포커스 시각화
+   (마우스 클릭 시는 outline 없음)
+   ───────────────────────────────────────────────── */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--kt-action-primary);
+  outline-offset: 2px;
+  border-radius: var(--kt-radius-xs);
+  /* 그림자 ring으로 outline 가시성 보강 */
+  box-shadow: 0 0 0 4px rgba(var(--kt-color-amber-rgb), 0.18);
+  transition: box-shadow var(--kt-duration-fast) ease;
+}
+
+/* 입력 필드는 outline 대신 border highlight */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--kt-action-primary);
+  outline-offset: 0;
+  box-shadow: var(--kt-shadow-focus-ring);
+}
+
+/* 버튼류 — outline + 색 강조 */
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--kt-action-primary);
+  outline-offset: 3px;
+}
+
+/* 어두운 배경에서 outline 색 보강 (WCAG 1.4.11 — Non-text Contrast) */
+.kt-modal__close:focus-visible,
+.kt-asmr__close-btn:focus-visible {
+  outline-color: var(--kt-color-amber-soft);
+}
+
+/* ─────────────────────────────────────────────────
+   Skip link — 키보드 사용자 fast-jump
+   ───────────────────────────────────────────────── */
+.kt-skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  padding: var(--kt-space-3) var(--kt-space-5);
+  background: var(--kt-action-primary);
+  color: var(--kt-action-on-primary);
+  border-radius: 0 0 var(--kt-radius-sm) 0;
+  z-index: var(--kt-z-toast);
+  font-weight: 600;
+  transition: top var(--kt-duration-fast) ease;
+  text-decoration: none;
+}
+
+.kt-skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--kt-action-primary);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────
+   Screen reader only — 시각적으로 숨기되 보조기술에는 노출
+   ───────────────────────────────────────────────── */
+.kt-sr-only,
+.kt-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* sr-only 가 포커스 받으면 보이게 (skip link 패턴) */
+.kt-sr-only:focus,
+.kt-sr-only:focus-within,
+.kt-visually-hidden:focus {
+  position: fixed !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+  z-index: var(--kt-z-toast) !important;
+  padding: var(--kt-space-3) var(--kt-space-4) !important;
+  background: var(--kt-action-primary) !important;
+  color: var(--kt-action-on-primary) !important;
+}
+
+/* ─────────────────────────────────────────────────
+   prefers-reduced-motion — 사용자 의도 기반 모션 감쇠
+   ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  /* 의도적으로 살리는 것 외 모두 감쇠 */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* 핵심 브랜드 — 앰비언스 효과는 사용자가 명시적으로 선택했으므로 유지 */
+  .amb-particle,
+  #ambience-layer * {
+    animation-duration: revert !important;
+    animation-iteration-count: revert !important;
+    transition-duration: revert !important;
+  }
+
+  /* 위험한 모션 — 항상 끔 */
+  .shake-effect,
+  .flash-effect,
+  #game-canvas.enemy-hit {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   prefers-color-scheme — OS 다크모드 자동 감지
+   사용자가 명시적으로 테마 선택하지 않은 경우만 적용.
+   `<html data-theme="auto">` 일 때만 활성.
+   ───────────────────────────────────────────────── */
+@media (prefers-color-scheme: light) {
+  html[data-theme="auto"] {
+    color-scheme: light;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="auto"] {
+    color-scheme: dark;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   prefers-contrast: more — 고대비 모드
+   ───────────────────────────────────────────────── */
+@media (prefers-contrast: more) {
+  :root {
+    /* border 색을 더 진하게 */
+    --kt-color-line: rgba(212, 175, 122, 0.42);
+    --kt-color-line-strong: rgba(212, 175, 122, 0.62);
+    /* text contrast 강화 */
+    --kt-color-ink-faint: rgba(242, 231, 214, 0.78);
+  }
+  *:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   forced-colors mode (Windows High Contrast)
+   ───────────────────────────────────────────────── */
+@media (forced-colors: active) {
+  *:focus-visible {
+    outline: 2px solid CanvasText;
+    outline-offset: 2px;
+  }
+  button, [role="button"] {
+    border: 1px solid ButtonText;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Reduced data — 절약 모드 (이미지·앰비언스 축소)
+   ───────────────────────────────────────────────── */
+@media (prefers-reduced-data: reduce) {
+  #ambience-layer {
+    display: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Touch target 최소 크기 — WCAG 2.5.5 (44x44px)
+   ───────────────────────────────────────────────── */
+@media (pointer: coarse) {
+  button,
+  [role="button"],
+  a,
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

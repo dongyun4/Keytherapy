@@ -1,0 +1,404 @@
+{
+  "cafe": [
+    {
+      "id": "cafe-01",
+      "file": "ambience/cafe/cafe-01.mp3",
+      "label": "뉴욕 다이너",
+      "category": "cafe",
+      "category_label": "카페·식당",
+      "original": "freesound_community-nyc-diner-2-ambience-ambiance-by-edlundart-17933 (1).mp3"
+    },
+    {
+      "id": "cafe-02",
+      "file": "ambience/cafe/cafe-02.mp3",
+      "label": "레스토랑",
+      "category": "cafe",
+      "category_label": "카페·식당",
+      "original": "freesound_community-restaurant_montpellier-23157.mp3"
+    },
+    {
+      "id": "cafe-03",
+      "file": "ambience/cafe/cafe-03.mp3",
+      "label": "카페 (풍력단지)",
+      "category": "cafe",
+      "category_label": "카페·식당",
+      "original": "freesound_community-whitelee-windfarm-cafe-77398.mp3"
+    }
+  ],
+  "fire": [
+    {
+      "id": "fire-01",
+      "file": "ambience/fire/fire-01.mp3",
+      "label": "벽난로 분위기",
+      "category": "fire",
+      "category_label": "벽난로",
+      "original": "alex_jauk-fireplace-ambience-423993.mp3"
+    },
+    {
+      "id": "fire-02",
+      "file": "ambience/fire/fire-02.mp3",
+      "label": "젖은 장작 불",
+      "category": "fire",
+      "category_label": "벽난로",
+      "original": "freesound_community-fire-with-wet-wood-23828.mp3"
+    },
+    {
+      "id": "fire-03",
+      "file": "ambience/fire/fire-03.mp3",
+      "label": "밤의 야외 벽난로",
+      "category": "fire",
+      "category_label": "벽난로",
+      "original": "freesound_community-nighttime-outdoor-fireplace-70583.mp3"
+    },
+    {
+      "id": "fire-04",
+      "file": "ambience/fire/fire-04.mp3",
+      "label": "벽난로",
+      "category": "fire",
+      "category_label": "벽난로",
+      "original": "freesound_community-the-fireplace-3-23105.mp3"
+    },
+    {
+      "id": "fire-05",
+      "file": "ambience/fire/fire-05.mp3",
+      "label": "벽난로 크래클링",
+      "category": "fire",
+      "category_label": "벽난로",
+      "original": "soundsforyou-fireplace-fire-crackling-loop-123930.mp3"
+    }
+  ],
+  "forest": [
+    {
+      "id": "forest-01",
+      "file": "ambience/forest/forest-01.mp3",
+      "label": "숲 분위기",
+      "category": "forest",
+      "category_label": "숲",
+      "original": "audiopapkin-forest-atmosphere-localization-poland-320813.mp3"
+    },
+    {
+      "id": "forest-02",
+      "file": "ambience/forest/forest-02.mp3",
+      "label": "강가 숲 새소리",
+      "category": "forest",
+      "category_label": "숲·새소리",
+      "original": "baranova_n-birds-forest-river-409229.mp3"
+    },
+    {
+      "id": "forest-03",
+      "file": "ambience/forest/forest-03.mp3",
+      "label": "봄 숲 새소리",
+      "category": "forest",
+      "category_label": "숲·새소리",
+      "original": "baranova_n-birds-forest-spring-316364.mp3"
+    },
+    {
+      "id": "forest-04",
+      "file": "ambience/forest/forest-04.mp3",
+      "label": "밤의 숲",
+      "category": "forest",
+      "category_label": "숲",
+      "original": "capaholiczsfx-forest-soundscape-night-time-403609.mp3"
+    },
+    {
+      "id": "forest-05",
+      "file": "ambience/forest/forest-05.mp3",
+      "label": "숲의 새 ②",
+      "category": "forest",
+      "category_label": "숲·새소리",
+      "original": "dany_photo-forestbirds-2-367580.mp3"
+    },
+    {
+      "id": "forest-06",
+      "file": "ambience/forest/forest-06.mp3",
+      "label": "숲의 새",
+      "category": "forest",
+      "category_label": "숲·새소리",
+      "original": "dany_photo-forestbirds-319791.mp3"
+    },
+    {
+      "id": "forest-07",
+      "file": "ambience/forest/forest-07.mp3",
+      "label": "새 합창",
+      "category": "forest",
+      "category_label": "숲·새소리",
+      "original": "empressnefertitimumbi-forest-bird-harmonies-258412.mp3"
+    },
+    {
+      "id": "forest-08",
+      "file": "ambience/forest/forest-08.mp3",
+      "label": "숲바람·귀뚜라미",
+      "category": "forest",
+      "category_label": "숲",
+      "original": "eryliaa-forest-wind-with-crickets-and-cuckoo-355613.mp3"
+    },
+    {
+      "id": "forest-09",
+      "file": "ambience/forest/forest-09.mp3",
+      "label": "숲속 자연",
+      "category": "forest",
+      "category_label": "숲·새소리",
+      "original": "soundreality-birds-forest-nature-445379.mp3"
+    }
+  ],
+  "ocean": [
+    {
+      "id": "ocean-01",
+      "file": "ambience/ocean/ocean-01.mp3",
+      "label": "부드러운 파도",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "dragon-studio-gentle-ocean-shore-waves-499665.mp3"
+    },
+    {
+      "id": "ocean-02",
+      "file": "ambience/ocean/ocean-02.mp3",
+      "label": "잔잔한 파도",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "freesound_community-soft-ocean-waves-sounds-24046.mp3"
+    },
+    {
+      "id": "ocean-03",
+      "file": "ambience/ocean/ocean-03.mp3",
+      "label": "바다 파도",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "freesound_community-water-ocean-waves-01-58360.mp3"
+    },
+    {
+      "id": "ocean-04",
+      "file": "ambience/ocean/ocean-04.mp3",
+      "label": "모래사장 파도",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "juliush-sandy-beach-calm-waves-water-nature-sounds-8052.mp3"
+    },
+    {
+      "id": "ocean-05",
+      "file": "ambience/ocean/ocean-05.mp3",
+      "label": "편안한 바다",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "prem_adhikary-relaxing-ocean-waves-high-quality-recorded-177004.mp3"
+    },
+    {
+      "id": "ocean-06",
+      "file": "ambience/ocean/ocean-06.mp3",
+      "label": "해변 파도",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "soundangel1111-ocean-beach-waves-332383.mp3"
+    },
+    {
+      "id": "ocean-07",
+      "file": "ambience/ocean/ocean-07.mp3",
+      "label": "파도",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "soundreality-waves-sfx-525010.mp3"
+    },
+    {
+      "id": "ocean-08",
+      "file": "ambience/ocean/ocean-08.mp3",
+      "label": "인도양 일출",
+      "category": "ocean",
+      "category_label": "바다",
+      "original": "u_smr75jauso-indian-ocean-sound-from-zanzibar-at-sunrise-190466.mp3"
+    }
+  ],
+  "rain": [
+    {
+      "id": "rain-01",
+      "file": "ambience/rain/rain-01.mp3",
+      "label": "비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "donrain-rain-110508.mp3"
+    },
+    {
+      "id": "rain-02",
+      "file": "ambience/rain/rain-02.mp3",
+      "label": "부슬비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "dragon-studio-gentle-rain-01-437313.mp3"
+    },
+    {
+      "id": "rain-03",
+      "file": "ambience/rain/rain-03.mp3",
+      "label": "폭우 (창밖)",
+      "category": "rain",
+      "category_label": "비",
+      "original": "dragon-studio-heavy-rain-outside-the-window-515266.mp3"
+    },
+    {
+      "id": "rain-04",
+      "file": "ambience/rain/rain-04.mp3",
+      "label": "편안한 비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "dragon-studio-relaxing-rain-444802.mp3"
+    },
+    {
+      "id": "rain-05",
+      "file": "ambience/rain/rain-05.mp3",
+      "label": "잔잔한 비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "enternalrainsounds-calm-rain-ambience-421001.mp3"
+    },
+    {
+      "id": "rain-06",
+      "file": "ambience/rain/rain-06.mp3",
+      "label": "떨어지는 비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "kanematsutei-sound-of-falling-rain-145473.mp3"
+    },
+    {
+      "id": "rain-07",
+      "file": "ambience/rain/rain-07.wav",
+      "label": "가벼운 비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "mixkit-light-rain-loop-1253.wav"
+    },
+    {
+      "id": "rain-08",
+      "file": "ambience/rain/rain-08.wav",
+      "label": "롱 루프 비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "mixkit-rain-long-loop-2394.wav"
+    },
+    {
+      "id": "rain-09",
+      "file": "ambience/rain/rain-09.mp3",
+      "label": "비 오는 아침 새소리",
+      "category": "rain",
+      "category_label": "비·새소리",
+      "original": "soundreality-morning-birds-and-rain-356881.mp3"
+    },
+    {
+      "id": "rain-10",
+      "file": "ambience/rain/rain-10.mp3",
+      "label": "11월의 비",
+      "category": "rain",
+      "category_label": "비",
+      "original": "tramp963-november-rain-259239.mp3"
+    }
+  ],
+  "special": [
+    {
+      "id": "special-01",
+      "file": "ambience/special/special-01.mp3",
+      "label": "풍경",
+      "category": "special",
+      "category_label": "풍경(風磬)",
+      "original": "alex_jauk-wind-chimes-2-199848.mp3"
+    },
+    {
+      "id": "special-02",
+      "file": "ambience/special/special-02.mp3",
+      "label": "수중",
+      "category": "special",
+      "category_label": "수중",
+      "original": "calenethlysariel07-underwater-general-sounds-of-the-underwater-environment-356183.mp3"
+    }
+  ],
+  "stream": [
+    {
+      "id": "stream-01",
+      "file": "ambience/stream/stream-01.mp3",
+      "label": "평화로운 시냇물",
+      "category": "stream",
+      "category_label": "시냇물",
+      "original": "dragon-studio-peaceful-stream-420898.mp3"
+    },
+    {
+      "id": "stream-02",
+      "file": "ambience/stream/stream-02.mp3",
+      "label": "시냇물 분위기",
+      "category": "stream",
+      "category_label": "시냇물",
+      "original": "dragon-studio-stream-ambience-420902.mp3"
+    },
+    {
+      "id": "stream-03",
+      "file": "ambience/stream/stream-03.mp3",
+      "label": "잔잔한 시내",
+      "category": "stream",
+      "category_label": "시냇물",
+      "original": "freesound_community-calm-stream-in-forest-19355.mp3"
+    },
+    {
+      "id": "stream-04",
+      "file": "ambience/stream/stream-04.mp3",
+      "label": "작은 시내",
+      "category": "stream",
+      "category_label": "시냇물",
+      "original": "freesound_community-small-stream-60697.mp3"
+    },
+    {
+      "id": "stream-05",
+      "file": "ambience/stream/stream-05.mp3",
+      "label": "계곡물",
+      "category": "stream",
+      "category_label": "시냇물",
+      "original": "freesound_community-tumbling-stream-in-mountain-forest-winter-32587.mp3"
+    }
+  ],
+  "thunder": [
+    {
+      "id": "thunder-01",
+      "file": "ambience/thunder/thunder-01.mp3",
+      "label": "천둥",
+      "category": "thunder",
+      "category_label": "천둥",
+      "original": "freesound_community-thunder-17814.mp3"
+    },
+    {
+      "id": "thunder-02",
+      "file": "ambience/thunder/thunder-02.mp3",
+      "label": "천둥번개",
+      "category": "thunder",
+      "category_label": "천둥",
+      "original": "freesound_community-thunderstorm-14708.mp3"
+    },
+    {
+      "id": "thunder-03",
+      "file": "ambience/thunder/thunder-03.mp3",
+      "label": "먼 천둥",
+      "category": "thunder",
+      "category_label": "천둥",
+      "original": "soundreality-thunder-sound-375727.mp3"
+    }
+  ],
+  "wind": [
+    {
+      "id": "wind-01",
+      "file": "ambience/wind/wind-01.mp3",
+      "label": "차가운 바람",
+      "category": "wind",
+      "category_label": "바람",
+      "original": "belskie-cold-wind-sound-effect-127448.mp3"
+    },
+    {
+      "id": "wind-02",
+      "file": "ambience/wind/wind-02.mp3",
+      "label": "거센 바람",
+      "category": "wind",
+      "category_label": "바람폭풍",
+      "original": "dragon-studio-windstorm-ambience-372486.mp3"
+    },
+    {
+      "id": "wind-03",
+      "file": "ambience/wind/wind-03.mp3",
+      "label": "부드러운 바람",
+      "category": "wind",
+      "category_label": "바람",
+      "original": "storegraphic-soft-wind-318856.mp3"
+    }
+  ]
+}

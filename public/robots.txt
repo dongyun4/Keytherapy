@@ -1,0 +1,25 @@
+# Key Therapy — keytherapy.co.kr
+# 한국어 타이핑 연습 + ASMR 사이트
+# robots.txt 정책
+
+User-agent: *
+Allow: /
+Disallow: /_vercel/
+Disallow: /sw.js
+Disallow: /*.json$
+
+# AI 크롤러 — 콘텐츠 학습은 허용 (ASMR·타자 연습 정보의 공개적 가치)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Sitemap
+Sitemap: https://keytherapy.co.kr/sitemap.xml

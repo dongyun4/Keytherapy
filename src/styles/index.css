@@ -1,0 +1,44 @@
+/* ============================================================
+   Key Therapy — CSS 진입점
+   ============================================================
+   Vite 빌드 시 이 파일 하나만 import 하면 모든 스타일 로드.
+
+   레이어 순서 (CSS @layer로 specificity 통제):
+     1. reset      — base.css 의 normalize 부분
+     2. tokens     — :root, .light-theme, .pink-theme
+     3. base       — html/body, typography defaults
+     4. components — .kt-hero, .kt-controls 등 (selector 깊이 ≤ 2)
+     5. themes     — 테마 override (변수 재정의만, 자손 카운터 셀렉터 금지)
+     6. utilities  — .kt-sr-only, .kt-hidden 등
+     7. responsive — 모바일 정밀 정비
+
+   참조: KEYTHERAPY_SENIOR_REVIEW.md §3 P0-3 (!important 정리)
+   ============================================================ */
+
+@layer reset, tokens, base, components, themes, utilities, responsive;
+
+/* 1. Tokens (foundation + semantic + theme) */
+@import './tokens.css' layer(tokens);
+
+/* 2. Base (reset + html/body + typography defaults) */
+@import './base.css' layer(base);
+
+/* 3. Components — BEM-lite, selector 깊이 ≤ 2 */
+@import './components/hero.css' layer(components);
+@import './components/controls.css' layer(components);
+@import './components/typing-area.css' layer(components);
+@import './components/modal.css' layer(components);
+@import './components/stats.css' layer(components);
+@import './components/footer.css' layer(components);
+/* 다음 단계 (S6 JS 모듈 분리와 동시):
+@import './components/ambience.css' layer(components);
+@import './components/freestyle.css' layer(components);
+@import './components/game.css' layer(components);
+@import './components/asmr.css' layer(components);
+*/
+
+/* 4. Responsive — 모바일 정밀 정비 통합 */
+@import './responsive/mobile.css' layer(responsive);
+
+/* 5. Accessibility — :focus-visible / sr-only / prefers-* (S8) */
+@import './a11y.css' layer(utilities);

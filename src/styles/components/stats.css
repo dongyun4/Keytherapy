@@ -1,0 +1,77 @@
+/* ============================================================
+   Stats — 4값 통계 그리드 (속도·정확도·평균·최고)
+   ============================================================ */
+
+.kt-stats {
+  background: transparent;
+  border-top: 1px solid var(--kt-border-subtle);
+  border-bottom: 1px solid var(--kt-border-subtle);
+  border-radius: 0;
+  padding: var(--kt-space-4) 0;
+  box-shadow: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin: 0 var(--kt-space-7);
+}
+
+.kt-stats__item {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--kt-space-3);
+  padding: 0 var(--kt-space-4);
+  border-right: 1px solid var(--kt-border-subtle);
+}
+
+.kt-stats__item:last-child {
+  border-right: none;
+}
+
+.kt-stats__label {
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-font-size-xs);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--kt-text-tertiary);
+  margin: 0;
+}
+
+.kt-stats__value {
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-font-size-base);
+  font-weight: 500;
+  color: var(--kt-text-primary);
+  font-feature-settings: "tnum" on, "lnum" on; /* 등폭 숫자 */
+  font-style: italic;
+}
+
+.kt-stats--hidden {
+  display: none;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .kt-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    margin: 0 var(--kt-space-4);
+  }
+  .kt-stats__item {
+    padding: var(--kt-space-2);
+    border-right: 1px solid var(--kt-border-subtle);
+    border-bottom: 1px solid var(--kt-border-subtle);
+    gap: var(--kt-space-2);
+  }
+  .kt-stats__item:nth-child(2n) { border-right: none; }
+  .kt-stats__item:nth-last-child(-n+2) { border-bottom: none; }
+
+  .kt-stats__label {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+  }
+  .kt-stats__value {
+    font-size: 0.92rem;
+  }
+}

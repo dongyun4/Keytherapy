@@ -1,0 +1,227 @@
+/* ============================================================
+   Key Therapy — Base styles
+   ============================================================
+   Reset + html/body 기본 + 타이포그래피 글로벌 + 접근성 기본
+   tokens.css 이후 import 됨.
+   ============================================================ */
+
+/* ─────────────────────────────────────────────────
+   Reset (modern, opinionated)
+   ───────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+/* prefers-reduced-motion 자동 감쇠 (앰비언스는 의도적 유지) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   html / body
+   ───────────────────────────────────────────────── */
+html {
+  background: var(--kt-surface-deep);
+  /* 모바일 의도치 않은 새로고침·bounce 차단 */
+  overscroll-behavior: contain;
+  /* 한글 안티앨리어싱 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* 가로 스크롤 방지 (모바일 안전판) */
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--kt-font-sans);
+  font-weight: 300;
+  font-size: var(--kt-font-size-base);
+  line-height: var(--kt-leading-relaxed);
+  color: var(--kt-text-primary);
+  background: var(--kt-surface-deep);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  /* 모바일 더블탭 줌 차단 시 시각적 fallback */
+  -webkit-tap-highlight-color: transparent;
+  /* 페이지 fade-in (애니메이션 정의는 ambience.css에) */
+  opacity: 0;
+  animation: fadeInPage 0.8s 0.2s var(--kt-ease-emphasized) forwards;
+  transition: background-color var(--kt-duration-base) ease,
+              color var(--kt-duration-base) ease;
+}
+
+/* ASMR/게임 모드 — 내부 스크롤이 페이지로 전파되지 않도록 */
+body.asmr-mode-active,
+body.game-mode-active {
+  overscroll-behavior: none;
+}
+
+@keyframes fadeInPage {
+  to { opacity: 1; }
+}
+
+/* ─────────────────────────────────────────────────
+   Typography defaults
+   ───────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--kt-font-serif);
+  font-weight: 500;
+  line-height: var(--kt-leading-tight);
+  color: var(--kt-text-primary);
+}
+
+p {
+  line-height: var(--kt-leading-relaxed);
+  color: var(--kt-text-primary);
+}
+
+a {
+  color: var(--kt-text-accent);
+  text-decoration: none;
+  transition: color var(--kt-duration-fast) ease;
+}
+
+a:hover {
+  color: var(--kt-action-primary-hover);
+}
+
+/* ─────────────────────────────────────────────────
+   Form elements — base reset
+   ───────────────────────────────────────────────── */
+button, input, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+input, textarea {
+  background: transparent;
+  border: 1px solid var(--kt-border-subtle);
+  border-radius: var(--kt-radius-sm);
+  padding: var(--kt-space-2) var(--kt-space-3);
+}
+
+textarea {
+  resize: vertical;
+  font-family: var(--kt-font-serif);
+}
+
+/* iOS 자동 줌 회피 — input 폰트 16px 보장 */
+@media (max-width: 768px) {
+  input[type="text"], input[type="search"], input[type="email"],
+  input[type="tel"], input[type="number"], input[type="password"],
+  input[type="url"], textarea, select {
+    font-size: 16px;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   미디어 (image, video) — overflow 방지
+   ───────────────────────────────────────────────── */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─────────────────────────────────────────────────
+   접근성 — focus visible
+   ───────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--kt-action-primary);
+  outline-offset: 2px;
+  border-radius: var(--kt-radius-xs);
+}
+
+/* 마우스 클릭 시 outline 제거 (focus-visible 만) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link — 키보드 사용자 fast-jump */
+.kt-skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  padding: var(--kt-space-2) var(--kt-space-4);
+  background: var(--kt-action-primary);
+  color: var(--kt-action-on-primary);
+  border-radius: 0 0 var(--kt-radius-sm) 0;
+  z-index: var(--kt-z-toast);
+  transition: top var(--kt-duration-fast) ease;
+}
+.kt-skip-link:focus {
+  top: 0;
+}
+
+/* ─────────────────────────────────────────────────
+   터치 인터랙션 (모바일 베스트 프랙티스)
+   ───────────────────────────────────────────────── */
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: rgba(var(--kt-color-amber-rgb), 0.18);
+  touch-action: manipulation;  /* 더블탭 줌 방지 */
+}
+
+/* iOS 네이티브 모멘텀 스크롤 */
+.kt-scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* ─────────────────────────────────────────────────
+   유틸리티 (제한적 사용)
+   ───────────────────────────────────────────────── */
+.kt-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.kt-hidden {
+  display: none !important;
+}
+
+/* ─────────────────────────────────────────────────
+   PWA standalone 모드 보정
+   ───────────────────────────────────────────────── */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  body {
+    padding-top: max(env(safe-area-inset-top), 12px);
+    padding-bottom: max(env(safe-area-inset-bottom), 8px);
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   iOS safe-area 자동 적용
+   ───────────────────────────────────────────────── */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}

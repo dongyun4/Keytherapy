@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- 히어로 톤과 동일한 배경 그라디언트 -->
+    <radialGradient id="bgGlow1" cx="10%" cy="-10%" r="70%">
+      <stop offset="0%" stop-color="#d4af7a" stop-opacity="0.35"/>
+      <stop offset="55%" stop-color="#d4af7a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlow2" cx="110%" cy="0%" r="60%">
+      <stop offset="0%" stop-color="#d4af7a" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#d4af7a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlow3" cx="50%" cy="120%" r="60%">
+      <stop offset="0%" stop-color="#d4af7a" stop-opacity="0.14"/>
+      <stop offset="55%" stop-color="#d4af7a" stop-opacity="0"/>
+    </radialGradient>
+    <!-- 필름 그레인 -->
+    <filter id="noise" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.45 0"/>
+    </filter>
+    <!-- 타이핑 라인 밑줄 디테일 -->
+    <linearGradient id="line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4af7a" stop-opacity="0"/>
+      <stop offset="10%" stop-color="#d4af7a" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#d4af7a" stop-opacity="0.8"/>
+      <stop offset="90%" stop-color="#d4af7a" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#d4af7a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 기본 배경 -->
+  <rect width="1200" height="630" fill="#0f0d0b"/>
+  <rect width="1200" height="630" fill="url(#bgGlow1)"/>
+  <rect width="1200" height="630" fill="url(#bgGlow2)"/>
+  <rect width="1200" height="630" fill="url(#bgGlow3)"/>
+
+  <!-- 그레인 레이어 -->
+  <rect width="1200" height="630" filter="url(#noise)" opacity="0.045" style="mix-blend-mode:overlay"/>
+
+  <!-- 좌상단 넘버링 -->
+  <text x="70" y="68" font-family="'Cormorant Garamond', 'Noto Serif KR', serif" font-size="14" fill="#f2e7d6" fill-opacity="0.55" letter-spacing="6">N°   01 · 2026</text>
+
+  <!-- 우상단 에디션 태그라인 -->
+  <text x="1130" y="68" text-anchor="end" font-family="'Cormorant Garamond', 'Noto Serif KR', serif" font-size="14" fill="#f2e7d6" fill-opacity="0.55" letter-spacing="6">KEYSTROKE ASMR EDITION</text>
+
+  <!-- 상단 호라이즌 라인 -->
+  <rect x="70" y="86" width="1060" height="1" fill="#d4af7a" fill-opacity="0.18"/>
+
+  <!-- 메인 타이틀 Key Therapy (이탤릭 세리프) -->
+  <text x="600" y="310" text-anchor="middle" font-family="'Cormorant Garamond', 'Noto Serif KR', serif" font-size="156" font-style="italic" font-weight="500" fill="#f2e7d6">Key Therapy</text>
+
+  <!-- 서브 타이틀 -->
+  <text x="600" y="370" text-anchor="middle" font-family="'Noto Sans KR', 'Pretendard', sans-serif" font-size="22" fill="#f2e7d6" fill-opacity="0.78" letter-spacing="3">깊은 수면과 집중을 위한  ·  키보드 타건 ASMR</text>
+
+  <!-- 브랜드 태그라인 (도각도각) -->
+  <text x="600" y="420" text-anchor="middle" font-family="'Cormorant Garamond', 'Noto Serif KR', serif" font-size="26" font-style="italic" fill="#d4af7a" fill-opacity="0.85">— 도각도각, 마음이 쉬어가는 시간 —</text>
+
+  <!-- 타이핑 모형 라인 (브랜드 디테일) -->
+  <g transform="translate(0, 490)">
+    <rect x="260" y="0" width="680" height="1.5" fill="url(#line)"/>
+    <text x="600" y="36" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="18" fill="#f2e7d6" fill-opacity="0.42" letter-spacing="1">the quiet rhythm of a keyboard at rest</text>
+    <text x="600" y="66" text-anchor="middle" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f2e7d6" fill-opacity="0.36" letter-spacing="8">한 글 자  ·  한 숨  ·  한 순 간</text>
+  </g>
+
+  <!-- 하단 URL -->
+  <text x="70" y="588" font-family="'Noto Sans KR', 'Pretendard', sans-serif" font-size="13" fill="#f2e7d6" fill-opacity="0.48" letter-spacing="4">keytherapy.co.kr</text>
+  <text x="1130" y="588" text-anchor="end" font-family="'Noto Sans KR', 'Pretendard', sans-serif" font-size="13" fill="#f2e7d6" fill-opacity="0.48" letter-spacing="4">@KeyTherapy on YouTube</text>
+</svg>

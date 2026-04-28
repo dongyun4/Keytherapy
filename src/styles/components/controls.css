@@ -1,0 +1,233 @@
+/* ============================================================
+   Controls — 메인 컨트롤 영역
+   ============================================================
+   practice-mode-controls(5버튼) + feature-toggles(4버튼) +
+   selection-controls(언어·타건음·테마·효과) BEM-lite 재작성.
+   ============================================================ */
+
+/* ─────────────────────────────────────────────────
+   Container
+   ───────────────────────────────────────────────── */
+.kt-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--kt-space-3);
+  padding: var(--kt-space-6) var(--kt-space-7) var(--kt-space-4);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────────────────────────────
+   Mode buttons (단문/장문/글쓰기/ASMR/게임)
+   ───────────────────────────────────────────────── */
+.kt-mode-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--kt-space-2);
+}
+
+.kt-mode-buttons__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kt-space-2);
+  min-height: 32px;
+  padding: var(--kt-space-2) var(--kt-space-4);
+  font-family: var(--kt-font-sans);
+  font-size: var(--kt-font-size-sm);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--kt-text-tertiary);
+  background: transparent;
+  border: none;
+  border-radius: var(--kt-radius-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--kt-duration-fast) ease,
+    background var(--kt-duration-fast) ease,
+    font-weight var(--kt-duration-fast) ease;
+}
+
+.kt-mode-buttons__btn:hover {
+  color: var(--kt-text-primary);
+  background: rgba(var(--kt-color-amber-rgb), 0.05);
+}
+
+.kt-mode-buttons__btn--active {
+  color: var(--kt-action-primary);
+  background: rgba(var(--kt-color-amber-rgb), 0.10);
+  font-weight: 600;
+}
+
+.kt-mode-buttons__icon {
+  font-size: 0.78rem;
+  opacity: 0.55;
+  transition: opacity var(--kt-duration-fast) ease, color var(--kt-duration-fast) ease;
+}
+
+.kt-mode-buttons__btn:hover .kt-mode-buttons__icon {
+  opacity: 0.9;
+}
+
+.kt-mode-buttons__btn--active .kt-mode-buttons__icon {
+  opacity: 1;
+  color: var(--kt-action-primary);
+}
+
+/* ─────────────────────────────────────────────────
+   Feature toggles (타건음/오타체크/측정/자리연습)
+   ───────────────────────────────────────────────── */
+.kt-feature-toggles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--kt-space-2);
+}
+
+/* Same shape as mode buttons */
+.kt-feature-toggles__btn {
+  /* 동일 스타일 적용 — 디자인 시스템 일관성 */
+  composes: kt-mode-buttons__btn;
+}
+
+/* ─────────────────────────────────────────────────
+   Selection row (언어·글선택·타건음·테마·효과)
+   ───────────────────────────────────────────────── */
+.kt-selection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kt-space-2);
+  padding-top: var(--kt-space-4);
+  border-top: 1px solid var(--kt-border-subtle);
+}
+
+.kt-selection__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kt-space-2);
+  padding: var(--kt-space-1) var(--kt-space-3);
+  background: rgba(255, 255, 255, 0.025);
+  border-radius: var(--kt-radius-pill);
+  transition: background var(--kt-duration-fast) ease;
+}
+
+.kt-selection__item:hover {
+  background: rgba(var(--kt-color-amber-rgb), 0.06);
+}
+
+.kt-selection__label {
+  font-family: var(--kt-font-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--kt-text-tertiary);
+  text-transform: uppercase;
+  font-weight: 500;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.kt-selection__select {
+  font-family: var(--kt-font-sans);
+  font-size: var(--kt-font-size-sm);
+  font-weight: 500;
+  color: var(--kt-text-primary);
+  background: transparent;
+  border: none;
+  padding: 3px 18px 3px 2px;
+  /* SVG chevron (data URI) — 테마 호환을 위해 stroke 색 별도 */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2.5 4l2.5 2.5L7.5 4' stroke='%23bfa98c' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-position: right 2px center;
+  background-repeat: no-repeat;
+  background-size: 10px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: color var(--kt-duration-fast) ease;
+}
+
+.kt-selection__select:hover,
+.kt-selection__select:focus {
+  color: var(--kt-action-primary);
+}
+
+/* Light/pink theme — chevron 색상 + 배경 톤 */
+.light-theme .kt-selection__item,
+.pink-theme .kt-selection__item {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.light-theme .kt-selection__select,
+.pink-theme .kt-selection__select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2.5 4l2.5 2.5L7.5 4' stroke='%236c5443' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+
+/* ─────────────────────────────────────────────────
+   Responsive — 모바일 (768px 이하)
+   ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .kt-controls {
+    padding: var(--kt-space-5) var(--kt-space-4) var(--kt-space-3);
+    gap: var(--kt-space-2);
+  }
+
+  /* Mode 버튼 — 5개 → auto-fit (380px 미만 2열, 그 외 자동) */
+  .kt-mode-buttons {
+    grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+    gap: var(--kt-space-2);
+  }
+  .kt-mode-buttons__btn,
+  .kt-feature-toggles__btn {
+    min-height: 44px;
+    padding: var(--kt-space-2) var(--kt-space-2);
+    font-size: 0.82rem;
+  }
+
+  /* Feature 토글 — 항상 2열 */
+  .kt-feature-toggles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Selection — 컴팩트 2열 grid */
+  .kt-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 5px var(--kt-space-2);
+    padding: var(--kt-space-3) 0 var(--kt-space-2);
+  }
+  .kt-selection__item {
+    display: flex;
+    flex-direction: row;
+    padding: 2px var(--kt-space-2);
+    border-radius: var(--kt-radius-sm);
+  }
+  .kt-selection__label {
+    font-size: 0.66rem;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  .kt-selection__select {
+    flex: 1 1 auto;
+    min-height: 32px;
+    padding: 2px 16px 2px 4px;
+    font-size: 16px;  /* iOS 줌 회피 */
+    background-position: right 2px center;
+    background-size: 9px 9px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .kt-mode-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kt-mode-buttons__btn,
+  .kt-feature-toggles__btn {
+    font-size: 0.74rem;
+    padding: var(--kt-space-2) var(--kt-space-1);
+  }
+  .kt-selection {
+    grid-template-columns: 1fr;
+  }
+}

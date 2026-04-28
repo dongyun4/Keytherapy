@@ -1,0 +1,21 @@
+{
+  "name": "Key Therapy — 도각도각, 마음이 쉬어가는 시간",
+  "short_name": "Key Therapy",
+  "description": "깊은 수면과 집중을 위한 키보드 타건 ASMR. 한국어 장문·영타·코딩 타자 연습과 차분한 분위기 속에서 마음을 쉬게 하세요.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f0d0b",
+  "theme_color": "#0f0d0b",
+  "lang": "ko-KR",
+  "categories": ["lifestyle", "education", "productivity"],
+  "icons": [
+    {
+      "src": "/og-cover.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

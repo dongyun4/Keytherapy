@@ -1,0 +1,152 @@
+/* ============================================================
+   Hero — Key Therapy 진입 영역
+   ============================================================
+   기존 .hero-section, .hero-title, .hero-tagline 의 BEM-lite 재작성.
+   selector 깊이 ≤ 2 룰 적용. !important 사용 0.
+   참조: KEYTHERAPY_SENIOR_REVIEW.md §3 P0-3
+   ============================================================ */
+
+/* Block */
+.kt-hero {
+  position: relative;
+  padding: var(--kt-space-9) var(--kt-space-7) var(--kt-space-7);
+  border-bottom: 1px solid var(--kt-border-subtle);
+  background: transparent;
+  overflow: visible;
+}
+
+/* "N° 01 · 2026" 좌측 서수 */
+.kt-hero__index {
+  position: absolute;
+  top: var(--kt-space-6);
+  left: var(--kt-space-7);
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-font-size-xs);
+  letter-spacing: var(--kt-tracking-widest);
+  color: var(--kt-text-tertiary);
+  pointer-events: none;
+}
+
+/* "KEYSTROKE ASMR EDITION" 우측 부제 */
+.kt-hero__edition {
+  position: absolute;
+  top: var(--kt-space-6);
+  right: var(--kt-space-9);
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-font-size-xs);
+  letter-spacing: var(--kt-tracking-widest);
+  color: var(--kt-text-tertiary);
+  pointer-events: none;
+}
+
+/* Element: link wrapper (YouTube 채널로 이동) */
+.kt-hero__link {
+  display: inline-block;
+  text-decoration: none;
+  border-radius: var(--kt-radius-sm);
+  transition: transform var(--kt-duration-base) var(--kt-ease-emphasized);
+}
+
+.kt-hero__link:hover {
+  transform: scale(1.015);
+}
+
+/* Element: title */
+.kt-hero__title {
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-font-size-hero);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 0.95;
+  letter-spacing: var(--kt-tracking-normal);
+  color: var(--kt-text-primary);
+  margin: 0;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* Title accent underline */
+.kt-hero__title::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 1px;
+  background: var(--kt-action-primary);
+  margin: var(--kt-space-6) auto var(--kt-space-5);
+}
+
+/* Hover state for title (within link) */
+.kt-hero__link:hover .kt-hero__title {
+  color: var(--kt-action-primary);
+  text-shadow: 0 0 10px var(--kt-color-amber-glow);
+}
+
+/* Element: tagline */
+.kt-hero__tagline {
+  font-family: var(--kt-font-sans);
+  font-size: var(--kt-font-size-sm);
+  font-weight: 400;
+  letter-spacing: var(--kt-tracking-wider);
+  line-height: var(--kt-leading-loose);
+  color: var(--kt-text-secondary);
+  text-transform: uppercase;
+  margin: 0 auto;
+  max-width: 560px;
+  word-break: keep-all;
+}
+
+.kt-hero__link:hover .kt-hero__tagline {
+  color: var(--kt-text-primary);
+}
+
+/* ─────────────────────────────────────────────────
+   Responsive — 모바일 (768px 이하)
+   ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .kt-hero {
+    padding: var(--kt-space-7) var(--kt-space-5) var(--kt-space-6);
+  }
+  /* 모바일에서는 한글에 uppercase 의미 없음 + 이모지 정렬 안정 */
+  .kt-hero__tagline {
+    text-transform: none;
+    letter-spacing: var(--kt-tracking-wider);
+    line-height: 1.85;
+    padding: 0 var(--kt-space-1);
+  }
+  .kt-hero__title::after {
+    margin: var(--kt-space-4) auto var(--kt-space-3);
+    width: 44px;
+  }
+}
+
+/* 매우 좁은 화면 — 부제 숨김 */
+@media (max-width: 480px) {
+  .kt-hero__index,
+  .kt-hero__edition {
+    display: none;
+  }
+}
+
+/* 가로 모드 짧은 viewport */
+@media (max-height: 500px) and (orientation: landscape) {
+  .kt-hero {
+    padding: var(--kt-space-3) var(--kt-space-5);
+  }
+  .kt-hero__title {
+    font-size: var(--kt-font-size-3xl);
+  }
+  .kt-hero__tagline {
+    font-size: var(--kt-font-size-xs);
+    margin-top: var(--kt-space-1);
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Theme overrides — 테마별 hover 색상만 재정의
+   (foundation 토큰을 통해 자동 반영되지만, hover에 한해 명시)
+   ───────────────────────────────────────────────── */
+.light-theme .kt-hero__link:hover .kt-hero__title,
+.pink-theme .kt-hero__link:hover .kt-hero__title {
+  color: var(--kt-action-primary);
+  text-shadow: 0 0 8px var(--kt-color-amber-glow);
+}

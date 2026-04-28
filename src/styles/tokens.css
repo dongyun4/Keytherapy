@@ -1,0 +1,256 @@
+/* ============================================================
+   Key Therapy — Design Tokens
+   ============================================================
+   계층:
+   1) Foundation : 색·간격·radius·shadow·typography 원시값
+   2) Semantic   : 의미 기반 (text-primary, surface, border-subtle)
+   3) Theme      : .light-theme / .pink-theme 에서 semantic 재정의
+
+   참조: KEYTHERAPY_SENIOR_REVIEW.md §4 디자인 시스템
+   ============================================================ */
+
+:root {
+  /* ─────────────────────────────────────────────────
+     1. Foundation — Color (다크 테마 기준값)
+     ───────────────────────────────────────────────── */
+
+  /* Background scale */
+  --kt-color-bg-deep:   #0f0d0b;   /* 가장 깊은 배경 */
+  --kt-color-bg-mid:    #17140f;   /* 중간 표면 */
+  --kt-color-bg-up:     #1f1b15;   /* 상위 표면 (카드·모달) */
+
+  /* Ink (텍스트) scale — 한글 안티앨리어싱과 함께 가독성 검증 완료 */
+  --kt-color-ink:       #f2e7d6;
+  --kt-color-ink-dim:   rgba(242, 231, 214, 0.78);
+  --kt-color-ink-faint: rgba(242, 231, 214, 0.55);
+  --kt-color-ink-mute:  rgba(242, 231, 214, 0.35);  /* 본문 사용 금지 — 보조 라벨 전용 */
+
+  /* Amber accent — 브랜드 시그니처 */
+  --kt-color-amber:      #d4af7a;
+  --kt-color-amber-soft: #e8c794;
+  --kt-color-amber-glow: rgba(212, 175, 122, 0.35);
+  --kt-color-amber-rgb:  212, 175, 122;
+
+  /* Border / divider */
+  --kt-color-line:        rgba(212, 175, 122, 0.18);
+  --kt-color-line-strong: rgba(212, 175, 122, 0.34);
+
+  /* Status (예약 — 향후 toast/alert 도입 시) */
+  --kt-color-success: #7ab08a;
+  --kt-color-warning: #d4a574;
+  --kt-color-danger:  #c97474;
+
+  /* ─────────────────────────────────────────────────
+     2. Foundation — Spacing (8pt grid)
+     ───────────────────────────────────────────────── */
+  --kt-space-1:  4px;
+  --kt-space-2:  8px;
+  --kt-space-3:  12px;
+  --kt-space-4:  16px;
+  --kt-space-5:  24px;
+  --kt-space-6:  32px;
+  --kt-space-7:  40px;
+  --kt-space-8:  56px;
+  --kt-space-9:  72px;
+  --kt-space-10: 96px;
+
+  /* ─────────────────────────────────────────────────
+     3. Foundation — Radius
+     ───────────────────────────────────────────────── */
+  --kt-radius-xs:   4px;
+  --kt-radius-sm:   8px;
+  --kt-radius-md:   12px;
+  --kt-radius-lg:   18px;
+  --kt-radius-xl:   24px;
+  --kt-radius-pill: 999px;
+  --kt-radius-full: 9999px;
+
+  /* ─────────────────────────────────────────────────
+     4. Foundation — Shadow
+     ───────────────────────────────────────────────── */
+  --kt-shadow-soft:    0 6px 18px rgba(0, 0, 0, 0.18);
+  --kt-shadow-medium:  0 14px 40px rgba(0, 0, 0, 0.28);
+  --kt-shadow-deep:    0 25px 70px rgba(0, 0, 0, 0.55);
+  --kt-shadow-glow:    0 0 16px rgba(var(--kt-color-amber-rgb), 0.18);
+  --kt-shadow-inset:   inset 0 1px 0 rgba(255, 255, 255, 0.02), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --kt-shadow-focus-ring: 0 0 0 2px rgba(var(--kt-color-amber-rgb), 0.32);
+
+  /* ─────────────────────────────────────────────────
+     5. Foundation — Typography
+     ───────────────────────────────────────────────── */
+
+  /* Font families
+     영문은 시리프, 한글은 산세리프로 자동 fallback (한글 가독성↑, 영문 분위기 유지)
+     - Cormorant Garamond: 영문 시리프 italic
+     - Pretendard: Cormorant에 한글 글리프 없음 → 한글은 자동으로 Pretendard로 떨어짐
+     - Noto Sans KR / serif: 마지막 폴백 */
+  --kt-font-serif: 'Cormorant Garamond', 'Pretendard', 'Noto Sans KR', serif;
+  --kt-font-sans:  'Pretendard', 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+  --kt-font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Font size scale (clamp 기반 — 데스크톱·모바일 동시 대응) */
+  --kt-font-size-xs:   clamp(0.68rem, 1.4vw, 0.74rem);
+  --kt-font-size-sm:   clamp(0.78rem, 1.8vw, 0.86rem);
+  --kt-font-size-base: clamp(0.92rem, 2.2vw, 1rem);
+  --kt-font-size-lg:   clamp(1.05rem, 2.6vw, 1.15rem);
+  --kt-font-size-xl:   clamp(1.2rem, 3vw, 1.4rem);
+  --kt-font-size-2xl:  clamp(1.5rem, 4vw, 1.85rem);
+  --kt-font-size-3xl:  clamp(2rem, 6vw, 2.6rem);
+  --kt-font-size-hero: clamp(3rem, 7.4vw, 6rem);
+
+  /* Stage typography — 타이핑 영역 전용 (JS autofit이 모바일에서 덮어씀) */
+  --kt-stage-max:        960px;
+  --kt-stage-padx:       24px;
+  --kt-stage-fontsize:   clamp(1.15rem, 1.5vw, 1.35rem);
+  --kt-stage-lineheight: 1.35;
+
+  /* Line height scale */
+  --kt-leading-tight:   1.25;
+  --kt-leading-normal:  1.5;
+  --kt-leading-relaxed: 1.7;
+  --kt-leading-loose:   2;
+
+  /* Letter spacing scale */
+  --kt-tracking-tight:  -0.01em;
+  --kt-tracking-normal: 0;
+  --kt-tracking-wide:   0.04em;
+  --kt-tracking-wider:  0.12em;
+  --kt-tracking-widest: 0.28em;
+
+  /* ─────────────────────────────────────────────────
+     6. Foundation — Motion / Transition
+     ───────────────────────────────────────────────── */
+  --kt-duration-instant: 100ms;
+  --kt-duration-fast:    180ms;
+  --kt-duration-base:    250ms;
+  --kt-duration-slow:    380ms;
+  --kt-duration-glide:   550ms;
+  --kt-ease-in:          cubic-bezier(0.4, 0, 1, 1);
+  --kt-ease-out:         cubic-bezier(0, 0, 0.2, 1);
+  --kt-ease-in-out:      cubic-bezier(0.4, 0, 0.2, 1);
+  --kt-ease-emphasized:  cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ─────────────────────────────────────────────────
+     7. Foundation — Z-index scale
+     ───────────────────────────────────────────────── */
+  --kt-z-base:        1;
+  --kt-z-dropdown:    100;
+  --kt-z-sticky:      200;
+  --kt-z-overlay:     500;
+  --kt-z-modal:       1000;
+  --kt-z-asmr:        2000;
+  --kt-z-result-card: 2500;
+  --kt-z-toast:       3000;
+
+  /* ─────────────────────────────────────────────────
+     8. Semantic — 의미 기반 (테마별로 재정의됨)
+     ───────────────────────────────────────────────── */
+
+  /* Text */
+  --kt-text-primary:   var(--kt-color-ink);
+  --kt-text-secondary: var(--kt-color-ink-dim);
+  --kt-text-tertiary:  var(--kt-color-ink-faint);
+  --kt-text-mute:      var(--kt-color-ink-mute);
+  --kt-text-accent:    var(--kt-color-amber);
+
+  /* Surface */
+  --kt-surface-deep:    var(--kt-color-bg-deep);
+  --kt-surface-base:    var(--kt-color-bg-mid);
+  --kt-surface-raised:  var(--kt-color-bg-up);
+
+  /* Border */
+  --kt-border-subtle: var(--kt-color-line);
+  --kt-border-strong: var(--kt-color-line-strong);
+
+  /* Action */
+  --kt-action-primary:        var(--kt-color-amber);
+  --kt-action-primary-hover:  var(--kt-color-amber-soft);
+  --kt-action-on-primary:     #1a1410;
+
+  /* ─────────────────────────────────────────────────
+     9. Legacy bridge — 기존 --accent-* / --kt-* 호환
+     ───────────────────────────────────────────────── */
+  /* 기존 코드(--accent-primary 등) 호환 — 모듈 분리 후 점진 제거 */
+  --kt-line:           var(--kt-color-line);
+  --kt-line-strong:    var(--kt-color-line-strong);
+  --kt-ink:            var(--kt-color-ink);
+  --kt-ink-dim:        var(--kt-color-ink-dim);
+  --kt-ink-faint:      var(--kt-color-ink-faint);
+  --kt-amber:          var(--kt-color-amber);
+  --kt-amber-soft:     var(--kt-color-amber-soft);
+  --kt-amber-glow:     var(--kt-color-amber-glow);
+  --kt-bg-deep:        var(--kt-color-bg-deep);
+  --kt-bg-mid:         var(--kt-color-bg-mid);
+  --kt-bg-up:          var(--kt-color-bg-up);
+  --kt-serif:          var(--kt-font-serif);
+  --kt-sans:           var(--kt-font-sans);
+  --kt-mono:           var(--kt-font-mono);
+}
+
+/* ============================================================
+   Theme: 아이보리 (Light) — 따뜻한 크림 베이지
+   - 본문 #2d241b on #f8f2e4 → contrast 12.4:1 (WCAG AAA)
+   - amber-soft #6b4a2a on #f8f2e4 → contrast 7.1:1 (WCAG AA Large 통과)
+   - ink-faint (opacity 0.58) → 보조 라벨 전용 (본문 사용 금지)
+   ============================================================ */
+.light-theme {
+  /* 기본값 재정의 (foundation level) */
+  --kt-color-bg-deep:   #ece4d3;
+  --kt-color-bg-mid:    #f2eadb;
+  --kt-color-bg-up:     #f8f2e4;
+  --kt-color-ink:       #2d241b;
+  --kt-color-ink-dim:   rgba(45, 36, 27, 0.78);
+  --kt-color-ink-faint: rgba(45, 36, 27, 0.58);
+  --kt-color-ink-mute:  rgba(45, 36, 27, 0.38);
+  --kt-color-amber:      #8c6538;
+  --kt-color-amber-soft: #6b4a2a;
+  --kt-color-amber-glow: rgba(140, 101, 56, 0.18);
+  --kt-color-amber-rgb:  140, 101, 56;
+  --kt-color-line:        rgba(112, 82, 52, 0.22);
+  --kt-color-line-strong: rgba(112, 82, 52, 0.38);
+  /* 액션 색상 */
+  --kt-action-on-primary: #fff8ec;
+  /* Shadow 톤 다운 — 라이트 배경에서는 그림자가 더 옅게 */
+  --kt-shadow-soft:   0 6px 18px rgba(80, 50, 20, 0.08);
+  --kt-shadow-medium: 0 14px 40px rgba(80, 50, 20, 0.10);
+  --kt-shadow-deep:   0 25px 70px rgba(80, 50, 20, 0.16);
+  --kt-shadow-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 0 1px rgba(80, 50, 20, 0.04);
+}
+
+/* ============================================================
+   Theme: 핑크 (Pink) — 채도 낮춘 파스텔 로즈
+   - 본문 #322226 on #faf4f4 → contrast 13.8:1 (WCAG AAA)
+   - amber-soft #7f4f5a on #faf4f4 → contrast 6.4:1 (WCAG AA Large 통과)
+   - ink-faint (opacity 0.56) → 보조 라벨 전용
+   ============================================================ */
+.pink-theme {
+  --kt-color-bg-deep:   #ede4e4;
+  --kt-color-bg-mid:    #f3ebeb;
+  --kt-color-bg-up:     #faf4f4;
+  --kt-color-ink:       #322226;
+  --kt-color-ink-dim:   rgba(50, 34, 38, 0.78);
+  --kt-color-ink-faint: rgba(50, 34, 38, 0.56);
+  --kt-color-ink-mute:  rgba(50, 34, 38, 0.36);
+  --kt-color-amber:      #9c6773;
+  --kt-color-amber-soft: #7f4f5a;
+  --kt-color-amber-glow: rgba(156, 103, 115, 0.18);
+  --kt-color-amber-rgb:  156, 103, 115;
+  --kt-color-line:        rgba(140, 90, 100, 0.22);
+  --kt-color-line-strong: rgba(140, 90, 100, 0.36);
+  --kt-action-on-primary: #fff5f7;
+  --kt-shadow-soft:   0 6px 18px rgba(120, 60, 80, 0.08);
+  --kt-shadow-medium: 0 14px 40px rgba(120, 60, 80, 0.10);
+  --kt-shadow-deep:   0 25px 70px rgba(120, 60, 80, 0.16);
+  --kt-shadow-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 0 1px rgba(120, 60, 80, 0.04);
+}
+
+/* ============================================================
+   Auto dark/light — prefers-color-scheme (옵션)
+   사용자가 OS 설정 자동 따라가길 원하면 body에 .auto-theme 추가 후 활성화.
+   현재는 명시적 테마 선택을 유지하므로 비활성.
+   ============================================================ */
+@media (prefers-color-scheme: light) {
+  /* body.auto-theme:not(.dark-theme):not(.light-theme):not(.pink-theme) {
+       (위의 .light-theme 블록 동일)
+     } */
+}

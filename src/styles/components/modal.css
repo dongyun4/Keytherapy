@@ -1,0 +1,153 @@
+/* ============================================================
+   Modal — Help · Result Card 모달
+   ============================================================
+   기존 #helpModal, #result-card-modal BEM-lite 재작성.
+   Focus trap 은 JS 모듈에서 처리 (S8 접근성).
+   ============================================================ */
+
+/* ─── Backdrop ─── */
+.kt-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--kt-z-modal);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--kt-space-5);
+  opacity: 0;
+  transition: opacity var(--kt-duration-base) ease;
+}
+
+.kt-modal--visible {
+  display: flex;
+  opacity: 1;
+}
+
+/* ─── Dialog (모달 내부 카드) ─── */
+.kt-modal__dialog {
+  position: relative;
+  max-width: 560px;
+  width: 100%;
+  background: var(--kt-surface-base);
+  border: 1px solid rgba(var(--kt-color-amber-rgb), 0.2);
+  border-radius: var(--kt-radius-xl);
+  padding: var(--kt-space-6) var(--kt-space-6) var(--kt-space-5);
+  box-shadow: var(--kt-shadow-deep);
+  transform: translateY(10px) scale(0.98);
+  transition: transform var(--kt-duration-slow) var(--kt-ease-emphasized);
+}
+
+.kt-modal--visible .kt-modal__dialog {
+  transform: none;
+}
+
+/* ─── Close button ─── */
+.kt-modal__close {
+  position: absolute;
+  top: var(--kt-space-3);
+  right: var(--kt-space-4);
+  background: transparent;
+  border: none;
+  color: var(--kt-text-secondary);
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: var(--kt-space-2);
+  border-radius: var(--kt-radius-sm);
+  transition: color var(--kt-duration-fast) ease, background var(--kt-duration-fast) ease;
+}
+
+.kt-modal__close:hover {
+  color: var(--kt-action-primary);
+  background: rgba(var(--kt-color-amber-rgb), 0.06);
+}
+
+/* ─── Title ─── */
+.kt-modal__title {
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-font-size-xl);
+  color: var(--kt-text-accent);
+  text-align: center;
+  margin: 0 0 var(--kt-space-4);
+  letter-spacing: 0.5px;
+}
+
+/* ─── Body ─── */
+.kt-modal__body {
+  color: var(--kt-text-primary);
+  line-height: var(--kt-leading-relaxed);
+}
+
+/* ─── Result card canvas ─── */
+.kt-modal__canvas {
+  width: 100%;
+  height: auto;
+  border-radius: var(--kt-radius-md);
+  box-shadow: var(--kt-shadow-medium);
+  display: block;
+}
+
+/* ─── Action buttons ─── */
+.kt-modal__actions {
+  display: flex;
+  gap: var(--kt-space-3);
+  margin-top: var(--kt-space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.kt-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kt-space-2);
+  padding: var(--kt-space-3) var(--kt-space-5);
+  background: var(--kt-action-primary);
+  color: var(--kt-action-on-primary);
+  border: none;
+  border-radius: var(--kt-radius-md);
+  font-family: var(--kt-font-sans);
+  font-size: var(--kt-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--kt-duration-fast) ease, box-shadow var(--kt-duration-fast) ease, background var(--kt-duration-fast) ease;
+  min-height: 44px;
+}
+
+.kt-modal__btn:hover {
+  background: var(--kt-action-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--kt-shadow-soft);
+}
+
+.kt-modal__btn--secondary {
+  background: transparent;
+  color: var(--kt-text-primary);
+  border: 1px solid var(--kt-border-subtle);
+}
+
+.kt-modal__btn--secondary:hover {
+  background: rgba(var(--kt-color-amber-rgb), 0.06);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .kt-modal { padding: var(--kt-space-3); }
+  .kt-modal__dialog {
+    width: calc(100vw - 24px);
+    max-width: 480px;
+    padding: var(--kt-space-4) var(--kt-space-3);
+  }
+  .kt-modal__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .kt-modal__btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+    font-size: var(--kt-font-size-xs);
+    padding: var(--kt-space-3);
+  }
+}

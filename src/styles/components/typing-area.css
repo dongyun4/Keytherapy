@@ -1,0 +1,262 @@
+/* ============================================================
+   Typing Area — 단문/장문 연습 영역
+   ============================================================
+   기존 .typing-area-container, .typing-line, .fake-input-field
+   #line-display-area, #typing-input-field 의 BEM-lite 재작성.
+   ============================================================ */
+
+/* ─── Stage tokens (typing 영역 전용) ─── */
+.kt-typing {
+  --kt-typing-max:        var(--kt-stage-max, 960px);
+  --kt-typing-padx:       var(--kt-stage-padx, 24px);
+  --kt-typing-fontsize:   var(--kt-stage-fontsize, clamp(1.15rem, 1.5vw, 1.35rem));
+  --kt-typing-lineheight: var(--kt-stage-lineheight, 1.35);
+}
+
+.kt-typing {
+  position: relative;
+  padding: var(--kt-space-8) var(--kt-space-7) var(--kt-space-7);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.kt-typing__title {
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-font-size-sm);
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.12em;
+  color: var(--kt-action-primary);
+  text-align: center;
+  margin: 0 0 var(--kt-space-5) 0;
+  opacity: 0.95;
+}
+
+.kt-typing__title:empty { display: none; }
+
+/* ─── 라인 디스플레이 영역 ─── */
+.kt-typing__lines,
+.kt-typing__input-wrapper,
+.kt-typing__upcoming {
+  width: 100%;
+  max-width: var(--kt-typing-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.kt-typing__lines {
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  align-items: stretch;
+}
+
+/* ─── 개별 라인 (예문) ─── */
+.kt-typing__line {
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-typing-fontsize);
+  font-weight: 400;
+  text-align: left;
+  line-height: var(--kt-typing-lineheight);
+  letter-spacing: 0.02em;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0 var(--kt-typing-padx);
+  margin: 0;
+  min-height: 0;
+}
+
+.kt-typing__line--current {
+  color: var(--kt-text-primary);
+  position: relative;
+}
+
+/* 좌측 amber 액센트 바 — 예문 강조 */
+.kt-typing__line--current::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 2px;
+  background: var(--kt-action-primary);
+  opacity: 0.55;
+  border-radius: 0 2px 2px 0;
+}
+
+.kt-typing__line--passed { opacity: 0.45; }
+
+.kt-typing__line strong {
+  color: var(--kt-color-amber-soft);
+  text-shadow: 0 0 14px var(--kt-color-amber-glow);
+  font-weight: 400;
+}
+
+.kt-typing__char--untyped {
+  color: var(--kt-text-secondary);
+  opacity: 0.85;
+}
+
+.kt-typing__char--highlight {
+  color: #f48fb1;
+  text-decoration: underline;
+  text-decoration-color: rgba(244, 143, 177, 0.55);
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* ─── 입력 필드 컨테이너 ─── */
+.kt-typing__input-wrapper {
+  position: relative;
+  margin: 0 auto;
+}
+
+/* 실제 input — 보이지 않게 (opacity 0) */
+.kt-typing__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-typing-fontsize);
+  letter-spacing: 0.02em;
+  line-height: var(--kt-typing-lineheight);
+  color: var(--kt-text-primary);
+  appearance: none;
+}
+
+/* 가짜 input — 시각적 표시 */
+.kt-typing__input-display {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--kt-border-subtle);
+  border-radius: var(--kt-radius-md);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.02) inset,
+    0 14px 40px rgba(0, 0, 0, 0.28);
+  padding: var(--kt-space-2) var(--kt-typing-padx);
+  font-family: var(--kt-font-serif);
+  font-size: var(--kt-typing-fontsize);
+  line-height: var(--kt-typing-lineheight);
+  letter-spacing: 0.02em;
+  color: var(--kt-text-primary);
+  text-align: left;
+  min-height: calc(var(--kt-typing-fontsize) * var(--kt-typing-lineheight) + var(--kt-space-2));
+  transition:
+    border-color var(--kt-duration-base) ease,
+    box-shadow var(--kt-duration-base) ease,
+    background var(--kt-duration-base) ease;
+}
+
+/* Focus 상태 */
+.kt-typing__input:focus + .kt-typing__input-display {
+  border-color: rgba(var(--kt-color-amber-rgb), 0.32);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.02) inset,
+    0 14px 40px rgba(0, 0, 0, 0.26);
+}
+
+.kt-typing__input-display .placeholder {
+  color: var(--kt-text-secondary);
+  opacity: 0.5;
+}
+
+/* 커서 */
+.kt-typing__cursor {
+  display: inline-block;
+  width: 2px;
+  height: calc(var(--kt-typing-fontsize) * 1.15);
+  background: var(--kt-action-primary);
+  box-shadow: 0 0 4px rgba(var(--kt-color-amber-rgb), 0.3);
+  animation: kt-typing-cursor-blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes kt-typing-cursor-blink {
+  50% { opacity: 0; }
+}
+
+/* ─── 다음 줄 미리보기 ─── */
+.kt-typing__upcoming {
+  margin-top: var(--kt-space-2);
+}
+
+.kt-typing__upcoming .kt-typing__line {
+  font-size: calc(var(--kt-typing-fontsize) * 0.88);
+  text-align: left;
+  padding: 2px var(--kt-typing-padx);
+  opacity: 0.5;
+}
+
+/* ─── 라이트·핑크 테마 input 투명도 ─── */
+.light-theme .kt-typing__input-display {
+  background: rgba(255, 250, 240, 0.32);
+  border-color: rgba(140, 101, 56, 0.22);
+  backdrop-filter: blur(8px) saturate(108%);
+  -webkit-backdrop-filter: blur(8px) saturate(108%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 10px 28px rgba(120, 90, 60, 0.06);
+}
+
+.pink-theme .kt-typing__input-display {
+  background: rgba(255, 246, 248, 0.32);
+  border-color: rgba(156, 103, 115, 0.22);
+  backdrop-filter: blur(8px) saturate(108%);
+  -webkit-backdrop-filter: blur(8px) saturate(108%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 10px 28px rgba(150, 90, 100, 0.06);
+}
+
+/* ─── 단문 모드 — 한 줄로만 표시, 가로 스크롤 비활성 (autofit JS가 폰트 축소) ─── */
+[data-practice="short"] .kt-typing__upcoming { display: none; }
+[data-practice="short"] .kt-typing__line--current {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+/* ─── Responsive — 모바일 ─── */
+@media (max-width: 768px) {
+  .kt-typing {
+    padding: var(--kt-space-6) var(--kt-space-3) var(--kt-space-5);
+    min-height: 280px;
+    --kt-typing-padx: 14px;
+    --kt-typing-fontsize: 1.05rem;
+    --kt-typing-lineheight: 1.55;
+  }
+  .kt-typing__input { font-size: 16px; } /* iOS 줌 회피 */
+  .kt-typing__input-display { font-size: 16px; }
+
+  /* 모든 모드에서 한 줄 fit (JS autofit 보조) */
+  .kt-typing__line,
+  .kt-typing__line--current,
+  .kt-typing__input-display {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  .kt-typing__upcoming {
+    max-height: 2.4em;
+    overflow: hidden;
+    opacity: 0.5;
+  }
+
+  .kt-typing__line--current::before { width: 3px; }
+}

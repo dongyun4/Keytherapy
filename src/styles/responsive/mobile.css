@@ -1,0 +1,122 @@
+/* ============================================================
+   Mobile responsive — Key Therapy
+   ============================================================
+   기존 [M1-M11] 모바일 정밀 정비 블록을 통합·정리.
+   breakpoint 4개로 일관: 360 / 480 / 768 / 1024
+   ============================================================ */
+
+/* ─────────────────────────────────────────────────
+   터치 인터랙션 (전 device)
+   ───────────────────────────────────────────────── */
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: rgba(var(--kt-color-amber-rgb), 0.18);
+  touch-action: manipulation;
+}
+
+/* ─────────────────────────────────────────────────
+   Tablet & smaller (1024px 이하) — 미세 조정
+   ───────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .kt-main {
+    padding: var(--kt-space-4) var(--kt-space-3);
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Tablet portrait (768px 이하) — 모바일 본 작업
+   ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* 키보드 가이드 — 좁은 폭에서 의미 없음 */
+  #keyboard-guide,
+  .kt-keyboard-guide {
+    display: none !important;
+  }
+
+  /* 단축키 툴팁 — hover 의미 없음 */
+  #shortcut-help-container,
+  .kt-shortcut-help {
+    display: none !important;
+  }
+
+  /* iOS 줌 회피 — 모든 입력 16px */
+  input[type="text"], input[type="search"], input[type="email"],
+  input[type="tel"], input[type="number"], input[type="password"],
+  input[type="url"], textarea, select {
+    font-size: 16px;
+  }
+
+  /* hover 의존 효과 제거 (touch 환경) */
+  .kt-mode-buttons__btn:hover,
+  .kt-feature-toggles__btn:hover {
+    background: transparent;
+  }
+
+  /* Popover — 화면 밖 클리핑 방지 */
+  .kt-popover,
+  #emoji-picker {
+    max-width: calc(100vw - 28px);
+    width: min(320px, calc(100vw - 28px));
+    max-height: min(60vh, calc(var(--vh, 1vh) * 60));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Phone (480px 이하) — 좁은 모바일
+   ───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  /* Hero 부제 (N°·EDITION) 숨김 */
+  .kt-hero__index,
+  .kt-hero__edition {
+    display: none;
+  }
+
+  /* Stats — 2x2 grid */
+  .kt-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Very narrow (380px 이하) — 갤럭시 폴드, 작은 폰
+   ───────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .kt-mode-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Landscape, short height — 가로 모드 좁은 viewport
+   ───────────────────────────────────────────────── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .kt-hero {
+    padding: var(--kt-space-3) var(--kt-space-5);
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Hover 미지원 디바이스 — 모든 hover 우회
+   ───────────────────────────────────────────────── */
+@media (hover: none) {
+  .kt-mode-buttons__btn:hover,
+  .kt-feature-toggles__btn:hover,
+  .kt-selection__item:hover {
+    background: inherit;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   키보드 등장 시 (visualViewport JS와 연동)
+   `body.kbd-open`은 JS가 키보드 감지 시 부여
+   ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  body.kbd-open .kt-footer {
+    display: none;
+  }
+  body.kbd-open .kt-shortcut-help {
+    display: none !important;
+  }
+}

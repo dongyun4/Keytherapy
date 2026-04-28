@@ -1,0 +1,34 @@
+{
+  "name": "keytherapy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Key Therapy — 한국어 타이핑 연습 + ASMR 브랜드 사이트",
+  "homepage": "https://keytherapy.co.kr",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint . --ext .js,.html",
+    "format": "prettier --write \"**/*.{js,css,html,md}\""
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "vitest": "^2.1.0",
+    "@vitest/ui": "^2.1.0",
+    "happy-dom": "^15.7.0",
+    "eslint": "^9.10.0",
+    "prettier": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "iOS >= 14",
+    "Safari >= 14"
+  ]
+}
