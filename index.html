@@ -1391,7 +1391,9 @@
     #cursor {
         display: inline-block;
         width: 2px;
-        height: calc(var(--font-size-typing) * 1.15);
+        /* 부모 font-size 기준 1.05em — 모바일 autofit 으로 폰트가 줄어들 때도 함께 축소되어
+           입력창 라인 높이가 부풀려지지 않음 */
+        height: 1.05em;
         background-color: var(--accent-primary);
         box-shadow: 0 0 4px rgba(var(--accent-primary-rgb), 0.3);
         border-radius: 1px;
@@ -7631,7 +7633,7 @@ let overallMaxSpeed = 0;
 
 const KOR_SPEED_FACTOR = 2.1;
 /* 토글/설정 초기값 — localStorage 에서 하이드레이션 */
-let soundEnabled       = KT.getBool('soundEnabled', false);
+let soundEnabled       = KT.getBool('soundEnabled', true);
 let highlightEnabled   = KT.getBool('highlightEnabled', true);
 let statsVisible       = KT.getBool('statsVisible', true);
 let keyboardGuideEnabled = KT.getBool('keyboardGuideEnabled', false);
@@ -9385,6 +9387,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (helpModal.classList.contains('visible') && !e.target.closest('.help-modal-content')) {
         hideHelpModal();
+    }
+    // 사운드 믹서 패널·토글 영역 안 클릭이거나, 패널이 열려있으면 자동 포커스 복귀 스킵
+    // (모바일에서 키보드가 올라와 믹서 UI 를 가리는 문제 방지)
+    const mixerPanel = document.getElementById('kt-mixer-panel');
+    const inMixerArea = !!e.target.closest('#kt-mixer-panel, #kt-mixer-toggle');
+    const mixerOpen = mixerPanel && mixerPanel.classList.contains('is-open');
+    if (inMixerArea || mixerOpen) {
+        // 활성 input 이 있으면 blur 해서 키보드 내림
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA') && !e.target.closest('#kt-mixer-panel input')) {
+            try { ae.blur(); } catch(_) {}
+        }
+        return;
     }
     const isInteractiveElement = e.target.closest('button, a, select, input, textarea, #emoji-picker span, .help-modal-content');
     if (!isInteractiveElement) {
@@ -15717,6 +15732,14 @@ try { window.AmbienceMixer = AmbienceMixer; } catch(_) {}
     function openPanel() {
         const panel = $('kt-mixer-panel');
         const toggle = $('kt-mixer-toggle');
+        // 모바일: 활성 input 이 있어 키보드가 떠 있으면 즉시 내림
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) {
+            try { ae.blur(); } catch(_) {}
+        }
+        // 또한 typing-input-field 자체에도 임시로 readonly 부여 → 잘못된 재포커스 방지
+        const ti = document.getElementById('typing-input-field');
+        if (ti) ti.setAttribute('readonly', '');
         if (panel) {
             panel.classList.add('is-open');
             panel.setAttribute('aria-hidden', 'false');
@@ -15748,6 +15771,9 @@ try { window.AmbienceMixer = AmbienceMixer; } catch(_) {}
             toggle.classList.remove('is-open');
             toggle.setAttribute('aria-expanded', 'false');
         }
+        // typing-input-field 의 임시 readonly 해제 → 다시 입력 가능
+        const ti = document.getElementById('typing-input-field');
+        if (ti) ti.removeAttribute('readonly');
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
