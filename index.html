@@ -6130,32 +6130,21 @@ input, textarea, [contenteditable="true"] {
     padding: 0 8px;
     word-break: keep-all;
   }
-  #asmr-overlay .asmr-input {
-    /* 데스크톱의 absolute top:0 left:0 1px×1px 덮음 — 모바일에선 가운데 보이는 입력창 */
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    height: auto !important;
-    font-size: 16px !important; /* iOS 줌 회피 */
-    padding: 14px 16px !important;
-    width: calc(100% - 32px) !important;
-    max-width: 520px !important;
-    margin: 12px auto 0 !important;       /* 가로 중앙 + 위쪽 여백 */
-    display: block !important;
-    background: rgba(20, 17, 14, 0.6) !important;
-    border: 1px solid rgba(212, 175, 122, 0.35) !important;
-    border-radius: 12px !important;
-    color: rgba(245, 236, 224, 0.95) !important;
+  /* 모바일에서도 asmr-input 은 숨김 유지 — 데스크톱 기본값(absolute 1px×1px opacity:0) 그대로
+     입력은 화면 어디든 터치하면 즉시 받음 (JS 핸들러가 처리), 시각 표시는 asmrLineDisplay 만 */
+  #asmr-overlay .asmr-input { font-size: 16px !important; }
+  /* 몰입 모드 예문 표시 영역 — flex 센터링 명시 (모바일에서 좌측 쏠림 방지) */
+  #asmr-overlay .asmr-line-display {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     text-align: center !important;
-    outline: none !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    width: 100% !important;
   }
-  #asmr-overlay .asmr-input:focus {
-    border-color: rgba(212, 175, 122, 0.65) !important;
-    box-shadow: 0 0 0 2px rgba(212, 175, 122, 0.18) !important;
+  #asmr-overlay .asmr-line-display .asmr-line-inner {
+    display: inline-block !important;
+    margin: 0 auto !important;
+    text-align: center !important;
   }
   /* 믹서 wrap — 작은 화면에서는 줄 단위 정렬 */
   #asmr-overlay .asmr-mixer {
@@ -6440,8 +6429,12 @@ input, textarea, [contenteditable="true"] {
     width: 3px !important;
   }
 
-  /* ASMR 오버레이 예문 — 한 줄로만 표시 (JS가 폰트 자동 축소) */
+  /* ASMR 오버레이 예문 — 한 줄로만 표시 + 명시적 가운데 정렬 (JS가 폰트 자동 축소) */
   #asmr-overlay .asmr-line-display {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: clip !important;
@@ -6449,6 +6442,11 @@ input, textarea, [contenteditable="true"] {
     padding: 0 16px !important;
     line-height: 1.5 !important;
     /* font-size는 JS가 동적으로 set */
+  }
+  #asmr-overlay .asmr-line-display .asmr-line-inner {
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+    margin: 0 auto !important;
   }
   /* ASMR 입력 — 16px 유지 (iOS 줌 회피) */
   #asmr-overlay .asmr-input { font-size: 16px !important; }
