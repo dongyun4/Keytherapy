@@ -10,7 +10,7 @@
  * 버전 변경 시 CACHE_VERSION만 bump 하면 자동으로 구캐시 정리.
  */
 
-const CACHE_VERSION = 'kt-v1';
+const CACHE_VERSION = 'kt-v2';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const FONT_CACHE = `${CACHE_VERSION}-fonts`;
@@ -137,7 +137,9 @@ async function staleWhileRevalidate(request, cacheName) {
     const networkPromise = fetch(request)
         .then((response) => {
             if (response.ok) {
-                caches.open(cacheName).then((cache) => cache.put(request, response.clone()));
+                // ⚠️ clone() 은 caches.open() 보다 BEFORE 호출 — async wait 동안 body 소모 방지
+                const cloned = response.clone();
+                caches.open(cacheName).then((cache) => cache.put(request, cloned)).catch(() => {});
             }
             return response;
         })
