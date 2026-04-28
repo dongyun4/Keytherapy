@@ -6131,10 +6131,31 @@ input, textarea, [contenteditable="true"] {
     word-break: keep-all;
   }
   #asmr-overlay .asmr-input {
-    font-size: 16px; /* iOS 줌 회피 */
-    padding: 14px 16px;
-    width: calc(100% - 32px);
-    max-width: 520px;
+    /* 데스크톱의 absolute top:0 left:0 1px×1px 덮음 — 모바일에선 가운데 보이는 입력창 */
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    height: auto !important;
+    font-size: 16px !important; /* iOS 줌 회피 */
+    padding: 14px 16px !important;
+    width: calc(100% - 32px) !important;
+    max-width: 520px !important;
+    margin: 12px auto 0 !important;       /* 가로 중앙 + 위쪽 여백 */
+    display: block !important;
+    background: rgba(20, 17, 14, 0.6) !important;
+    border: 1px solid rgba(212, 175, 122, 0.35) !important;
+    border-radius: 12px !important;
+    color: rgba(245, 236, 224, 0.95) !important;
+    text-align: center !important;
+    outline: none !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  #asmr-overlay .asmr-input:focus {
+    border-color: rgba(212, 175, 122, 0.65) !important;
+    box-shadow: 0 0 0 2px rgba(212, 175, 122, 0.18) !important;
   }
   /* 믹서 wrap — 작은 화면에서는 줄 단위 정렬 */
   #asmr-overlay .asmr-mixer {
@@ -6809,6 +6830,7 @@ input, textarea, [contenteditable="true"] {
   justify-content: space-between;
   padding: 14px 18px;
   border-bottom: 1px solid rgba(212, 175, 122, 0.18);
+  flex: 0 0 auto;
 }
 .kt-mixer-panel__head h3 {
   margin: 0;
@@ -6841,6 +6863,7 @@ input, textarea, [contenteditable="true"] {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex: 0 0 auto;            /* head·master·tabs·foot 는 절대 압축 안 됨 */
 }
 .kt-mixer-panel__master label {
   font-size: 0.78rem;
@@ -6853,13 +6876,56 @@ input, textarea, [contenteditable="true"] {
   color: rgba(74, 56, 37, 0.7);
 }
 
+/* tabs 영역 — flex-shrink:0 으로 절대 압축 안 됨, position:relative 로 페이드 가이드 부착 */
+.kt-mixer-panel__tabs-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  border-bottom: 1px solid rgba(212, 175, 122, 0.14);
+}
+/* 우측 그라데이션 페이드 — "오른쪽에 더 있다" 시각 단서 */
+.kt-mixer-panel__tabs-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 36px;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(18, 15, 12, 0.97) 0%, rgba(18, 15, 12, 0) 100%);
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.kt-mixer-panel__tabs-wrap.is-end::after { opacity: 0; }    /* 끝까지 스크롤 → 페이드 숨김 */
+.light-theme .kt-mixer-panel__tabs-wrap::after,
+.pink-theme .kt-mixer-panel__tabs-wrap::after {
+  background: linear-gradient(to left, rgba(255, 252, 245, 0.98) 0%, rgba(255, 252, 245, 0) 100%);
+}
+/* 우측 작은 chevron — 스크롤 가능 강조 (모바일에서만) */
+.kt-mixer-panel__tabs-arrow {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+  color: rgba(212, 175, 122, 0.55);
+  z-index: 1;
+  display: none;
+  animation: ktTabsArrowPulse 1.6s ease-in-out infinite;
+}
+@keyframes ktTabsArrowPulse {
+  0%, 100% { transform: translateY(-50%) translateX(0); opacity: 0.55; }
+  50%      { transform: translateY(-50%) translateX(3px); opacity: 1; }
+}
+.kt-mixer-panel__tabs-wrap.is-end .kt-mixer-panel__tabs-arrow { display: none !important; }
+
 .kt-mixer-panel__tabs {
   display: flex;
   gap: 4px;
   padding: 8px 12px;
-  border-bottom: 1px solid rgba(212, 175, 122, 0.14);
   overflow-x: auto;
   scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 .kt-mixer-panel__tabs::-webkit-scrollbar { display: none; }
 .kt-mixer-tab {
@@ -6944,6 +7010,7 @@ input, textarea, [contenteditable="true"] {
   justify-content: space-between;
   padding: 10px 14px;
   border-top: 1px solid rgba(212, 175, 122, 0.14);
+  flex: 0 0 auto;
   background: rgba(0, 0, 0, 0.15);
 }
 .kt-mixer-btn-secondary {
@@ -7378,7 +7445,10 @@ input, textarea, [contenteditable="true"] {
       <label>전체 볼륨 <span id="kt-mixer-master-pct">70%</span></label>
       <input type="range" id="kt-mixer-master" min="0" max="100" value="70" aria-label="전체 볼륨">
     </div>
-    <div class="kt-mixer-panel__tabs" role="tablist" id="kt-mixer-tabs"></div>
+    <div class="kt-mixer-panel__tabs-wrap" id="kt-mixer-tabs-wrap">
+      <div class="kt-mixer-panel__tabs" role="tablist" id="kt-mixer-tabs"></div>
+      <span class="kt-mixer-panel__tabs-arrow" aria-hidden="true">▶</span>
+    </div>
     <div class="kt-mixer-panel__body" id="kt-mixer-body">
       <!-- 카테고리별 트랙 리스트 — JS 가 채움 -->
     </div>
@@ -9271,20 +9341,26 @@ document.addEventListener('DOMContentLoaded', () => {
     25: '📠 Teleprinter',
     26: '⚪ Minimal Tick',
     // 27~38 — Key Therapy 유튜브 채널 영상에서 자동 추출한 keystroke
-    27: '🎬 키테라피 ① 추출',
-    28: '🎬 키테라피 ② 추출',
-    29: '🎬 키테라피 ③ 추출',
-    30: '🎬 키테라피 ④ 추출',
-    31: '🎬 키테라피 ⑤ 추출',
-    32: '🎬 키테라피 ⑥ 추출',
-    33: '🎬 키테라피 ⑦ 추출',
-    34: '🎬 키테라피 ⑧ 추출',
-    35: '🎬 키테라피 ⑨ 추출',
-    36: '🎬 키테라피 ⑩ 추출',
-    37: '🎬 키테라피 ⑪ 추출',
-    38: '🎬 키테라피 ⑫ 추출',
+    27: '🎬 keytherapy ①',
+    28: '🎬 keytherapy ②',
+    29: '🎬 keytherapy ③',
+    30: '🎬 keytherapy ④',
+    31: '🎬 keytherapy ⑤',
+    32: '🎬 keytherapy ⑥',
+    33: '🎬 keytherapy ⑦',
+    34: '🎬 keytherapy ⑧',
+    35: '🎬 keytherapy ⑨',
+    36: '🎬 keytherapy ⑩',
+    37: '🎬 keytherapy ⑪',
+    38: '🎬 keytherapy ⑫',
   };
-  for (let i = 1; i <= totalSoundPacks; i++) {
+  // 드롭다운 표시 순서 — keytherapy 12 먼저, 그 다음 Mechvibes 26
+  const SOUND_PACK_DISPLAY_ORDER = [
+    27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,    // keytherapy 1-12
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,     // Mechvibes 1-14
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,    // Mechvibes 15-26
+  ];
+  for (const i of SOUND_PACK_DISPLAY_ORDER) {
     const option = document.createElement('option');
     option.value = String(i);
     option.textContent = SOUND_PACK_NAMES[i] || String(i);
@@ -15857,8 +15933,20 @@ try { window.AmbienceMixer = AmbienceMixer; } catch(_) {}
             });
         }
 
-        // 탭 영역 — 마우스 드래그 스와이프 (좌우 카테고리 이동)
+        // 탭 영역 — 마우스 드래그 스와이프 (좌우 카테고리 이동) + 스크롤 어포던스
         const tabsEl = $('kt-mixer-tabs');
+        const tabsWrap = $('kt-mixer-tabs-wrap');
+        const tabsArrow = tabsWrap ? tabsWrap.querySelector('.kt-mixer-panel__tabs-arrow') : null;
+
+        // 스크롤 상태에 따라 우측 페이드·화살표 표시
+        function updateTabsScrollState() {
+            if (!tabsEl || !tabsWrap) return;
+            const scrollable = tabsEl.scrollWidth > tabsEl.clientWidth + 2;
+            const atEnd = !scrollable || tabsEl.scrollLeft + tabsEl.clientWidth >= tabsEl.scrollWidth - 2;
+            tabsWrap.classList.toggle('is-end', atEnd);
+            if (tabsArrow) tabsArrow.style.display = (scrollable && !atEnd) ? 'block' : 'none';
+        }
+
         if (tabsEl) {
             let isDown = false, startX = 0, startScroll = 0, moved = false;
             tabsEl.style.cursor = 'grab';
@@ -15881,6 +15969,17 @@ try { window.AmbienceMixer = AmbienceMixer; } catch(_) {}
             tabsEl.addEventListener('click', (e) => {
                 if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; }
             }, true);
+            // 스크롤·리사이즈 시 페이드 가이드 갱신
+            tabsEl.addEventListener('scroll', updateTabsScrollState, { passive: true });
+            window.addEventListener('resize', updateTabsScrollState);
+            // 탭이 동적으로 바뀌면 (renderTabs) 도 갱신 — 약간의 지연으로 layout 안정화 후
+            const mo = new MutationObserver(() => setTimeout(updateTabsScrollState, 50));
+            mo.observe(tabsEl, { childList: true });
+            // 패널 열릴 때마다 검사
+            const toggleEl = $('kt-mixer-toggle');
+            if (toggleEl) toggleEl.addEventListener('click', () => setTimeout(updateTabsScrollState, 350));
+            // 초기 1회
+            setTimeout(updateTabsScrollState, 100);
         }
 
         // ESC 닫기 (마법사 진행 중이면 마법사부터 취소)
