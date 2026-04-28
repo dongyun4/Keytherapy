@@ -16316,14 +16316,12 @@ const ASMR = (() => {
                     const baseCls = isSpace ? 'sp' : 'ch';
                     html += `<span class="${baseCls} typed-ok">${content}</span>`;
                 } else {
-                    // 오타 표시 — 사용자가 친 글자가 표시 가능한 폭 보장 (겹침 방지)
+                    // 오타 표시 — span 너비는 항상 원문 기준 (layout 절대 안 흔들림)
+                    // 원문 space (.sp 0.5em) 자리에 typed 글자가 와도 .sp 유지 → overflow:hidden 으로 클리핑
+                    // overflow 클리핑은 시각적으로는 살짝 잘려 보이지만, 라인 위치는 절대 변하지 않음 (UX 우선순위)
                     const isTypedSpace = typed[i] === ' ';
                     const typedContent = isTypedSpace ? '\u00A0' : escapeHtml(typed[i]);
-                    // 너비 결정 규칙:
-                    //   원문 space + 사용자 글자 → 글자가 0.5em 슬롯에 안 맞아 겹침 → 1em (.ch) 사용
-                    //   그 외 → 원문 기준
-                    const useCharWidth = !isSpace || !isTypedSpace;
-                    const baseCls = useCharWidth ? 'ch' : 'sp';
+                    const baseCls = isSpace ? 'sp' : 'ch';
                     html += `<span class="${baseCls} typed-err" title="원문: ${escapeHtml(line[i])}">${typedContent}</span>`;
                 }
             } else if (i === typed.length) {
