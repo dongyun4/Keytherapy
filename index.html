@@ -7744,7 +7744,7 @@ function showShortcutTooltipTemporarily() {
 let soundPlayedForThisInput = false;
 let currentSoundPack = KT.get('soundPack', '1');
 const soundFiles = {};
-const totalSoundPacks = 26;
+const totalSoundPacks = 38;  // 1~26 Mechvibes + 27~38 키테라피 유튜브 추출
 const filesPerPack = 10;
 
 for (let i = 1; i <= totalSoundPacks; i++) {
@@ -9270,6 +9270,19 @@ document.addEventListener('DOMContentLoaded', () => {
     24: '📜 Lincoln Typewriter',
     25: '📠 Teleprinter',
     26: '⚪ Minimal Tick',
+    // 27~38 — Key Therapy 유튜브 채널 영상에서 자동 추출한 keystroke
+    27: '🎬 키테라피 ① 추출',
+    28: '🎬 키테라피 ② 추출',
+    29: '🎬 키테라피 ③ 추출',
+    30: '🎬 키테라피 ④ 추출',
+    31: '🎬 키테라피 ⑤ 추출',
+    32: '🎬 키테라피 ⑥ 추출',
+    33: '🎬 키테라피 ⑦ 추출',
+    34: '🎬 키테라피 ⑧ 추출',
+    35: '🎬 키테라피 ⑨ 추출',
+    36: '🎬 키테라피 ⑩ 추출',
+    37: '🎬 키테라피 ⑪ 추출',
+    38: '🎬 키테라피 ⑫ 추출',
   };
   for (let i = 1; i <= totalSoundPacks; i++) {
     const option = document.createElement('option');

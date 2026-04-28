@@ -25,6 +25,7 @@ Thumbs.db
 # ─── 원본 사운드 (배포 불필요) ───
 newsound/
 sound\ effect/
+yt-audio/
 public/ambience/_mastered_tmp/
 **/*.mastered.mp3
 # 앰비언스 wav 만 제외 (soundFiles/ 의 키보드 .wav 는 유지)
