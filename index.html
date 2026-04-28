@@ -38,8 +38,11 @@
   <meta name="twitter:description" content="깊은 수면과 집중을 위한 키보드 타건 ASMR. 차분한 분위기 속에서 마음을 쉬게 하세요.">
   <meta name="twitter:image" content="https://keytherapy.co.kr/og-cover.svg">
 
-  <link rel="icon" href="/og-cover.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/og-cover.svg">
+  <link rel="icon" type="image/svg+xml" href="/og-cover.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
 
   <!-- Fonts — 실사용 7종만 로드 (이전 23종에서 축소) -->
@@ -4861,8 +4864,9 @@ body.freestyle-mode-active.pink-theme #emoji-picker {
 @media (max-width: 480px) {
   .hero-title { font-size: 3rem !important; }
   .hero-tagline { font-size: 0.72rem !important; letter-spacing: 0.2em !important; }
-  #line-display-area { font-size: 1.2rem !important; }
-  .fake-input-field { font-size: 1.05rem !important; padding: 14px 16px !important; }
+  /* 예문(.typing-line)·입력창(.fake-input-field) 모두 --kt-stage-fontsize 로 autofit 동기화
+     → 하드코딩된 폰트 크기 제거 (이전엔 1.2rem / 1.05rem 으로 달랐음) */
+  .fake-input-field { padding: 14px 16px !important; }
 }
 
 /* ───── 14. 기존 헬프 토글·단축키 튀는 그림자 제거 ───── */
@@ -17368,6 +17372,24 @@ const ResultCard = (() => {
     if (window.va) {
       window.va('auto');
     }
+  });
+</script>
+<script>
+  // PWA — Service Worker 등록 (앱 설치 prompt 활성화)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(reg => console.log('[PWA] SW registered:', reg.scope))
+        .catch(err => console.warn('[PWA] SW register failed:', err));
+    });
+  }
+  // beforeinstallprompt — 설치 가능 여부 표시·디버그
+  window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('[PWA] installable — beforeinstallprompt fired');
+    window.__pwaInstallEvent = e;
+  });
+  window.addEventListener('appinstalled', () => {
+    console.log('[PWA] installed ✓');
   });
 </script>
 </body>
